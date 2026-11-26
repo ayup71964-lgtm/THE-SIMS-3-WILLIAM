@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>The Sims 3 Web Edition - Simulasi Kehidupan 3D</title>
+  <title>WILLIAM GAME - Life Simulation 3D</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <style>
     * {
@@ -11,12 +11,12 @@
       margin: 0;
       padding: 0;
       user-select: none;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     }
 
     body {
       overflow: hidden;
-      background: #1a2a3a;
+      background: #0d1b2a;
       width: 100vw;
       height: 100vh;
     }
@@ -27,29 +27,196 @@
       height: 100%;
     }
 
-    /* Sims 3 Top-Left Action Queue */
-    #action-queue {
+    /* ==========================================
+       OPENING SCREEN / MAIN MENU ("WILLIAM GAME")
+       ========================================== */
+    #start-screen {
       position: fixed;
-      top: 18px;
-      left: 18px;
+      inset: 0;
+      z-index: 100;
+      background: radial-gradient(circle at center, rgba(14, 42, 78, 0.52) 0%, rgba(7, 20, 40, 0.88) 100%);
+      backdrop-filter: blur(4px);
       display: flex;
       align-items: center;
+      justify-content: center;
+      padding: 20px;
+      transition: opacity 0.4s ease;
+    }
+
+    .menu-container {
+      width: min(680px, 95vw);
+      background: linear-gradient(180deg, rgba(24, 72, 132, 0.92), rgba(10, 31, 62, 0.96));
+      border: 2px solid #84ceff;
+      border-radius: 30px;
+      padding: 36px 32px;
+      text-align: center;
+      color: #fff;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.75), inset 0 2px 2px rgba(255, 255, 255, 0.4);
+      animation: menuPop 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes menuPop {
+      from { opacity: 0; transform: scale(0.92) translateY(16px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .menu-plumbob-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 14px;
+    }
+
+    .menu-plumbob {
+      width: 34px;
+      height: 54px;
+      background: linear-gradient(135deg, #8cff7a 0%, #27c937 55%, #127a1d 100%);
+      clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+      filter: drop-shadow(0 0 14px rgba(93, 255, 79, 0.85));
+      animation: floatDiamond 2.6s ease-in-out infinite;
+    }
+
+    @keyframes floatDiamond {
+      0%, 100% { transform: translateY(0px) scale(1); }
+      50% { transform: translateY(-7px) scale(1.05); }
+    }
+
+    .studio-tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #9cd6ff;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(132, 206, 255, 0.35);
+      padding: 4px 14px;
+      border-radius: 20px;
+      margin-bottom: 10px;
+    }
+
+    .game-main-title {
+      font-size: clamp(34px, 6vw, 54px);
+      font-weight: 900;
+      letter-spacing: 2px;
+      line-height: 1.05;
+      background: linear-gradient(180deg, #ffffff 15%, #9eff9c 65%, #3be053 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.65));
+      margin-bottom: 8px;
+    }
+
+    .game-sub-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #cceaff;
+      margin-bottom: 28px;
+    }
+
+    .mode-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .mode-card {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.11), rgba(14, 42, 82, 0.7));
+      border: 2px solid #79c4ff;
+      border-radius: 20px;
+      padding: 20px 18px;
+      cursor: pointer;
+      text-align: left;
+      color: #fff;
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .mode-card:hover {
+      transform: translateY(-4px);
+      border-color: #9eff9c;
+      background: linear-gradient(180deg, rgba(56, 184, 73, 0.35), rgba(18, 62, 112, 0.9));
+      box-shadow: 0 12px 28px rgba(45, 204, 72, 0.35);
+    }
+
+    .mode-card.freeplay:hover {
+      border-color: #ffd57e;
+      background: linear-gradient(180deg, rgba(230, 126, 34, 0.35), rgba(18, 62, 112, 0.9));
+      box-shadow: 0 12px 28px rgba(230, 126, 34, 0.35);
+    }
+
+    .mode-icon {
+      font-size: 32px;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .mode-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 6px;
+    }
+
+    .mode-desc {
+      font-size: 12.5px;
+      color: #cde8ff;
+      line-height: 1.45;
+      margin-bottom: 12px;
+    }
+
+    .mode-pill {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 10px;
+      background: rgba(77, 255, 71, 0.2);
+      border: 1px solid #7dff6b;
+      color: #a6ffa1;
+    }
+
+    .mode-card.freeplay .mode-pill {
+      background: rgba(255, 213, 126, 0.2);
+      border-color: #ffd57e;
+      color: #ffe6a8;
+    }
+
+    .menu-footer-note {
+      font-size: 11.5px;
+      color: #8fc4eb;
+    }
+
+    /* ==========================================
+       IN-GAME HUD & PANELS
+       ========================================== */
+    #top-left-stack {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      display: none;
+      flex-direction: column;
       gap: 10px;
       z-index: 20;
+      max-width: 310px;
       pointer-events: none;
     }
 
-    .action-card {
-      background: linear-gradient(180deg, rgba(35, 92, 158, 0.92), rgba(16, 48, 92, 0.95));
-      border: 2px solid #7ec8ff;
-      border-radius: 14px;
-      padding: 8px 16px;
+    .glass-panel {
+      background: linear-gradient(180deg, rgba(26, 76, 138, 0.92), rgba(12, 37, 74, 0.96));
+      border: 1.5px solid #7ec8ff;
+      border-radius: 16px;
+      padding: 10px 14px;
       color: #fff;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+      pointer-events: auto;
+    }
+
+    .action-card {
       display: flex;
       align-items: center;
       gap: 10px;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.4);
-      pointer-events: auto;
     }
 
     .action-icon {
@@ -57,14 +224,13 @@
     }
 
     .action-info {
-      display: flex;
-      flex-direction: column;
+      flex: 1;
     }
 
     .action-title {
       font-size: 13px;
       font-weight: 700;
-      color: #dff3ff;
+      color: #e6f5ff;
     }
 
     .action-sub {
@@ -72,46 +238,74 @@
       color: #9cd4ff;
     }
 
-    .cancel-action-btn {
+    .cancel-btn {
       background: #e74c3c;
       border: 1px solid #ff9a8f;
-      color: white;
+      color: #fff;
       border-radius: 50%;
       width: 22px;
       height: 22px;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: bold;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
 
-    .cancel-action-btn:hover {
-      background: #ff5b49;
+    .story-badge {
+      display: inline-block;
+      background: linear-gradient(90deg, #f39c12, #e67e22);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
     }
 
-    /* Top-Right Controls & Help */
+    .story-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #ffe885;
+      margin-bottom: 3px;
+    }
+
+    .story-desc {
+      font-size: 11.5px;
+      color: #d6eeff;
+      line-height: 1.35;
+    }
+
+    .story-reward {
+      margin-top: 5px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #82ff80;
+    }
+
     #top-right-panel {
       position: fixed;
-      top: 18px;
-      right: 18px;
-      display: flex;
-      gap: 10px;
-      z-index: 20;
+      top: 16px;
+      right: 16px;
+      display: none;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 8px;
+      z-index: 25;
+      max-width: 580px;
     }
 
     .top-btn {
-      background: linear-gradient(180deg, #2d74c4, #16447d);
-      border: 2px solid #82caff;
+      background: linear-gradient(180deg, #2b6cb8, #143d73);
+      border: 1.5px solid #82caff;
       color: #fff;
-      padding: 9px 15px;
+      padding: 8px 13px;
       border-radius: 20px;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600;
       cursor: pointer;
       box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
-      transition: transform 0.15s, filter 0.15s;
+      transition: all 0.15s;
     }
 
     .top-btn:hover {
@@ -119,39 +313,95 @@
       transform: translateY(-1px);
     }
 
-    .top-btn.cas-btn {
-      background: linear-gradient(180deg, #38b849, #1f7a2c);
+    .top-btn.green {
+      background: linear-gradient(180deg, #35b346, #1c7528);
       border-color: #9effa9;
     }
 
-    /* Hover Tooltip */
+    .top-btn.orange {
+      background: linear-gradient(180deg, #e67e22, #a85308);
+      border-color: #ffd09e;
+    }
+
+    .top-btn.active-mode {
+      box-shadow: 0 0 14px #ffe066;
+      border-color: #fff2a6;
+    }
+
+    #hobby-panel {
+      position: fixed;
+      top: 62px;
+      right: 16px;
+      width: 270px;
+      display: none;
+      z-index: 24;
+    }
+
+    #hobby-panel h3 {
+      font-size: 13px;
+      color: #9eff9c;
+      margin-bottom: 8px;
+      border-bottom: 1px solid rgba(130, 202, 255, 0.3);
+      padding-bottom: 5px;
+    }
+
+    .hobby-row {
+      margin-bottom: 8px;
+    }
+
+    .hobby-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .hobby-head {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11.5px;
+      font-weight: 600;
+      margin-bottom: 3px;
+    }
+
+    .hobby-bar {
+      height: 7px;
+      background: #0a1b33;
+      border-radius: 5px;
+      overflow: hidden;
+      border: 1px solid rgba(130, 202, 255, 0.3);
+    }
+
+    .hobby-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #3498db, #5eff82);
+      width: 15%;
+      transition: width 0.3s;
+    }
+
     #hover-tooltip {
       position: fixed;
       pointer-events: none;
-      background: rgba(15, 42, 78, 0.92);
+      background: rgba(12, 36, 68, 0.94);
       border: 1.5px solid #75c6ff;
       color: #ffffff;
       padding: 6px 12px;
       border-radius: 10px;
       font-size: 12px;
       font-weight: 600;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
       display: none;
-      z-index: 40;
+      z-index: 45;
       transform: translate(14px, 14px);
     }
 
-    /* Sims 3 Pie / Context Action Menu */
     #pie-menu {
       position: fixed;
       display: none;
       z-index: 50;
-      background: radial-gradient(circle at top, rgba(39, 102, 173, 0.96), rgba(14, 43, 82, 0.98));
+      background: radial-gradient(circle at top, rgba(35, 96, 166, 0.97), rgba(12, 38, 74, 0.99));
       border: 2px solid #8ad0ff;
       border-radius: 18px;
       padding: 10px;
-      min-width: 190px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.45);
+      min-width: 215px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.65);
     }
 
     #pie-menu-header {
@@ -163,25 +413,22 @@
       margin-bottom: 6px;
       border-bottom: 1px solid rgba(138, 208, 255, 0.3);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
     }
 
     .pie-option {
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      display: block;
       width: 100%;
       background: rgba(255, 255, 255, 0.08);
       border: 1px solid rgba(138, 208, 255, 0.25);
       color: #fff;
-      padding: 8px 12px;
+      padding: 8px 11px;
       margin-bottom: 5px;
-      border-radius: 12px;
-      font-size: 13px;
+      border-radius: 11px;
+      font-size: 12.5px;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.15s;
       text-align: left;
+      transition: all 0.12s;
     }
 
     .pie-option:last-child {
@@ -189,32 +436,30 @@
     }
 
     .pie-option:hover {
-      background: linear-gradient(90deg, #3290e8, #24b354);
+      background: linear-gradient(90deg, #2e8be6, #24b354);
       border-color: #ffffff;
-      transform: scale(1.03);
+      transform: scale(1.02);
     }
 
-    /* Classic The Sims 3 Bottom Curved HUD */
     #sims3-hud {
       position: fixed;
       bottom: 0;
       left: 50%;
       transform: translateX(-50%);
-      width: min(980px, 98vw);
-      background: linear-gradient(180deg, rgba(44, 114, 189, 0.93) 0%, rgba(18, 55, 105, 0.97) 55%, rgba(11, 35, 70, 0.99) 100%);
+      width: min(1000px, 98vw);
+      background: linear-gradient(180deg, rgba(40, 108, 184, 0.94) 0%, rgba(16, 51, 98, 0.98) 60%, rgba(10, 32, 64, 0.99) 100%);
       border: 2px solid #7ecaff;
       border-bottom: none;
-      border-radius: 34px 34px 0 0;
-      padding: 12px 24px 14px;
-      display: grid;
-      grid-template-columns: 250px 1fr 220px;
-      gap: 18px;
+      border-radius: 32px 32px 0 0;
+      padding: 11px 22px 13px;
+      display: none;
+      grid-template-columns: 245px 1fr 215px;
+      gap: 16px;
       align-items: center;
-      box-shadow: 0 -6px 28px rgba(0, 0, 0, 0.55), inset 0 2px 3px rgba(255, 255, 255, 0.45);
+      box-shadow: 0 -6px 28px rgba(0, 0, 0, 0.55), inset 0 2px 3px rgba(255, 255, 255, 0.4);
       z-index: 25;
     }
 
-    /* Left Profile & Plumbob */
     .hud-profile {
       display: flex;
       align-items: center;
@@ -222,67 +467,63 @@
     }
 
     .plumbob-badge {
-      width: 54px;
-      height: 54px;
+      width: 52px;
+      height: 52px;
       border-radius: 50%;
       background: radial-gradient(circle at 30% 30%, #2a6db5, #0e2c54);
       border: 2px solid #8fd2ff;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.5);
       flex-shrink: 0;
     }
 
     .plumbob-diamond {
-      width: 20px;
-      height: 32px;
+      width: 19px;
+      height: 30px;
       background: linear-gradient(135deg, #7dff6b, #1ca628);
       clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
       filter: drop-shadow(0 0 6px #57ff47);
-      transition: background 0.3s;
     }
 
     .sim-identity h2 {
       color: #ffffff;
-      font-size: 16px;
+      font-size: 15.5px;
       font-weight: 700;
-      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
-      max-width: 175px;
+      max-width: 170px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
     .sim-mood-text {
-      font-size: 12px;
+      font-size: 11.5px;
       font-weight: 600;
       color: #88ff82;
       margin-top: 2px;
     }
 
     .sim-money {
-      font-size: 12px;
+      font-size: 12.5px;
       color: #ffe47a;
-      font-weight: 700;
+      font-weight: 800;
       margin-top: 2px;
     }
 
-    /* Center 6 Needs Bars (Sims 3 Style) */
     .hud-needs {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 7px 16px;
+      gap: 6px 14px;
       background: rgba(8, 25, 50, 0.55);
-      padding: 10px 14px;
-      border-radius: 18px;
+      padding: 9px 13px;
+      border-radius: 16px;
       border: 1px solid rgba(132, 204, 255, 0.3);
     }
 
     .need-item {
       display: flex;
       flex-direction: column;
-      gap: 3px;
+      gap: 2px;
     }
 
     .need-label-row {
@@ -295,9 +536,9 @@
 
     .need-bar-bg {
       width: 100%;
-      height: 9px;
+      height: 8px;
       background: #0a192e;
-      border-radius: 6px;
+      border-radius: 5px;
       border: 1px solid rgba(145, 209, 255, 0.35);
       overflow: hidden;
     }
@@ -306,11 +547,10 @@
       height: 100%;
       width: 85%;
       background: linear-gradient(90deg, #27ae60, #5eff6c);
-      border-radius: 5px;
-      transition: width 0.25s ease, background 0.3s ease;
+      border-radius: 4px;
+      transition: width 0.2s ease, background 0.3s ease;
     }
 
-    /* Right Clock & Speed Controls */
     .hud-time-panel {
       display: flex;
       flex-direction: column;
@@ -318,7 +558,7 @@
       gap: 7px;
       background: rgba(8, 25, 50, 0.55);
       padding: 9px 12px;
-      border-radius: 18px;
+      border-radius: 16px;
       border: 1px solid rgba(132, 204, 255, 0.3);
     }
 
@@ -326,12 +566,11 @@
       color: #ffffff;
       font-size: 13px;
       font-weight: 700;
-      letter-spacing: 0.4px;
     }
 
     .speed-controls {
       display: flex;
-      gap: 6px;
+      gap: 5px;
     }
 
     .speed-btn {
@@ -349,117 +588,219 @@
       background: linear-gradient(180deg, #43d158, #1e872e);
       border-color: #b8ffc2;
       color: #fff;
-      box-shadow: 0 0 8px rgba(72, 235, 96, 0.6);
     }
 
-    /* Create-A-Sim (CAS) Customization Panel */
+    /* Renovasi Rumah (Build & Buy Mode Panel) */
+    #build-panel {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(1040px, 98vw);
+      background: linear-gradient(180deg, rgba(168, 92, 20, 0.96), rgba(84, 42, 8, 0.99));
+      border: 2px solid #ffd28a;
+      border-bottom: none;
+      border-radius: 26px 26px 0 0;
+      padding: 12px 20px 14px;
+      color: #fff;
+      box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.65);
+      z-index: 35;
+      display: none;
+    }
+
+    .build-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid rgba(255, 210, 138, 0.3);
+    }
+
+    .build-header h3 {
+      font-size: 14px;
+      color: #ffe89e;
+    }
+
+    .build-tips {
+      font-size: 11.5px;
+      color: #ffdfba;
+    }
+
+    .build-grid {
+      display: grid;
+      grid-template-columns: 1.7fr 1fr;
+      gap: 14px;
+    }
+
+    .catalog-items {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .catalog-card {
+      background: rgba(35, 16, 4, 0.65);
+      border: 1.5px solid rgba(255, 210, 138, 0.45);
+      border-radius: 12px;
+      padding: 8px 10px;
+      min-width: 112px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.15s;
+      flex-shrink: 0;
+    }
+
+    .catalog-card:hover, .catalog-card.selected {
+      background: rgba(230, 126, 34, 0.45);
+      border-color: #fff;
+      transform: translateY(-2px);
+    }
+
+    .catalog-icon {
+      font-size: 22px;
+      margin-bottom: 3px;
+    }
+
+    .catalog-name {
+      font-size: 11px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .catalog-price {
+      font-size: 11px;
+      font-weight: 800;
+      color: #ffe680;
+      margin-top: 2px;
+    }
+
+    .surface-controls {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      background: rgba(35, 16, 4, 0.55);
+      padding: 8px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 210, 138, 0.3);
+    }
+
+    .surface-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      font-size: 11.5px;
+      font-weight: 700;
+    }
+
+    .mini-pill {
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid #ffd28a;
+      color: #fff;
+      padding: 3px 8px;
+      border-radius: 8px;
+      font-size: 10.5px;
+      cursor: pointer;
+    }
+
+    .mini-pill:hover {
+      background: #e67e22;
+    }
+
+    /* Create-A-Sim (CAS) Panel */
     #cas-modal {
       position: fixed;
-      top: 18px;
-      left: 18px;
-      width: 350px;
-      max-height: calc(100vh - 36px);
+      top: 16px;
+      left: 16px;
+      width: 345px;
+      max-height: calc(100vh - 32px);
       overflow-y: auto;
-      background: linear-gradient(180deg, rgba(28, 82, 145, 0.96), rgba(13, 39, 76, 0.98));
+      background: linear-gradient(180deg, rgba(26, 78, 140, 0.97), rgba(12, 37, 74, 0.99));
       border: 2px solid #84ceff;
-      border-radius: 24px;
-      padding: 20px;
+      border-radius: 22px;
+      padding: 18px;
       color: #fff;
-      box-shadow: 0 12px 38px rgba(0, 0, 0, 0.65), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+      box-shadow: 0 12px 38px rgba(0, 0, 0, 0.7);
       z-index: 60;
+      display: none;
     }
 
     #cas-modal h1 {
-      font-size: 19px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      font-size: 18px;
       color: #9eff9c;
-      margin-bottom: 4px;
+      margin-bottom: 3px;
     }
 
     #cas-modal p.subtitle {
-      font-size: 12px;
+      font-size: 11.5px;
       color: #b8e2ff;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
 
     .cas-group {
-      margin-bottom: 13px;
-      background: rgba(7, 23, 46, 0.5);
-      padding: 10px 12px;
-      border-radius: 14px;
+      margin-bottom: 11px;
+      background: rgba(7, 23, 46, 0.55);
+      padding: 9px 11px;
+      border-radius: 13px;
       border: 1px solid rgba(132, 206, 255, 0.25);
     }
 
     .cas-group label {
       display: block;
-      font-size: 12px;
+      font-size: 11.5px;
       font-weight: 700;
       color: #9cd6ff;
-      margin-bottom: 6px;
+      margin-bottom: 5px;
     }
 
     .cas-input {
       width: 100%;
-      padding: 8px 11px;
-      border-radius: 10px;
+      padding: 7px 10px;
+      border-radius: 9px;
       border: 1.5px solid #6ec0ff;
       background: #0d2647;
       color: #fff;
-      font-size: 14px;
+      font-size: 13.5px;
       font-weight: 600;
       outline: none;
-    }
-
-    .cas-input:focus {
-      border-color: #7dff6b;
     }
 
     .swatch-row {
       display: flex;
       flex-wrap: wrap;
-      gap: 7px;
+      gap: 6px;
       align-items: center;
     }
 
     .swatch {
-      width: 26px;
-      height: 26px;
+      width: 24px;
+      height: 24px;
       border-radius: 50%;
-      border: 2px solid rgba(255, 255, 255, 0.6);
+      border: 2px solid rgba(255, 255, 255, 0.65);
       cursor: pointer;
-      transition: transform 0.12s;
     }
 
-    .swatch:hover, .swatch.selected {
-      transform: scale(1.18);
+    .swatch.selected {
+      transform: scale(1.16);
       border-color: #7dff6b;
       box-shadow: 0 0 8px #7dff6b;
-    }
-
-    .color-picker-custom {
-      width: 28px;
-      height: 28px;
-      border: none;
-      background: transparent;
-      cursor: pointer;
-      padding: 0;
     }
 
     .style-pills {
       display: flex;
       flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 8px;
+      gap: 5px;
+      margin-bottom: 7px;
     }
 
     .style-pill {
       background: rgba(255, 255, 255, 0.1);
       border: 1px solid #6ebeff;
       color: #e4f4ff;
-      padding: 5px 10px;
-      border-radius: 12px;
+      padding: 4px 9px;
+      border-radius: 11px;
       font-size: 11px;
       font-weight: 600;
       cursor: pointer;
@@ -473,48 +814,122 @@
 
     .cas-confirm-btn {
       width: 100%;
-      padding: 12px;
-      border-radius: 16px;
+      padding: 11px;
+      border-radius: 15px;
       border: 2px solid #adffae;
       background: linear-gradient(180deg, #43d158, #1d872d);
       color: #fff;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 700;
       cursor: pointer;
-      box-shadow: 0 5px 16px rgba(34, 180, 62, 0.5);
       margin-top: 4px;
     }
 
-    .cas-confirm-btn:hover {
-      filter: brightness(1.1);
-    }
-
-    .camera-hint {
+    #dialogue-modal {
       position: fixed;
-      bottom: 112px;
-      right: 18px;
-      background: rgba(12, 36, 68, 0.82);
-      border: 1px solid rgba(130, 202, 255, 0.4);
-      color: #cceaff;
-      padding: 7px 12px;
-      border-radius: 12px;
-      font-size: 11px;
-      z-index: 15;
-      pointer-events: none;
+      bottom: 125px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(560px, 94vw);
+      background: linear-gradient(180deg, rgba(24, 72, 132, 0.97), rgba(11, 34, 68, 0.99));
+      border: 2px solid #8ad0ff;
+      border-radius: 22px;
+      padding: 16px 20px;
+      color: #fff;
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.7);
+      z-index: 55;
+      display: none;
     }
 
-    @media (max-width: 780px) {
+    .dlg-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .dlg-npc-name {
+      font-size: 16px;
+      font-weight: 800;
+      color: #9eff9c;
+    }
+
+    .dlg-rel-badge {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid #8ad0ff;
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #ffe680;
+    }
+
+    .dlg-speech {
+      background: rgba(7, 22, 44, 0.65);
+      border-left: 3px solid #5eff6c;
+      padding: 10px 13px;
+      border-radius: 10px;
+      font-size: 13px;
+      line-height: 1.45;
+      color: #eaf6ff;
+      margin-bottom: 11px;
+    }
+
+    .dlg-choices {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .dlg-choice-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid #79c4ff;
+      color: #fff;
+      padding: 8px 11px;
+      border-radius: 11px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.14s;
+    }
+
+    .dlg-choice-btn:hover {
+      background: linear-gradient(90deg, #2b86de, #24b354);
+      border-color: #fff;
+    }
+
+    #toast-banner {
+      position: fixed;
+      top: 72px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(90deg, #1f7a32, #27ae60);
+      border: 2px solid #b8ffc2;
+      color: #fff;
+      padding: 9px 18px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 700;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+      z-index: 70;
+      display: none;
+    }
+
+    @media (max-width: 820px) {
+      .mode-grid {
+        grid-template-columns: 1fr;
+      }
       #sims3-hud {
         grid-template-columns: 1fr;
         gap: 8px;
-        padding: 10px 14px;
-        border-radius: 22px 22px 0 0;
+        border-radius: 20px 20px 0 0;
       }
-      .camera-hint {
-        display: none;
+      .build-grid {
+        grid-template-columns: 1fr;
       }
-      #cas-modal {
-        width: calc(100vw - 36px);
+      .dlg-choices {
+        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -522,37 +937,109 @@
 <body>
   <canvas id="game-canvas"></canvas>
 
-  <!-- Active Action Queue -->
-  <div id="action-queue"></div>
+  <!-- ==========================================
+       OPENING SCREEN ("WILLIAM GAME")
+       ========================================== -->
+  <div id="start-screen">
+    <div class="menu-container">
+      <div class="menu-plumbob-wrap">
+        <div class="menu-plumbob"></div>
+      </div>
+      <div class="studio-tag">✦ OFFICIAL INTERACTIVE EDITION ✦</div>
+      <h1 class="game-main-title">WILLIAM GAME</h1>
+      <p class="game-sub-title">Simulasi Kehidupan 3D • Sunset Valley Edition</p>
 
-  <!-- Top Right Controls -->
+      <div class="mode-grid">
+        <button class="mode-card story" id="btn-mode-story">
+          <span class="mode-icon">📖</span>
+          <div class="mode-title">Mode Story</div>
+          <div class="mode-desc">Jalani alur cerita 5 bab, sambut tamu tetangga, renovasi rumah bertahap, dan raih hadiah Simoleons.</div>
+          <span class="mode-pill">Modal Awal: § 2,500 • Misi Aktif</span>
+        </button>
+
+        <button class="mode-card freeplay" id="btn-mode-freeplay">
+          <span class="mode-icon">🌍</span>
+          <div class="mode-title">Mode Freeplay</div>
+          <div class="mode-desc">Bermain bebas tanpa batas misi! Kustomisasi karakter, bangun & renovasi rumah sesukamu, serta tekuni semua hobi.</div>
+          <span class="mode-pill">Modal Awal: § 25,000 • Bebas Misi</span>
+        </button>
+      </div>
+
+      <div class="menu-footer-note">Pilih mode permainan di atas untuk masuk ke Create-A-Sim</div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast-banner"></div>
+
+  <!-- Top-Left Action Queue + Story/Freeplay Box -->
+  <div id="top-left-stack">
+    <div id="action-queue-box" class="glass-panel" style="display: none;"></div>
+    <div id="story-panel" class="glass-panel">
+      <div class="story-badge" id="story-chapter-badge">Bab 1 • Story Cerita</div>
+      <div class="story-title" id="story-title">Sambut Tamu di Rumah</div>
+      <div class="story-desc" id="story-desc">Klik tamu/tetangga di sekitar rumah, lalu pilih "Samperin & Ngobrol".</div>
+      <div class="story-reward" id="story-reward">Hadiah: § 400</div>
+    </div>
+  </div>
+
+  <!-- Top-Right Controls -->
   <div id="top-right-panel">
-    <button class="top-btn cas-btn" id="open-cas-btn">👕 Create-A-Sim (Nama & Pakaian)</button>
+    <button class="top-btn green" id="open-cas-btn">👕 Karakter & Baju</button>
+    <button class="top-btn orange" id="toggle-build-btn">🔨 Renovasi Rumah</button>
+    <button class="top-btn" id="toggle-hobby-btn">⭐ Hobi & Skill</button>
     <button class="top-btn" id="toggle-follow-btn">🎥 Kamera: Ikuti Sim</button>
+    <button class="top-btn" id="back-menu-btn">🏠 Menu Utama</button>
+  </div>
+
+  <!-- Hobby & Skill Drawer -->
+  <div id="hobby-panel" class="glass-panel">
+    <h3>⭐ Hobi & Tingkat Skill</h3>
+    <div class="hobby-row">
+      <div class="hobby-head"><span>🎹 Musik Keyboard</span><span id="lvl-music">Lv. 1</span></div>
+      <div class="hobby-bar"><div class="hobby-fill" id="xp-music"></div></div>
+    </div>
+    <div class="hobby-row">
+      <div class="hobby-head"><span>💻 Coding & Tech</span><span id="lvl-coding">Lv. 1</span></div>
+      <div class="hobby-bar"><div class="hobby-fill" id="xp-coding"></div></div>
+    </div>
+    <div class="hobby-row">
+      <div class="hobby-head"><span>🎨 Melukis Kanvas</span><span id="lvl-painting">Lv. 1</span></div>
+      <div class="hobby-bar"><div class="hobby-fill" id="xp-painting"></div></div>
+    </div>
+    <div class="hobby-row">
+      <div class="hobby-head"><span>💪 Atletik & Renang</span><span id="lvl-fitness">Lv. 1</span></div>
+      <div class="hobby-bar"><div class="hobby-fill" id="xp-fitness"></div></div>
+    </div>
   </div>
 
   <!-- Hover Tooltip -->
   <div id="hover-tooltip"></div>
 
-  <!-- Sims 3 Pie / Context Action Menu -->
+  <!-- Pie / Context Action Menu -->
   <div id="pie-menu">
     <div id="pie-menu-header">Objek</div>
     <div id="pie-menu-options"></div>
   </div>
 
-  <!-- Camera Control Hint -->
-  <div class="camera-hint">
-    🖱️ Klik Kiri: Jalan / Interaksi Objek &nbsp;|&nbsp; Klik Kanan Geser: Putar Kamera &nbsp;|&nbsp; Scroll: Zoom
+  <!-- NPC Dialogue & Story Modal -->
+  <div id="dialogue-modal">
+    <div class="dlg-top">
+      <div class="dlg-npc-name" id="dlg-npc-name">Praja</div>
+      <div class="dlg-rel-badge" id="dlg-rel-badge">Kenalan (25/100)</div>
+    </div>
+    <div class="dlg-speech" id="dlg-speech">"Halo! Selamat datang di lingkungan ini. Rumahmu terlihat nyaman sekali!"</div>
+    <div class="dlg-choices" id="dlg-choices"></div>
   </div>
 
   <!-- Create-A-Sim (CAS) Panel -->
   <div id="cas-modal">
-    <h1>♦ Create-A-Sim</h1>
-    <p class="subtitle">Atur nama bebas, gaya rambut, dan pakaian karaktermu secara langsung.</p>
+    <h1>♦ Create-A-Sim 3D</h1>
+    <p class="subtitle">Atur nama bebas, wajah, gaya rambut, dan pakaian karaktermu.</p>
 
     <div class="cas-group">
       <label for="sim-name-input">Nama Karakter (Bebas)</label>
-      <input type="text" id="sim-name-input" class="cas-input" value="William Samadara" maxlength="24" placeholder="Masukkan nama Sim..." />
+      <input type="text" id="sim-name-input" class="cas-input" value="William Samadara" maxlength="24" />
     </div>
 
     <div class="cas-group">
@@ -572,29 +1059,59 @@
     </div>
 
     <div class="cas-group">
-      <label>Pakaian Atas (Baju / Jaket)</label>
+      <label>Pakaian Atas</label>
       <div class="style-pills" id="top-styles">
         <button class="style-pill active" data-style="tshirt">Kaos Kasual</button>
         <button class="style-pill" data-style="shirt">Kemeja Berkerah</button>
-        <button class="style-pill" data-style="jacket">Jaket</button>
+        <button class="style-pill" data-style="jacket">Jaket Bomber</button>
       </div>
       <div class="swatch-row" id="top-swatches">
-        <input type="color" id="top-custom-color" class="color-picker-custom" value="#2e86de" title="Pilih Warna Baju Bebas" />
+        <input type="color" id="top-custom-color" value="#2e86de" style="width:26px;height:26px;border:none;background:transparent;cursor:pointer;" title="Warna Baju Bebas" />
       </div>
     </div>
 
     <div class="cas-group">
-      <label>Pakaian Bawah (Celana)</label>
+      <label>Pakaian Bawah</label>
       <div class="style-pills" id="bottom-styles">
         <button class="style-pill active" data-style="pants">Celana Panjang</button>
         <button class="style-pill" data-style="shorts">Celana Pendek</button>
       </div>
       <div class="swatch-row" id="bottom-swatches">
-        <input type="color" id="bottom-custom-color" class="color-picker-custom" value="#2c3e50" title="Pilih Warna Celana Bebas" />
+        <input type="color" id="bottom-custom-color" value="#2c3e50" style="width:26px;height:26px;border:none;background:transparent;cursor:pointer;" title="Warna Celana Bebas" />
       </div>
     </div>
 
-    <button class="cas-confirm-btn" id="confirm-cas-btn">✔ Mulai Bermain</button>
+    <button class="cas-confirm-btn" id="confirm-cas-btn">✔ Mulai Kehidupan Sim</button>
+  </div>
+
+  <!-- Build & Buy / Renovasi Rumah Panel -->
+  <div id="build-panel">
+    <div class="build-header">
+      <h3>🔨 Mode Renovasi Rumah (Build & Buy) — Dana: <span id="build-money">§ 2,500</span></h3>
+      <div class="build-tips">Klik katalog lalu klik lantai untuk menaruh • Tekan <b>R</b> untuk Putar • Klik furnitur lama untuk Jual</div>
+    </div>
+    <div class="build-grid">
+      <div class="catalog-items" id="build-catalog"></div>
+      <div class="surface-controls">
+        <div class="surface-row">
+          <span>🪵 Lantai:</span>
+          <div>
+            <button class="mini-pill" data-floor="oak">Kayu Oak</button>
+            <button class="mini-pill" data-floor="marble">Marmer</button>
+            <button class="mini-pill" data-floor="dark">Parket Gelap</button>
+          </div>
+        </div>
+        <div class="surface-row">
+          <span>🧱 Dinding:</span>
+          <div>
+            <button class="mini-pill" data-wall="#f4ede1">Krem</button>
+            <button class="mini-pill" data-wall="#d6eaf8">Biru Langit</button>
+            <button class="mini-pill" data-wall="#d5f5e3">Hijau Sage</button>
+            <button class="mini-pill" data-wall="#fadbd8">Peach</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Classic The Sims 3 HUD -->
@@ -612,19 +1129,19 @@
 
     <div class="hud-needs">
       <div class="need-item">
-        <div class="need-label-row"><span>🍔 Lapar</span><span id="val-hunger">88%</span></div>
-        <div class="need-bar-bg"><div class="need-bar-fill" id="bar-hunger"></div></div>
+        <div class="need-label-row"><span>⚡ Stamina</span><span id="val-energy">88%</span></div>
+        <div class="need-bar-bg"><div class="need-bar-fill" id="bar-energy"></div></div>
       </div>
       <div class="need-item">
-        <div class="need-label-row"><span>⚡ Energi</span><span id="val-energy">90%</span></div>
-        <div class="need-bar-bg"><div class="need-bar-fill" id="bar-energy"></div></div>
+        <div class="need-label-row"><span>🍔 Lapar</span><span id="val-hunger">86%</span></div>
+        <div class="need-bar-bg"><div class="need-bar-fill" id="bar-hunger"></div></div>
       </div>
       <div class="need-item">
         <div class="need-label-row"><span>🚿 Kebersihan</span><span id="val-hygiene">85%</span></div>
         <div class="need-bar-bg"><div class="need-bar-fill" id="bar-hygiene"></div></div>
       </div>
       <div class="need-item">
-        <div class="need-label-row"><span>🚽 Kandung Kemih</span><span id="val-bladder">92%</span></div>
+        <div class="need-label-row"><span>🚽 Kandung Kemih</span><span id="val-bladder">90%</span></div>
         <div class="need-bar-bg"><div class="need-bar-fill" id="bar-bladder"></div></div>
       </div>
       <div class="need-item">
@@ -632,7 +1149,7 @@
         <div class="need-bar-bg"><div class="need-bar-fill" id="bar-fun"></div></div>
       </div>
       <div class="need-item">
-        <div class="need-label-row"><span>💬 Sosial</span><span id="val-social">78%</span></div>
+        <div class="need-label-row"><span>💬 Sosial</span><span id="val-social">75%</span></div>
         <div class="need-bar-bg"><div class="need-bar-fill" id="bar-social"></div></div>
       </div>
     </div>
@@ -650,7 +1167,7 @@
 
   <script>
     // ==========================================
-    // 1. STATE & KONFIGURASI SIM
+    // 1. STATE UTAMA GAME, HOBI & STORY
     // ==========================================
     const simState = {
       name: 'William Samadara',
@@ -663,35 +1180,179 @@
       bottomColor: '#2c3e50',
       money: 2500,
       needs: {
-        hunger: 88,
-        energy: 90,
+        energy: 88,
+        hunger: 86,
         hygiene: 85,
-        bladder: 92,
+        bladder: 90,
         fun: 80,
-        social: 78
+        social: 75
       },
-      position: new THREE.Vector3(0, 0, 2),
+      hobbies: {
+        music: { level: 1, xp: 20 },
+        coding: { level: 1, xp: 30 },
+        painting: { level: 1, xp: 10 },
+        fitness: { level: 1, xp: 25 }
+      },
+      position: new THREE.Vector3(0, 0.16, 2.2),
       targetPos: null,
       rotationY: 0,
       currentAction: null,
       actionProgress: 0,
-      pose: 'idle', // idle, walk, sit, sleep, shower, workout
-      inCAS: true
+      pose: 'idle',
+      inMenu: true,
+      inCAS: false
     };
 
     const worldState = {
+      gameMode: 'story', // 'story' | 'freeplay'
       gameSpeed: 1,
       day: 1,
-      minutes: 8 * 60 + 30, // 08:30
+      minutes: 8 * 60 + 30,
       followSim: true,
-      cameraYaw: 0.78,
-      cameraPitch: 0.68,
-      cameraDistance: 15.5,
-      cameraTarget: new THREE.Vector3(0, 1.2, 2)
+      cameraYaw: 0.72,
+      cameraPitch: 0.65,
+      cameraDistance: 14.5,
+      cameraTarget: new THREE.Vector3(0, 1.2, 1.5),
+      buildMode: false,
+      selectedCatalogItem: null,
+      ghostRotation: 0
     };
 
+    const storyChapters = [
+      {
+        chapter: 'Bab 1 • Tetangga Baru',
+        title: 'Sambut Tamu di Rumah',
+        desc: 'Klik tamu/tetangga di sekitar rumah, lalu pilih "Samperin & Ngobrol".',
+        reward: 400,
+        check: () => npcs.some(n => n.talkedCount >= 1)
+      },
+      {
+        chapter: 'Bab 2 • Arsitek Rumah',
+        title: 'Renovasi Rumah Impian',
+        desc: 'Buka Mode Renovasi Rumah, lalu pasang 1 furnitur baru atau ganti lantai/dinding.',
+        reward: 550,
+        check: () => renovationDone
+      },
+      {
+        chapter: 'Bab 3 • Mengasah Bakat',
+        title: 'Tekuni Hobi Favorit',
+        desc: 'Latih hobi (Keyboard Musik, Meja Coding PC, Kanvas Lukis, atau Fitness) hingga naik ke Level 2.',
+        reward: 700,
+        check: () => Object.values(simState.hobbies).some(h => h.level >= 2)
+      },
+      {
+        chapter: 'Bab 4 • Lingkar Pertemanan',
+        title: 'Menjadi Sahabat Dekat',
+        desc: 'Ngobrol dengan salah satu tamu hingga nilai hubungan mencapai 60/100.',
+        reward: 950,
+        check: () => npcs.some(n => n.relationship >= 60)
+      },
+      {
+        chapter: 'Bab 5 • Sultan Sunset Valley',
+        title: 'Kumpulkan Tabungan § 4,000',
+        desc: 'Hasilkan Simoleons dari hobi Coding PC atau Melukis hingga saldo mencapai § 4,000.',
+        reward: 1500,
+        check: () => simState.money >= 4000
+      }
+    ];
+    let currentStoryIdx = 0;
+    let renovationDone = false;
+
+    function showToast(msg) {
+      const banner = document.getElementById('toast-banner');
+      banner.textContent = msg;
+      banner.style.display = 'block';
+      clearTimeout(banner._timer);
+      banner._timer = setTimeout(() => {
+        banner.style.display = 'none';
+      }, 3600);
+    }
+
     // ==========================================
-    // 2. INISIALISASI THREE.JS SCENE & RENDERER
+    // 2. LOGIKA OPENING SCREEN ("WILLIAM GAME")
+    // ==========================================
+    function refreshModeTrackerUI() {
+      const badge = document.getElementById('story-chapter-badge');
+      const title = document.getElementById('story-title');
+      const desc = document.getElementById('story-desc');
+      const reward = document.getElementById('story-reward');
+
+      if (worldState.gameMode === 'freeplay') {
+        badge.textContent = 'Mode Freeplay • Sandbox Bebas';
+        badge.style.background = 'linear-gradient(90deg, #27ae60, #16a085)';
+        title.textContent = 'Kehidupan Bebas Sunset Valley';
+        desc.textContent = 'Main bebas tanpa target misi. Renovasi rumah sepuasnya, tekuni hobi, dan ngobrol dengan tamu.';
+        reward.textContent = 'Status: Mode Bebas Aktif';
+      } else {
+        badge.style.background = 'linear-gradient(90deg, #f39c12, #e67e22)';
+        if (currentStoryIdx < storyChapters.length) {
+          const q = storyChapters[currentStoryIdx];
+          badge.textContent = q.chapter;
+          title.textContent = q.title;
+          desc.textContent = q.desc;
+          reward.textContent = `Hadiah: § ${q.reward}`;
+        } else {
+          badge.textContent = 'Story Tamat • Mode Bebas';
+          title.textContent = 'Legenda Sunset Valley!';
+          desc.textContent = 'Semua bab cerita selesai! Terus kembangkan hobi, renovasi rumah, dan bersosialisasi.';
+          reward.textContent = 'Status: Master Sim';
+        }
+      }
+    }
+
+    function enterGameWithMode(mode) {
+      worldState.gameMode = mode;
+      simState.inMenu = false;
+      simState.inCAS = true;
+
+      if (mode === 'freeplay') {
+        simState.money = 25000;
+      } else {
+        simState.money = 2500;
+        currentStoryIdx = 0;
+        renovationDone = false;
+      }
+
+      refreshModeTrackerUI();
+
+      const startScreen = document.getElementById('start-screen');
+      startScreen.style.opacity = '0';
+      setTimeout(() => {
+        startScreen.style.display = 'none';
+      }, 350);
+
+      document.getElementById('cas-modal').style.display = 'block';
+      document.getElementById('top-right-panel').style.display = 'flex';
+      document.getElementById('sims3-hud').style.display = 'grid';
+      document.getElementById('top-left-stack').style.display = 'flex';
+    }
+
+    document.getElementById('btn-mode-story').addEventListener('click', () => enterGameWithMode('story'));
+    document.getElementById('btn-mode-freeplay').addEventListener('click', () => enterGameWithMode('freeplay'));
+
+    document.getElementById('back-menu-btn').addEventListener('click', () => {
+      if (worldState.buildMode) toggleBuildMode();
+      cancelCurrentAction();
+      document.getElementById('dialogue-modal').style.display = 'none';
+      document.getElementById('cas-modal').style.display = 'none';
+      document.getElementById('hobby-panel').style.display = 'none';
+
+      document.getElementById('top-right-panel').style.display = 'none';
+      document.getElementById('sims3-hud').style.display = 'none';
+      document.getElementById('top-left-stack').style.display = 'none';
+
+      simState.inCAS = false;
+      simState.inMenu = true;
+
+      const startScreen = document.getElementById('start-screen');
+      startScreen.style.display = 'flex';
+      requestAnimationFrame(() => {
+        startScreen.style.opacity = '1';
+      });
+    });
+
+    // ==========================================
+    // 3. THREE.JS RENDERER, SCENE & TEKSTUR PROSEDURAL
     // ==========================================
     const canvas = document.getElementById('game-canvas');
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
@@ -699,480 +1360,836 @@
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.08;
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color('#7ec8ff');
-    scene.fog = new THREE.FogExp2('#7ec8ff', 0.014);
+    scene.background = new THREE.Color('#78c5ff');
+    scene.fog = new THREE.FogExp2('#88ceff', 0.011);
 
-    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 150);
+    const camera = new THREE.PerspectiveCamera(44, window.innerWidth / window.innerHeight, 0.1, 180);
 
-    // Pencahayaan Matahari & Ambient ala The Sims 3
-    const hemiLight = new THREE.HemisphereLight('#ffffff', '#4e7a44', 0.65);
+    const hemiLight = new THREE.HemisphereLight('#ffffff', '#4a7c44', 0.72);
     scene.add(hemiLight);
 
-    const sunLight = new THREE.DirectionalLight('#fff5e0', 1.05);
-    sunLight.position.set(16, 26, 14);
+    const sunLight = new THREE.DirectionalLight('#fff2db', 1.15);
+    sunLight.position.set(18, 28, 16);
     sunLight.castShadow = true;
     sunLight.shadow.mapSize.width = 2048;
     sunLight.shadow.mapSize.height = 2048;
     sunLight.shadow.camera.near = 2;
-    sunLight.shadow.camera.far = 65;
-    const d = 20;
+    sunLight.shadow.camera.far = 75;
+    const d = 24;
     sunLight.shadow.camera.left = -d;
     sunLight.shadow.camera.right = d;
     sunLight.shadow.camera.top = d;
     sunLight.shadow.camera.bottom = -d;
-    sunLight.shadow.bias = -0.0005;
+    sunLight.shadow.bias = -0.0004;
     scene.add(sunLight);
 
-    // Lampu Hangat Dalam Rumah
-    const interiorLight1 = new THREE.PointLight('#ffdfaa', 0.7, 16);
-    interiorLight1.position.set(-3, 4.2, -2);
-    scene.add(interiorLight1);
+    const indoorLight1 = new THREE.PointLight('#ffe0b2', 0.65, 16);
+    indoorLight1.position.set(-3.5, 4.0, -2.0);
+    scene.add(indoorLight1);
 
-    const interiorLight2 = new THREE.PointLight('#ffdfaa', 0.7, 16);
-    interiorLight2.position.set(4, 4.2, -2);
-    scene.add(interiorLight2);
+    const indoorLight2 = new THREE.PointLight('#ffe0b2', 0.65, 16);
+    indoorLight2.position.set(4.0, 4.0, -2.0);
+    scene.add(indoorLight2);
+
+    function makeProceduralTexture(type, baseColor, accentColor) {
+      const c = document.createElement('canvas');
+      c.width = 256;
+      c.height = 256;
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = baseColor;
+      ctx.fillRect(0, 0, 256, 256);
+
+      if (type === 'wood') {
+        ctx.strokeStyle = accentColor;
+        ctx.lineWidth = 2;
+        for (let y = 0; y < 256; y += 32) {
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(256, y);
+          ctx.stroke();
+          for (let i = 0; i < 18; i++) {
+            ctx.globalAlpha = 0.14;
+            ctx.beginPath();
+            ctx.moveTo(0, y + Math.random() * 30);
+            ctx.lineTo(256, y + Math.random() * 30);
+            ctx.stroke();
+          }
+          ctx.globalAlpha = 1;
+        }
+      } else if (type === 'marble') {
+        ctx.strokeStyle = accentColor;
+        ctx.lineWidth = 2;
+        for (let x = 0; x < 256; x += 64) {
+          ctx.strokeRect(x, 0, 64, 64);
+          ctx.strokeRect(x, 64, 64, 64);
+          ctx.strokeRect(x, 128, 64, 64);
+          ctx.strokeRect(x, 192, 64, 64);
+        }
+        ctx.globalAlpha = 0.18;
+        ctx.beginPath();
+        ctx.moveTo(10, 20);
+        ctx.bezierCurveTo(90, 80, 160, 40, 240, 220);
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+      } else if (type === 'grass') {
+        for (let i = 0; i < 1400; i++) {
+          ctx.fillStyle = Math.random() > 0.5 ? accentColor : '#68bd53';
+          ctx.globalAlpha = 0.35;
+          ctx.fillRect(Math.random() * 256, Math.random() * 256, 2, 5);
+        }
+        ctx.globalAlpha = 1;
+      } else if (type === 'wall') {
+        ctx.fillStyle = accentColor;
+        ctx.globalAlpha = 0.08;
+        for (let i = 0; i < 600; i++) {
+          ctx.fillRect(Math.random() * 256, Math.random() * 256, 3, 3);
+        }
+        ctx.globalAlpha = 1;
+      }
+
+      const tex = new THREE.CanvasTexture(c);
+      tex.wrapS = THREE.RepeatWrapping;
+      tex.wrapT = THREE.RepeatWrapping;
+      return tex;
+    }
+
+    const grassTex = makeProceduralTexture('grass', '#4fa33e', '#3c852e');
+    grassTex.repeat.set(18, 18);
+
+    const floorTextures = {
+      oak: (() => { const t = makeProceduralTexture('wood', '#c9935b', '#8f5e30'); t.repeat.set(6, 5); return t; })(),
+      marble: (() => { const t = makeProceduralTexture('marble', '#f2f5f7', '#b8c6d1'); t.repeat.set(6, 5); return t; })(),
+      dark: (() => { const t = makeProceduralTexture('wood', '#6e472b', '#3d2413'); t.repeat.set(6, 5); return t; })()
+    };
+
+    const wallTex = makeProceduralTexture('wall', '#ffffff', '#b8a99a');
+    wallTex.repeat.set(4, 2);
 
     // ==========================================
-    // 3. MEMBANGUN LINGKUNGAN & RUMAH 3D SIMS 3
+    // 4. DUNIA SUNSET VALLEY & RUMAH INTERAKTIF
     // ==========================================
     const interactiveObjects = [];
-    let walkableFloors = [];
+    const houseWalls = [];
 
-    function createBox(w, h, d, color, x, y, z, castShadow = true, receiveShadow = true) {
-      const geo = new THREE.BoxGeometry(w, h, d);
-      const mat = new THREE.MeshStandardMaterial({ color, roughness: 0.65, metalness: 0.05 });
-      const mesh = new THREE.Mesh(geo, mat);
+    const lawnMesh = new THREE.Mesh(
+      new THREE.BoxGeometry(80, 0.4, 80),
+      new THREE.MeshStandardMaterial({ map: grassTex, roughness: 0.85 })
+    );
+    lawnMesh.position.set(0, -0.2, 0);
+    lawnMesh.receiveShadow = true;
+    scene.add(lawnMesh);
+
+    const houseFloorMat = new THREE.MeshStandardMaterial({ map: floorTextures.oak, roughness: 0.45, metalness: 0.05 });
+    const houseFloorMesh = new THREE.Mesh(new THREE.BoxGeometry(16, 0.16, 12), houseFloorMat);
+    houseFloorMesh.position.set(0, 0.08, -1);
+    houseFloorMesh.receiveShadow = true;
+    scene.add(houseFloorMesh);
+
+    const pathMesh = new THREE.Mesh(
+      new THREE.BoxGeometry(3.4, 0.05, 11),
+      new THREE.MeshStandardMaterial({ map: floorTextures.marble, roughness: 0.6 })
+    );
+    pathMesh.position.set(0, 0.025, 10.5);
+    pathMesh.receiveShadow = true;
+    scene.add(pathMesh);
+
+    const wallMat = new THREE.MeshStandardMaterial({ color: '#f4ede1', map: wallTex, roughness: 0.7 });
+    function addWall(w, h, d, x, y, z) {
+      const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), wallMat);
+      m.position.set(x, y, z);
+      m.castShadow = true;
+      m.receiveShadow = true;
+      scene.add(m);
+      houseWalls.push(m);
+      return m;
+    }
+
+    addWall(16.2, 2.7, 0.25, 0, 1.43, -7);
+    addWall(0.25, 2.7, 12.2, -8, 1.43, -1);
+    addWall(0.25, 2.7, 12.2, 8, 1.43, -1);
+    addWall(6.0, 1.15, 0.25, -5.0, 0.65, 5);
+    addWall(6.0, 1.15, 0.25, 5.0, 0.65, 5);
+    addWall(5.2, 2.2, 0.2, -5.3, 1.18, -1.8);
+    addWall(0.2, 2.2, 5.0, 2.8, 1.18, -4.4);
+
+    function addWindow(x, y, z) {
+      const winFrame = new THREE.Mesh(new THREE.BoxGeometry(2.4, 1.3, 0.32), new THREE.MeshStandardMaterial({ color: '#5c3d24' }));
+      winFrame.position.set(x, y, z);
+      const glass = new THREE.Mesh(
+        new THREE.BoxGeometry(2.15, 1.05, 0.34),
+        new THREE.MeshPhysicalMaterial({ color: '#bce8ff', transparent: true, opacity: 0.55, roughness: 0.1 })
+      );
+      glass.position.set(x, y, z);
+      scene.add(winFrame, glass);
+    }
+    addWindow(-4.8, 1.65, -7);
+    addWindow(0.2, 1.65, -7);
+
+    function addHorizonScenery() {
+      const hillMat = new THREE.MeshStandardMaterial({ color: '#458f38', roughness: 0.9 });
+      const hillCoords = [
+        [-38, -42, 18, 9], [0, -48, 24, 12], [42, -40, 20, 10],
+        [-46, 8, 18, 8], [48, 12, 19, 9]
+      ];
+      hillCoords.forEach(([x, z, r, h]) => {
+        const hill = new THREE.Mesh(new THREE.ConeGeometry(r, h, 16), hillMat);
+        hill.position.set(x, h / 2 - 0.5, z);
+        scene.add(hill);
+      });
+
+      const fenceMat = new THREE.MeshStandardMaterial({ color: '#f8f9fa', roughness: 0.5 });
+      for (let x = -18; x <= 18; x += 2) {
+        if (Math.abs(x) < 2.2) continue;
+        const post = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.95, 0.16), fenceMat);
+        post.position.set(x, 0.45, 15.5);
+        post.castShadow = true;
+        scene.add(post);
+      }
+      const railL = new THREE.Mesh(new THREE.BoxGeometry(15.8, 0.1, 0.08), fenceMat);
+      railL.position.set(-10.1, 0.65, 15.5);
+      const railR = railL.clone();
+      railR.position.x = 10.1;
+      scene.add(railL, railR);
+    }
+    addHorizonScenery();
+
+    function addTree(x, z, scale = 1) {
+      const g = new THREE.Group();
+      g.position.set(x, 0, z);
+      const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.22 * scale, 0.34 * scale, 2.3 * scale, 12), new THREE.MeshStandardMaterial({ color: '#6b4423', roughness: 0.8 }));
+      trunk.position.y = 1.15 * scale;
+      trunk.castShadow = true;
+      const crown1 = new THREE.Mesh(new THREE.SphereGeometry(1.45 * scale, 16, 14), new THREE.MeshStandardMaterial({ color: '#37872e', roughness: 0.75 }));
+      crown1.position.y = 2.7 * scale;
+      crown1.castShadow = true;
+      const crown2 = new THREE.Mesh(new THREE.SphereGeometry(1.1 * scale, 14, 12), new THREE.MeshStandardMaterial({ color: '#4ca642', roughness: 0.75 }));
+      crown2.position.set(0.55 * scale, 3.3 * scale, 0.35 * scale);
+      g.add(trunk, crown1, crown2);
+      scene.add(g);
+    }
+    addTree(-12, -9, 1.15);
+    addTree(12, -8, 1.2);
+    addTree(12.5, 8, 1.05);
+    addTree(-11.5, 11.5, 1.1);
+
+    // ==========================================
+    // 5. PABRIK FURNITUR & OBJEK HOBI
+    // ==========================================
+    let tvScreenMat = null;
+
+    function createFurnitureMesh(type) {
+      const group = new THREE.Group();
+
+      if (type === 'bed') {
+        const frame = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.42, 3.3), new THREE.MeshStandardMaterial({ color: '#5c3a21', roughness: 0.5 }));
+        frame.position.y = 0.21;
+        const headboard = new THREE.Mesh(new THREE.BoxGeometry(2.4, 1.15, 0.2), new THREE.MeshStandardMaterial({ color: '#4a2e19' }));
+        headboard.position.set(0, 0.58, -1.55);
+        const mattress = new THREE.Mesh(new THREE.BoxGeometry(2.22, 0.28, 3.1), new THREE.MeshStandardMaterial({ color: '#f8f9fa' }));
+        mattress.position.y = 0.52;
+        const duvet = new THREE.Mesh(new THREE.BoxGeometry(2.26, 0.31, 2.0), new THREE.MeshStandardMaterial({ color: '#2980b9', roughness: 0.7 }));
+        duvet.position.set(0, 0.53, 0.52);
+        const pillow = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.16, 0.5), new THREE.MeshStandardMaterial({ color: '#ffffff' }));
+        pillow.position.set(0, 0.7, -1.1);
+        group.add(frame, headboard, mattress, duvet, pillow);
+      } else if (type === 'sofa') {
+        const base = new THREE.Mesh(new THREE.BoxGeometry(1.25, 0.44, 2.9), new THREE.MeshStandardMaterial({ color: '#d35400', roughness: 0.65 }));
+        base.position.y = 0.22;
+        const back = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.92, 2.9), new THREE.MeshStandardMaterial({ color: '#ba4a00', roughness: 0.65 }));
+        back.position.set(-0.46, 0.46, 0);
+        const armL = new THREE.Mesh(new THREE.BoxGeometry(1.25, 0.62, 0.24), new THREE.MeshStandardMaterial({ color: '#a04000' }));
+        armL.position.set(0, 0.31, -1.33);
+        const armR = armL.clone();
+        armR.position.z = 1.33;
+        group.add(base, back, armL, armR);
+      } else if (type === 'tv') {
+        const stand = new THREE.Mesh(new THREE.BoxGeometry(0.68, 0.52, 2.2), new THREE.MeshStandardMaterial({ color: '#3b2818' }));
+        stand.position.y = 0.26;
+        const bezel = new THREE.Mesh(new THREE.BoxGeometry(0.12, 1.05, 1.85), new THREE.MeshStandardMaterial({ color: '#141414', metalness: 0.5 }));
+        bezel.position.y = 1.12;
+        const screenMat = new THREE.MeshStandardMaterial({ color: '#111822', emissive: '#000000' });
+        if (!tvScreenMat) tvScreenMat = screenMat;
+        const screen = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.92, 1.7), screenMat);
+        screen.position.y = 1.12;
+        group.add(stand, bezel, screen);
+      } else if (type === 'fridge') {
+        const body = new THREE.Mesh(new THREE.BoxGeometry(1.05, 2.15, 0.98), new THREE.MeshStandardMaterial({ color: '#ecf0f1', metalness: 0.35, roughness: 0.25 }));
+        body.position.y = 1.075;
+        const handle = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.75, 10), new THREE.MeshStandardMaterial({ color: '#7f8c8d', metalness: 0.7 }));
+        handle.position.set(0.36, 1.35, 0.52);
+        group.add(body, handle);
+      } else if (type === 'espresso') {
+        const counter = new THREE.Mesh(new THREE.BoxGeometry(1.1, 0.92, 0.9), new THREE.MeshStandardMaterial({ color: '#d5dbdb' }));
+        counter.position.y = 0.46;
+        const machine = new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.48, 0.42), new THREE.MeshStandardMaterial({ color: '#c0392b', metalness: 0.5, roughness: 0.2 }));
+        machine.position.y = 1.16;
+        group.add(counter, machine);
+      } else if (type === 'shower') {
+        const tray = new THREE.Mesh(new THREE.BoxGeometry(1.45, 0.14, 1.45), new THREE.MeshStandardMaterial({ color: '#ffffff' }));
+        tray.position.y = 0.07;
+        const glassMat = new THREE.MeshPhysicalMaterial({ color: '#a8e6ff', transparent: true, opacity: 0.38, roughness: 0.1 });
+        const g1 = new THREE.Mesh(new THREE.BoxGeometry(0.05, 2.05, 1.45), glassMat);
+        g1.position.set(-0.7, 1.05, 0);
+        const g2 = new THREE.Mesh(new THREE.BoxGeometry(1.45, 2.05, 0.05), glassMat);
+        g2.position.set(0, 1.05, 0.7);
+        group.add(tray, g1, g2);
+      } else if (type === 'toilet') {
+        const bowl = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.22, 0.48, 16), new THREE.MeshStandardMaterial({ color: '#ffffff' }));
+        bowl.position.set(0, 0.24, 0.12);
+        const tank = new THREE.Mesh(new THREE.BoxGeometry(0.58, 0.65, 0.24), new THREE.MeshStandardMaterial({ color: '#f4f6f7' }));
+        tank.position.set(0, 0.72, -0.22);
+        group.add(bowl, tank);
+      } else if (type === 'keyboard_music') {
+        const legL = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.78, 0.5), new THREE.MeshStandardMaterial({ color: '#1c1c1c' }));
+        legL.position.set(-0.65, 0.39, 0);
+        const legR = legL.clone();
+        legR.position.x = 0.65;
+        const body = new THREE.Mesh(new THREE.BoxGeometry(1.65, 0.14, 0.52), new THREE.MeshStandardMaterial({ color: '#222831', metalness: 0.4 }));
+        body.position.y = 0.82;
+        const keys = new THREE.Mesh(new THREE.BoxGeometry(1.52, 0.05, 0.22), new THREE.MeshStandardMaterial({ color: '#ffffff' }));
+        keys.position.set(0, 0.89, 0.12);
+        group.add(legL, legR, body, keys);
+      } else if (type === 'pc_desk') {
+        const desk = new THREE.Mesh(new THREE.BoxGeometry(1.7, 0.08, 0.85), new THREE.MeshStandardMaterial({ color: '#7d5230' }));
+        desk.position.y = 0.78;
+        const l1 = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.78, 0.75), new THREE.MeshStandardMaterial({ color: '#2c3e50' }));
+        l1.position.set(-0.78, 0.39, 0);
+        const l2 = l1.clone();
+        l2.position.x = 0.78;
+        const monitor = new THREE.Mesh(new THREE.BoxGeometry(0.95, 0.55, 0.06), new THREE.MeshStandardMaterial({ color: '#111', emissive: '#1b4f72', emissiveIntensity: 0.6 }));
+        monitor.position.set(0, 1.18, -0.15);
+        const chair = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.28, 0.45, 14), new THREE.MeshStandardMaterial({ color: '#2980b9' }));
+        chair.position.set(0, 0.225, 0.55);
+        group.add(desk, l1, l2, monitor, chair);
+      } else if (type === 'easel') {
+        const stand = new THREE.Mesh(new THREE.BoxGeometry(0.12, 1.65, 0.12), new THREE.MeshStandardMaterial({ color: '#8e5b32' }));
+        stand.position.y = 0.82;
+        const canvasBoard = new THREE.Mesh(new THREE.BoxGeometry(0.95, 0.85, 0.06), new THREE.MeshStandardMaterial({ color: '#fff9e6' }));
+        canvasBoard.position.set(0, 1.15, 0.08);
+        const artSplash = new THREE.Mesh(new THREE.CircleGeometry(0.25, 16), new THREE.MeshStandardMaterial({ color: '#e74c3c' }));
+        artSplash.position.set(-0.1, 1.18, 0.12);
+        group.add(stand, canvasBoard, artSplash);
+      } else if (type === 'gym') {
+        const bench = new THREE.Mesh(new THREE.BoxGeometry(0.65, 0.44, 1.7), new THREE.MeshStandardMaterial({ color: '#2c3e50' }));
+        bench.position.y = 0.22;
+        const barbell = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 1.75, 12), new THREE.MeshStandardMaterial({ color: '#bdc3c7', metalness: 0.8 }));
+        barbell.rotation.z = Math.PI / 2;
+        barbell.position.set(0, 1.05, -0.45);
+        const plateL = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.24, 0.08, 16), new THREE.MeshStandardMaterial({ color: '#1c1c1c' }));
+        plateL.rotation.z = Math.PI / 2;
+        plateL.position.set(-0.75, 1.05, -0.45);
+        const plateR = plateL.clone();
+        plateR.position.x = 0.75;
+        group.add(bench, barbell, plateL, plateR);
+      } else if (type === 'pool') {
+        const rim = new THREE.Mesh(new THREE.BoxGeometry(5.6, 0.14, 8.6), new THREE.MeshStandardMaterial({ color: '#ecf0f1' }));
+        const water = new THREE.Mesh(new THREE.BoxGeometry(5.0, 0.16, 8.0), new THREE.MeshStandardMaterial({ color: '#1abc9c', emissive: '#0e6655', roughness: 0.15 }));
+        group.add(rim, water);
+      } else if (type === 'plant') {
+        const pot = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.2, 0.45, 14), new THREE.MeshStandardMaterial({ color: '#d35400' }));
+        pot.position.y = 0.225;
+        const leaves = new THREE.Mesh(new THREE.SphereGeometry(0.45, 14, 12), new THREE.MeshStandardMaterial({ color: '#27ae60' }));
+        leaves.position.y = 0.75;
+        group.add(pot, leaves);
+      } else if (type === 'lamp') {
+        const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.18, 1.65, 12), new THREE.MeshStandardMaterial({ color: '#d4ac0d', metalness: 0.6 }));
+        pole.position.y = 0.825;
+        const shade = new THREE.Mesh(new THREE.ConeGeometry(0.32, 0.35, 16), new THREE.MeshStandardMaterial({ color: '#fef9e7', emissive: '#f9e79f', emissiveIntensity: 0.6 }));
+        shade.position.y = 1.65;
+        group.add(pole, shade);
+      }
+
+      group.traverse(c => {
+        if (c.isMesh) {
+          c.castShadow = true;
+          c.receiveShadow = true;
+        }
+      });
+      return group;
+    }
+
+    const furnitureActionPresets = {
+      bed: [
+        { label: '😴 Tidur Pulihkan Stamina (+Stamina)', icon: '😴', pose: 'sleep', offset: [1.4, 0], duration: 4.5, effect: { energy: 85, fun: 10 } }
+      ],
+      sofa: [
+        { label: '📺 Nonton TV Santai (+Hiburan)', icon: '📺', pose: 'sit', offset: [0.45, 0], face: [-1.3, 1.2], duration: 4, effect: { fun: 45, energy: 15 }, tvOn: true }
+      ],
+      tv: [
+        { label: '🎬 Nonton Film Seru (+Hiburan)', icon: '🎬', pose: 'sit', offset: [-2.8, 0], face: [-1.3, 1.2], duration: 4, effect: { fun: 50 }, tvOn: true }
+      ],
+      fridge: [
+        { label: '🍳 Masak & Makan Enak (+Lapar)', icon: '🍳', pose: 'idle', offset: [0, 1.15], duration: 3.5, cost: 20, effect: { hunger: 75, energy: 10 } }
+      ],
+      espresso: [
+        { label: '☕ Minum Kopi Espresso (+38 Stamina)', icon: '☕', pose: 'idle', offset: [0, 1.05], duration: 2.2, cost: 12, effect: { energy: 38, bladder: -12 } }
+      ],
+      shower: [
+        { label: '🚿 Mandi Air Hangat (+Kebersihan)', icon: '🚿', pose: 'shower', offset: [0, 0], duration: 3.5, effect: { hygiene: 90, energy: 12 } }
+      ],
+      toilet: [
+        { label: '🚽 Gunakan Toilet (+Kandung Kemih)', icon: '🚽', pose: 'sit', offset: [0, 0.3], duration: 2.5, effect: { bladder: 95 } }
+      ],
+      keyboard_music: [
+        { label: '🎹 Latihan Musik Keyboard (+Hobi Musik)', icon: '🎹', pose: 'play_music', offset: [0, 0.72], duration: 4.2, hobby: 'music', xpGain: 45, earn: 40, effect: { fun: 45, energy: -14 } }
+      ],
+      pc_desk: [
+        { label: '💻 Kerja Freelance & Coding (+Hobi Tech, +§)', icon: '💻', pose: 'sit', offset: [0, 0.62], duration: 4.5, hobby: 'coding', xpGain: 50, earn: 135, effect: { fun: 20, energy: -18 } }
+      ],
+      easel: [
+        { label: '🎨 Melukis & Jual Karya (+Hobi Lukis, +§)', icon: '🎨', pose: 'idle', offset: [0, 0.85], duration: 4.2, hobby: 'painting', xpGain: 48, earn: 110, effect: { fun: 40, energy: -14 } }
+      ],
+      gym: [
+        { label: '💪 Latihan Beban (+Hobi Atletik)', icon: '💪', pose: 'workout', offset: [0, 1.05], duration: 4.0, hobby: 'fitness', xpGain: 50, effect: { fun: 35, energy: -22, hygiene: -18 } }
+      ],
+      pool: [
+        { label: '🏊 Berenang Segar (+Hobi Atletik, +Hiburan)', icon: '🏊', pose: 'shower', offset: [0, 0], duration: 4.5, hobby: 'fitness', xpGain: 40, effect: { fun: 55, hygiene: 35, energy: -16 } }
+      ],
+      plant: [
+        { label: '🌿 Siram Tanaman Hias (+Hiburan)', icon: '🌿', pose: 'idle', offset: [0, 0.8], duration: 2.5, effect: { fun: 18 } }
+      ],
+      lamp: [
+        { label: '💡 Nyalakan / Cek Lampu', icon: '💡', pose: 'idle', offset: [0, 0.8], duration: 2.0, effect: { fun: 10 } }
+      ]
+    };
+
+    const placedFurniture = [];
+
+    function spawnFurniture(type, name, x, y, z, rotY = 0, removable = true) {
+      const mesh = createFurnitureMesh(type);
       mesh.position.set(x, y, z);
-      mesh.castShadow = castShadow;
-      mesh.receiveShadow = receiveShadow;
+      mesh.rotation.y = rotY;
+      mesh.userData = {
+        isFurniture: true,
+        type,
+        interactiveName: name,
+        removable,
+        actions: furnitureActionPresets[type] || []
+      };
+      mesh.traverse(c => {
+        if (c.isMesh) c.userData.parentInteractive = mesh;
+      });
       scene.add(mesh);
+      interactiveObjects.push(mesh);
+      placedFurniture.push(mesh);
       return mesh;
     }
 
-    // Halaman Rumput Luas
-    const lawn = createBox(64, 0.4, 64, '#58a846', 0, -0.2, 0, false, true);
-    walkableFloors.push(lawn);
+    spawnFurniture('bed', 'Tempat Tidur Utama', -5.6, 0.16, -4.8, 0, true);
+    spawnFurniture('sofa', 'Sofa Ruang Tamu', -4.5, 0.16, 1.2, 0, true);
+    spawnFurniture('tv', 'Smart TV HD', -1.3, 0.16, 1.2, 0, false);
+    spawnFurniture('fridge', 'Kulkas Dua Pintu', 1.3, 0.16, -6.1, 0, true);
+    spawnFurniture('espresso', 'Mesin Kopi Espresso', -0.2, 0.16, -6.1, 0, true);
+    spawnFurniture('shower', 'Shower Kaca', 6.8, 0.16, -5.8, 0, false);
+    spawnFurniture('toilet', 'Toilet Keramik', 4.1, 0.16, -6.1, 0, false);
+    spawnFurniture('keyboard_music', 'Keyboard Musik (Hobi)', 4.8, 0.16, 1.2, -Math.PI / 2, true);
+    spawnFurniture('pc_desk', 'Meja PC & Coding (Hobi)', 4.8, 0.16, -1.0, -Math.PI / 2, true);
+    spawnFurniture('easel', 'Kanvas Lukis (Hobi)', -2.8, 0.16, -5.8, 0, true);
+    spawnFurniture('gym', 'Alat Fitness (Hobi)', 5.2, 0.0, 8.2, 0, true);
+    spawnFurniture('pool', 'Kolam Renang Halaman', -11.5, 0.0, 2.0, 0, false);
 
-    // Jalan Setapak Depan Rumah
-    createBox(3.2, 0.04, 12, '#d6cfc2', 0, 0.02, 11.5, false, true);
+    const buildCatalogList = [
+      { type: 'keyboard_music', name: 'Keyboard Musik', icon: '🎹', price: 450 },
+      { type: 'pc_desk', name: 'Setup PC Coding', icon: '💻', price: 650 },
+      { type: 'easel', name: 'Kanvas Lukis', icon: '🎨', price: 300 },
+      { type: 'gym', name: 'Alat Fitness', icon: '💪', price: 500 },
+      { type: 'sofa', name: 'Sofa Nyaman', icon: '🛋️', price: 400 },
+      { type: 'espresso', name: 'Mesin Kopi', icon: '☕', price: 320 },
+      { type: 'plant', name: 'Tanaman Hias', icon: '🪴', price: 120 },
+      { type: 'lamp', name: 'Lampu Berdiri', icon: '🪔', price: 180 }
+    ];
 
-    // Lantai Rumah Utama (Kayu Hangat & Keramik Kamar Mandi)
-    const houseFloor = createBox(16, 0.16, 12, '#c89662', 0, 0.08, -1, false, true);
-    walkableFloors.push(houseFloor);
-
-    // Lantai Kamar Mandi (Kanan Belakang)
-    const bathFloor = createBox(5, 0.18, 5, '#dcebf7', 5.4, 0.085, -4.4, false, true);
-    walkableFloors.push(bathFloor);
-
-    // Dinding Cutaway Rendah (Khas Kamera The Sims 3 agar tidak menghalangi pandangan)
-    const wallColor = '#f4ede1';
-    const trimColor = '#8c6239';
-    // Dinding Belakang
-    createBox(16.2, 2.7, 0.25, wallColor, 0, 1.43, -7);
-    // Dinding Kiri
-    createBox(0.25, 2.7, 12.2, wallColor, -8, 1.43, -1);
-    // Dinding Kanan
-    createBox(0.25, 2.7, 12.2, wallColor, 8, 1.43, -1);
-    // Dinding Depan dengan Pintu Masuk Terbuka
-    createBox(6.2, 1.1, 0.25, wallColor, -4.9, 0.63, 5);
-    createBox(6.2, 1.1, 0.25, wallColor, 4.9, 0.63, 5);
-    // Sekat Kamar Tidur (Kiri Belakang) & Kamar Mandi (Kanan Belakang)
-    createBox(5.2, 2.2, 0.2, wallColor, -5.3, 1.18, -1.8);
-    createBox(0.2, 2.2, 5.0, wallColor, 2.8, 1.18, -4.4);
-    // List Kayu Atas Dinding
-    createBox(16.3, 0.12, 0.3, trimColor, 0, 2.8, -7);
-
-    // Helper mendaftarkan objek interaktif
-    function registerInteractive(group, name, actions) {
-      group.userData = { interactiveName: name, actions };
-      group.traverse(child => {
-        if (child.isMesh) {
-          child.userData.parentInteractive = group;
-        }
-      });
-      interactiveObjects.push(group);
-      scene.add(group);
-    }
-
-    // --- ZONA 1: KAMAR TIDUR (Kiri Belakang) ---
-    const bedGroup = new THREE.Group();
-    bedGroup.position.set(-5.6, 0.16, -4.8);
-    const bedFrame = new THREE.Mesh(new THREE.BoxGeometry(2.5, 0.45, 3.4), new THREE.MeshStandardMaterial({ color: '#5c3a21' }));
-    bedFrame.position.y = 0.225;
-    bedFrame.castShadow = true;
-    const mattress = new THREE.Mesh(new THREE.BoxGeometry(2.3, 0.3, 3.2), new THREE.MeshStandardMaterial({ color: '#f7f9fc' }));
-    mattress.position.y = 0.52;
-    const blanket = new THREE.Mesh(new THREE.BoxGeometry(2.34, 0.33, 2.1), new THREE.MeshStandardMaterial({ color: '#2980b9' }));
-    blanket.position.set(0, 0.53, 0.55);
-    const pillow1 = new THREE.Mesh(new THREE.BoxGeometry(0.85, 0.18, 0.5), new THREE.MeshStandardMaterial({ color: '#ffffff' }));
-    pillow1.position.set(-0.55, 0.72, -1.15);
-    const pillow2 = pillow1.clone();
-    pillow2.position.x = 0.55;
-    bedGroup.add(bedFrame, mattress, blanket, pillow1, pillow2);
-    registerInteractive(bedGroup, 'Tempat Tidur', [
-      { label: '😴 Tidur Nyenyak (+Energi)', icon: '😴', pose: 'sleep', standOffset: new THREE.Vector3(1.5, 0, 0), snapToBed: true, duration: 9, effect: { energy: 75, fun: 10 } },
-      { label: '🛋️ Tidur Siang Sebentar', icon: '💤', pose: 'sleep', standOffset: new THREE.Vector3(1.5, 0, 0), snapToBed: true, duration: 4.5, effect: { energy: 35 } }
-    ]);
-
-    // Lemari Pakaian (Klik untuk buka Create-A-Sim)
-    const wardrobeGroup = new THREE.Group();
-    wardrobeGroup.position.set(-7.1, 0.16, -2.6);
-    const wardBody = new THREE.Mesh(new THREE.BoxGeometry(1.1, 2.3, 1.6), new THREE.MeshStandardMaterial({ color: '#6e472b' }));
-    wardBody.position.y = 1.15;
-    wardBody.castShadow = true;
-    const wardDoorLine = new THREE.Mesh(new THREE.BoxGeometry(1.13, 2.1, 0.04), new THREE.MeshStandardMaterial({ color: '#422917' }));
-    wardDoorLine.position.y = 1.15;
-    wardrobeGroup.add(wardBody, wardDoorLine);
-    registerInteractive(wardrobeGroup, 'Lemari Pakaian', [
-      { label: '👕 Ganti Pakaian & Nama (CAS)', icon: '👕', openCAS: true, standOffset: new THREE.Vector3(1.2, 0, 0) }
-    ]);
-
-    // --- ZONA 2: RUANG TAMU (Kiri Depan) ---
-    const sofaGroup = new THREE.Group();
-    sofaGroup.position.set(-4.6, 0.16, 1.2);
-    const sofaBase = new THREE.Mesh(new THREE.BoxGeometry(1.3, 0.45, 3.0), new THREE.MeshStandardMaterial({ color: '#d35400' }));
-    sofaBase.position.y = 0.225;
-    sofaBase.castShadow = true;
-    const sofaBack = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.95, 3.0), new THREE.MeshStandardMaterial({ color: '#ba4a00' }));
-    sofaBack.position.set(-0.48, 0.475, 0);
-    sofaGroup.add(sofaBase, sofaBack);
-    registerInteractive(sofaGroup, 'Sofa Ruang Tamu', [
-      { label: '📺 Nonton TV & Santai (+Hiburan)', icon: '📺', pose: 'sit', standOffset: new THREE.Vector3(0.4, 0, 0), faceTarget: new THREE.Vector3(-1.4, 0, 1.2), duration: 6, effect: { fun: 45, energy: 10 }, tvOn: true }
-    ]);
-
-    // Karpet Ruang Tamu
-    createBox(3.4, 0.03, 4.2, '#e8dcc5', -3.0, 0.175, 1.2, false, true);
-
-    // Meja & TV Layar Lebar
-    const tvGroup = new THREE.Group();
-    tvGroup.position.set(-1.3, 0.16, 1.2);
-    const tvStand = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.55, 2.2), new THREE.MeshStandardMaterial({ color: '#3b2818' }));
-    tvStand.position.y = 0.275;
-    tvStand.castShadow = true;
-    const tvFrame = new THREE.Mesh(new THREE.BoxGeometry(0.14, 1.05, 1.8), new THREE.MeshStandardMaterial({ color: '#141414' }));
-    tvFrame.position.y = 1.15;
-    const tvScreenMat = new THREE.MeshStandardMaterial({ color: '#111822', emissive: '#000000' });
-    const tvScreen = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.92, 1.66), tvScreenMat);
-    tvScreen.position.y = 1.15;
-    tvGroup.add(tvStand, tvFrame, tvScreen);
-    registerInteractive(tvGroup, 'Televisi HD', [
-      { label: '🎬 Nonton Film Seru (+Hiburan)', icon: '🎬', pose: 'sit', standOffset: new THREE.Vector3(-2.9, 0, 0), faceTarget: new THREE.Vector3(-1.3, 0, 1.2), duration: 6, effect: { fun: 50 }, tvOn: true }
-    ]);
-
-    // --- ZONA 3: DAPUR & RUANG MAKAN (Tengah-Kanan Depan) ---
-    const fridgeGroup = new THREE.Group();
-    fridgeGroup.position.set(1.2, 0.16, -6.1);
-    const fridgeBody = new THREE.Mesh(new THREE.BoxGeometry(1.1, 2.2, 1.0), new THREE.MeshStandardMaterial({ color: '#ecf0f1', metalness: 0.3, roughness: 0.3 }));
-    fridgeBody.position.y = 1.1;
-    fridgeBody.castShadow = true;
-    const fridgeHandle = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.7, 0.08), new THREE.MeshStandardMaterial({ color: '#7f8c8d' }));
-    fridgeHandle.position.set(0.38, 1.3, 0.52);
-    fridgeGroup.add(fridgeBody, fridgeHandle);
-    registerInteractive(fridgeGroup, 'Kulkas', [
-      { label: '🍳 Masak & Makan Besar (+Lapar)', icon: '🍳', pose: 'idle', standOffset: new THREE.Vector3(0, 0, 1.3), faceTarget: new THREE.Vector3(1.2, 0, -6.1), duration: 5.5, cost: 25, effect: { hunger: 70, fun: 10 } },
-      { label: '🥪 Ambil Camilan Cepat (+Lapar)', icon: '🥪', pose: 'idle', standOffset: new THREE.Vector3(0, 0, 1.3), faceTarget: new THREE.Vector3(1.2, 0, -6.1), duration: 3, cost: 10, effect: { hunger: 35 } }
-    ]);
-
-    // Meja Dapur / Kitchen Counter
-    createBox(2.2, 0.95, 0.95, '#d5dbdb', -0.5, 0.635, -6.1);
-    createBox(2.25, 0.08, 1.0, '#2c3e50', -0.5, 1.13, -6.1);
-
-    // Meja Makan & Kursi
-    const diningGroup = new THREE.Group();
-    diningGroup.position.set(4.5, 0.16, 1.5);
-    const tableTop = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.1, 1.8), new THREE.MeshStandardMaterial({ color: '#8e5b32' }));
-    tableTop.position.y = 0.85;
-    tableTop.castShadow = true;
-    const tableLeg = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.85, 0.35), new THREE.MeshStandardMaterial({ color: '#5e3a1e' }));
-    tableLeg.position.y = 0.425;
-    const chair = new THREE.Mesh(new THREE.BoxGeometry(0.65, 0.5, 0.65), new THREE.MeshStandardMaterial({ color: '#c0392b' }));
-    chair.position.set(-1.1, 0.25, 0);
-    diningGroup.add(tableTop, tableLeg, chair);
-    registerInteractive(diningGroup, 'Meja Makan', [
-      { label: '🍝 Makan Siang di Meja (+Lapar)', icon: '🍝', pose: 'sit', standOffset: new THREE.Vector3(-1.1, 0, 0), faceTarget: new THREE.Vector3(4.5, 0, 1.5), duration: 5, cost: 20, effect: { hunger: 65, social: 15 } }
-    ]);
-
-    // --- ZONA 4: KAMAR MANDI (Kanan Belakang) ---
-    const showerGroup = new THREE.Group();
-    showerGroup.position.set(6.8, 0.18, -5.8);
-    const showerTray = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.15, 1.5), new THREE.MeshStandardMaterial({ color: '#ffffff' }));
-    showerTray.position.y = 0.075;
-    const showerGlass1 = new THREE.Mesh(new THREE.BoxGeometry(0.06, 2.1, 1.5), new THREE.MeshStandardMaterial({ color: '#a8e6ff', transparent: true, opacity: 0.4 }));
-    showerGlass1.position.set(-0.72, 1.05, 0);
-    const showerGlass2 = new THREE.Mesh(new THREE.BoxGeometry(1.5, 2.1, 0.06), new THREE.MeshStandardMaterial({ color: '#a8e6ff', transparent: true, opacity: 0.4 }));
-    showerGlass2.position.set(0, 1.05, 0.72);
-    showerGroup.add(showerTray, showerGlass1, showerGlass2);
-    registerInteractive(showerGroup, 'Shower Kamar Mandi', [
-      { label: '🚿 Mandi Air Hangat (+Kebersihan)', icon: '🚿', pose: 'shower', standOffset: new THREE.Vector3(0, 0, 0), duration: 5, effect: { hygiene: 85, energy: 10, fun: 10 } }
-    ]);
-
-    const toiletGroup = new THREE.Group();
-    toiletGroup.position.set(4.1, 0.18, -6.1);
-    const toiletBase = new THREE.Mesh(new THREE.BoxGeometry(0.65, 0.5, 0.8), new THREE.MeshStandardMaterial({ color: '#ffffff' }));
-    toiletBase.position.y = 0.25;
-    const toiletTank = new THREE.Mesh(new THREE.BoxGeometry(0.65, 0.65, 0.25), new THREE.MeshStandardMaterial({ color: '#f2f4f4' }));
-    toiletTank.position.set(0, 0.75, -0.26);
-    toiletGroup.add(toiletBase, toiletTank);
-    registerInteractive(toiletGroup, 'Toilet', [
-      { label: '🚽 Gunakan Toilet (+Kandung Kemih)', icon: '🚽', pose: 'sit', standOffset: new THREE.Vector3(0, 0, 0.35), faceTarget: new THREE.Vector3(4.1, 0, -4.0), duration: 3.5, effect: { bladder: 95, hygiene: -5 } }
-    ]);
-
-    // --- ZONA 5: HALAMAN LUAR (Kolam Renang, Alat Fitness, Pohon) ---
-    const poolGroup = new THREE.Group();
-    poolGroup.position.set(-11.5, 0.02, 2);
-    const poolBorder = new THREE.Mesh(new THREE.BoxGeometry(5.6, 0.14, 8.6), new THREE.MeshStandardMaterial({ color: '#e5e8e8' }));
-    const poolWater = new THREE.Mesh(new THREE.BoxGeometry(5.0, 0.16, 8.0), new THREE.MeshStandardMaterial({ color: '#1abc9c', emissive: '#0e6655', roughness: 0.15 }));
-    poolGroup.add(poolBorder, poolWater);
-    registerInteractive(poolGroup, 'Kolam Renang', [
-      { label: '🏊 Berenang & Santai (+Hiburan, +Kebersihan)', icon: '🏊', pose: 'shower', standOffset: new THREE.Vector3(0, 0, 0), duration: 6.5, effect: { fun: 55, hygiene: 35, energy: -15 } }
-    ]);
-
-    // Alat Fitness / Bench Press di Teras Depan
-    const gymGroup = new THREE.Group();
-    gymGroup.position.set(5.2, 0.02, 8.2);
-    const bench = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.45, 1.8), new THREE.MeshStandardMaterial({ color: '#2c3e50' }));
-    bench.position.y = 0.225;
-    const rackL = new THREE.Mesh(new THREE.BoxGeometry(0.1, 1.2, 0.1), new THREE.MeshStandardMaterial({ color: '#95a5a6' }));
-    rackL.position.set(-0.55, 0.6, -0.5);
-    const rackR = rackL.clone();
-    rackR.position.x = 0.55;
-    const barbell = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 1.8, 10), new THREE.MeshStandardMaterial({ color: '#bdc3c7' }));
-    barbell.rotation.z = Math.PI / 2;
-    barbell.position.set(0, 1.15, -0.5);
-    gymGroup.add(bench, rackL, rackR, barbell);
-    registerInteractive(gymGroup, 'Alat Fitness Halaman', [
-      { label: '💪 Latihan Fisik (+Hiburan, +Sosial)', icon: '💪', pose: 'workout', standOffset: new THREE.Vector3(0, 0, 1.2), faceTarget: new THREE.Vector3(5.2, 0, 8.2), duration: 5.5, effect: { fun: 40, social: 20, energy: -20, hygiene: -18 } }
-    ]);
-
-    // Bangku Taman untuk Obrolan Sosial / Telepon
-    const parkBenchGroup = new THREE.Group();
-    parkBenchGroup.position.set(-4.8, 0.02, 8.5);
-    const pbSeat = new THREE.Mesh(new THREE.BoxGeometry(2.0, 0.45, 0.7), new THREE.MeshStandardMaterial({ color: '#9c6434' }));
-    pbSeat.position.y = 0.225;
-    const pbBack = new THREE.Mesh(new THREE.BoxGeometry(2.0, 0.55, 0.12), new THREE.MeshStandardMaterial({ color: '#7d4e25' }));
-    pbBack.position.set(0, 0.65, 0.29);
-    parkBenchGroup.add(pbSeat, pbBack);
-    registerInteractive(parkBenchGroup, 'Bangku Taman', [
-      { label: '📱 Telepon Teman & Mengobrol (+Sosial)', icon: '📱', pose: 'sit', standOffset: new THREE.Vector3(0, 0, 0), faceTarget: new THREE.Vector3(-4.8, 0, 5.0), duration: 5, effect: { social: 65, fun: 25 } }
-    ]);
-
-    // Pohon Dekoratif Halaman
-    function addTree(x, z, scale = 1) {
-      const tree = new THREE.Group();
-      tree.position.set(x, 0, z);
-      const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.25 * scale, 0.35 * scale, 2.2 * scale, 8), new THREE.MeshStandardMaterial({ color: '#6e4726' }));
-      trunk.position.y = 1.1 * scale;
-      trunk.castShadow = true;
-      const leaves1 = new THREE.Mesh(new THREE.DodecahedronGeometry(1.4 * scale, 1), new THREE.MeshStandardMaterial({ color: '#3b8c32' }));
-      leaves1.position.y = 2.6 * scale;
-      leaves1.castShadow = true;
-      const leaves2 = new THREE.Mesh(new THREE.DodecahedronGeometry(1.0 * scale, 1), new THREE.MeshStandardMaterial({ color: '#4ca642' }));
-      leaves2.position.set(0.5 * scale, 3.3 * scale, 0.3 * scale);
-      tree.add(trunk, leaves1, leaves2);
-      scene.add(tree);
-    }
-    addTree(-11, -8, 1.15);
-    addTree(11, -7, 1.2);
-    addTree(11.5, 7, 1.0);
-    addTree(-10.5, 11, 1.1);
-
-    // Indikator Titik Jalan Hijau ala The Sims 3
     const destMarker = new THREE.Mesh(
-      new THREE.RingGeometry(0.25, 0.42, 24),
+      new THREE.RingGeometry(0.24, 0.4, 28),
       new THREE.MeshBasicMaterial({ color: '#5eff57', side: THREE.DoubleSide })
     );
     destMarker.rotation.x = -Math.PI / 2;
-    destMarker.position.y = 0.2;
     destMarker.visible = false;
     scene.add(destMarker);
 
     // ==========================================
-    // 4. KARAKTER 3D SIM + KUSTOMISASI + PLUMBOB
+    // 6. KARAKTER 3D HALUS (ANATOMICAL RIG)
     // ==========================================
-    const simRoot = new THREE.Group();
-    scene.add(simRoot);
+    function buildSmoothCharacter(opts) {
+      const root = new THREE.Group();
+      const body = new THREE.Group();
+      root.add(body);
 
-    const simBodyGroup = new THREE.Group();
-    simRoot.add(simBodyGroup);
+      const skinMat = new THREE.MeshStandardMaterial({ color: opts.skinColor, roughness: 0.48 });
+      const hairMat = new THREE.MeshStandardMaterial({ color: opts.hairColor, roughness: 0.62 });
+      const topMat = new THREE.MeshStandardMaterial({ color: opts.topColor, roughness: 0.58 });
+      const bottomMat = new THREE.MeshStandardMaterial({ color: opts.bottomColor, roughness: 0.68 });
+      const shoeMat = new THREE.MeshStandardMaterial({ color: opts.shoeColor || '#f5f6fa', roughness: 0.45 });
 
-    // Material Dinamis Karakter
-    const skinMat = new THREE.MeshStandardMaterial({ color: simState.skinColor, roughness: 0.55 });
-    const hairMat = new THREE.MeshStandardMaterial({ color: simState.hairColor, roughness: 0.7 });
-    const topMat = new THREE.MeshStandardMaterial({ color: simState.topColor, roughness: 0.65 });
-    const bottomMat = new THREE.MeshStandardMaterial({ color: simState.bottomColor, roughness: 0.75 });
-    const shoeMat = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.5 });
+      const pelvis = new THREE.Mesh(new THREE.CylinderGeometry(0.19, 0.2, 0.22, 18), bottomMat);
+      pelvis.position.y = 0.86;
+      body.add(pelvis);
 
-    // Torso & Pakaian Atas
-    const torso = new THREE.Mesh(new THREE.BoxGeometry(0.54, 0.72, 0.3), topMat);
-    torso.position.y = 1.18;
-    torso.castShadow = true;
-    simBodyGroup.add(torso);
+      const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.23, 0.185, 0.56, 20), topMat);
+      torso.position.y = 1.24;
+      torso.scale.set(1.08, 1, 0.72);
+      body.add(torso);
 
-    // Detail Kerah / Jaket (Diubah sesuai gaya baju)
-    const outfitDetailGroup = new THREE.Group();
-    torso.add(outfitDetailGroup);
+      const chestCap = new THREE.Mesh(new THREE.SphereGeometry(0.23, 20, 14), topMat);
+      chestCap.position.y = 1.49;
+      chestCap.scale.set(1.08, 0.48, 0.72);
+      body.add(chestCap);
 
-    // Kepala & Wajah
-    const headGroup = new THREE.Group();
-    headGroup.position.set(0, 1.76, 0);
-    simBodyGroup.add(headGroup);
+      const detailGroup = new THREE.Group();
+      torso.add(detailGroup);
 
-    const headMesh = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.44, 0.42), skinMat);
-    headMesh.castShadow = true;
-    headGroup.add(headMesh);
+      const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.075, 0.085, 0.16, 14), skinMat);
+      neck.position.y = 1.62;
+      body.add(neck);
 
-    // Mata & Senyum
-    const eyeMat = new THREE.MeshBasicMaterial({ color: '#1a1a1a' });
-    const leftEye = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.06, 0.04), eyeMat);
-    leftEye.position.set(-0.1, 0.03, 0.21);
-    const rightEye = leftEye.clone();
-    rightEye.position.x = 0.1;
-    const mouth = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.03, 0.04), new THREE.MeshBasicMaterial({ color: '#a84a4a' }));
-    mouth.position.set(0, -0.1, 0.21);
-    headGroup.add(leftEye, rightEye, mouth);
+      const headGroup = new THREE.Group();
+      headGroup.position.set(0, 1.84, 0);
+      body.add(headGroup);
 
-    // Container Rambut (Di-update saat ganti gaya rambut)
-    const hairContainer = new THREE.Group();
-    headGroup.add(hairContainer);
+      const cranium = new THREE.Mesh(new THREE.SphereGeometry(0.21, 24, 20), skinMat);
+      cranium.scale.set(0.92, 1.12, 0.96);
+      headGroup.add(cranium);
 
-    // Lengan Kiri & Kanan
-    function createArm(isLeft) {
-      const pivot = new THREE.Group();
-      pivot.position.set(isLeft ? -0.37 : 0.37, 1.48, 0);
-      const sleeve = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.32, 0.18), topMat);
-      sleeve.position.y = -0.14;
-      sleeve.castShadow = true;
-      const forearm = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.34, 0.15), skinMat);
-      forearm.position.y = -0.44;
-      forearm.castShadow = true;
-      pivot.add(sleeve, forearm);
-      simBodyGroup.add(pivot);
-      return { pivot, sleeve };
+      const earGeo = new THREE.SphereGeometry(0.042, 12, 10);
+      const earL = new THREE.Mesh(earGeo, skinMat);
+      earL.position.set(-0.19, -0.01, 0);
+      const earR = earL.clone();
+      earR.position.x = 0.19;
+
+      const nose = new THREE.Mesh(new THREE.ConeGeometry(0.026, 0.065, 10), skinMat);
+      nose.rotation.x = Math.PI / 2.2;
+      nose.position.set(0, -0.02, 0.205);
+      headGroup.add(earL, earR, nose);
+
+      const eyeWhiteMat = new THREE.MeshBasicMaterial({ color: '#ffffff' });
+      const pupilMat = new THREE.MeshBasicMaterial({ color: '#1b1b1b' });
+      [-0.072, 0.072].forEach(ex => {
+        const ew = new THREE.Mesh(new THREE.SphereGeometry(0.028, 12, 10), eyeWhiteMat);
+        ew.position.set(ex, 0.03, 0.182);
+        const ep = new THREE.Mesh(new THREE.SphereGeometry(0.016, 10, 10), pupilMat);
+        ep.position.set(ex, 0.03, 0.198);
+        const brow = new THREE.Mesh(new THREE.BoxGeometry(0.065, 0.014, 0.02), hairMat);
+        brow.position.set(ex, 0.072, 0.188);
+        headGroup.add(ew, ep, brow);
+      });
+
+      const smile = new THREE.Mesh(new THREE.TorusGeometry(0.036, 0.008, 8, 14, Math.PI), new THREE.MeshBasicMaterial({ color: '#9e4747' }));
+      smile.rotation.z = Math.PI;
+      smile.position.set(0, -0.075, 0.188);
+      headGroup.add(smile);
+
+      const hairGroup = new THREE.Group();
+      headGroup.add(hairGroup);
+
+      function createSmoothArm(isLeft) {
+        const pivot = new THREE.Group();
+        pivot.position.set(isLeft ? -0.28 : 0.28, 1.48, 0);
+
+        const shoulder = new THREE.Mesh(new THREE.SphereGeometry(0.082, 14, 12), topMat);
+        const upperArm = new THREE.Mesh(new THREE.CylinderGeometry(0.072, 0.062, 0.26, 14), topMat);
+        upperArm.position.y = -0.13;
+
+        const elbow = new THREE.Mesh(new THREE.SphereGeometry(0.058, 12, 10), skinMat);
+        elbow.position.y = -0.26;
+
+        const forearm = new THREE.Mesh(new THREE.CylinderGeometry(0.058, 0.048, 0.26, 14), skinMat);
+        forearm.position.y = -0.39;
+
+        const hand = new THREE.Mesh(new THREE.SphereGeometry(0.052, 12, 10), skinMat);
+        hand.position.y = -0.53;
+
+        pivot.add(shoulder, upperArm, elbow, forearm, hand);
+        body.add(pivot);
+        return { pivot, upperArm, shoulder };
+      }
+      const leftArm = createSmoothArm(true);
+      const rightArm = createSmoothArm(false);
+
+      function createSmoothLeg(isLeft) {
+        const pivot = new THREE.Group();
+        pivot.position.set(isLeft ? -0.11 : 0.11, 0.78, 0);
+
+        const thigh = new THREE.Mesh(new THREE.CylinderGeometry(0.092, 0.078, 0.36, 14), bottomMat);
+        thigh.position.y = -0.18;
+
+        const knee = new THREE.Mesh(new THREE.SphereGeometry(0.074, 12, 10), bottomMat);
+        knee.position.y = -0.36;
+
+        const calf = new THREE.Mesh(new THREE.CylinderGeometry(0.074, 0.058, 0.34, 14), bottomMat);
+        calf.position.y = -0.53;
+
+        const shoe = new THREE.Mesh(new THREE.SphereGeometry(0.085, 14, 12), shoeMat);
+        shoe.scale.set(0.95, 0.65, 1.55);
+        shoe.position.set(0, -0.72, 0.035);
+
+        pivot.add(thigh, knee, calf, shoe);
+        body.add(pivot);
+        return { pivot, calf, knee };
+      }
+      const leftLeg = createSmoothLeg(true);
+      const rightLeg = createSmoothLeg(false);
+
+      root.traverse(c => {
+        if (c.isMesh) {
+          c.castShadow = true;
+          c.receiveShadow = true;
+        }
+      });
+
+      return {
+        root, body, headGroup, hairGroup, detailGroup,
+        leftArm, rightArm, leftLeg, rightLeg,
+        mats: { skinMat, hairMat, topMat, bottomMat }
+      };
     }
-    const leftArm = createArm(true);
-    const rightArm = createArm(false);
 
-    // Kaki Kiri & Kanan
-    function createLeg(isLeft) {
-      const pivot = new THREE.Group();
-      pivot.position.set(isLeft ? -0.15 : 0.15, 0.82, 0);
-      const upperLeg = new THREE.Mesh(new THREE.BoxGeometry(0.21, 0.42, 0.22), bottomMat);
-      upperLeg.position.y = -0.21;
-      upperLeg.castShadow = true;
-      const lowerLeg = new THREE.Mesh(new THREE.BoxGeometry(0.19, 0.34, 0.2), bottomMat);
-      lowerLeg.position.y = -0.56;
-      lowerLeg.castShadow = true;
-      const shoe = new THREE.Mesh(new THREE.BoxGeometry(0.21, 0.12, 0.3), shoeMat);
-      shoe.position.set(0, -0.76, 0.04);
-      shoe.castShadow = true;
-      pivot.add(upperLeg, lowerLeg, shoe);
-      simBodyGroup.add(pivot);
-      return { pivot, lowerLeg };
+    function applyCharacterStyle(rig, styleCfg) {
+      rig.mats.skinMat.color.set(styleCfg.skinColor);
+      rig.mats.hairMat.color.set(styleCfg.hairColor);
+      rig.mats.topMat.color.set(styleCfg.topColor);
+      rig.mats.bottomMat.color.set(styleCfg.bottomColor);
+
+      while (rig.hairGroup.children.length > 0) {
+        rig.hairGroup.remove(rig.hairGroup.children[0]);
+      }
+      const hMat = rig.mats.hairMat;
+      const cap = new THREE.Mesh(new THREE.SphereGeometry(0.218, 22, 16, 0, Math.PI * 2, 0, Math.PI * 0.58), hMat);
+      cap.scale.set(0.94, 1.12, 0.98);
+      cap.position.y = 0.015;
+      rig.hairGroup.add(cap);
+
+      if (styleCfg.hairStyle === 'spiky') {
+        for (let i = -1; i <= 1; i++) {
+          const tuft = new THREE.Mesh(new THREE.ConeGeometry(0.065, 0.16, 10), hMat);
+          tuft.position.set(i * 0.08, 0.25, 0.05);
+          tuft.rotation.x = 0.25;
+          rig.hairGroup.add(tuft);
+        }
+      } else if (styleCfg.hairStyle === 'long') {
+        const backDrape = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.23, 0.42, 18), hMat);
+        backDrape.position.set(0, -0.14, -0.05);
+        rig.hairGroup.add(backDrape);
+      } else if (styleCfg.hairStyle === 'short') {
+        const fringe = new THREE.Mesh(new THREE.SphereGeometry(0.14, 14, 10), hMat);
+        fringe.scale.set(1.35, 0.45, 0.7);
+        fringe.position.set(0, 0.16, 0.12);
+        rig.hairGroup.add(fringe);
+      }
+
+      while (rig.detailGroup.children.length > 0) {
+        rig.detailGroup.remove(rig.detailGroup.children[0]);
+      }
+      if (styleCfg.topStyle === 'shirt') {
+        const collar = new THREE.Mesh(new THREE.TorusGeometry(0.11, 0.022, 8, 16), new THREE.MeshStandardMaterial({ color: '#ffffff' }));
+        collar.rotation.x = Math.PI / 2;
+        collar.position.y = 0.27;
+        rig.detailGroup.add(collar);
+      } else if (styleCfg.topStyle === 'jacket') {
+        const stripe = new THREE.Mesh(new THREE.BoxGeometry(0.11, 0.52, 0.04), new THREE.MeshStandardMaterial({ color: '#f8f9fa' }));
+        stripe.position.set(0, 0, 0.18);
+        rig.detailGroup.add(stripe);
+      }
+
+      const calfMat = styleCfg.bottomStyle === 'shorts' ? rig.mats.skinMat : rig.mats.bottomMat;
+      rig.leftLeg.calf.material = calfMat;
+      rig.rightLeg.calf.material = calfMat;
     }
-    const leftLeg = createLeg(true);
-    const rightLeg = createLeg(false);
 
-    // Plumbob Ikonik The Sims 3 di atas kepala Sim
+    const playerRig = buildSmoothCharacter(simState);
+    scene.add(playerRig.root);
+
     const plumbobGroup = new THREE.Group();
-    plumbobGroup.position.set(0, 2.48, 0);
-    simRoot.add(plumbobGroup);
+    plumbobGroup.position.set(0, 2.38, 0);
+    playerRig.root.add(plumbobGroup);
 
     const plumbobMat = new THREE.MeshStandardMaterial({
       color: '#4dff47',
       emissive: '#1fa81b',
       emissiveIntensity: 0.65,
-      roughness: 0.15,
-      metalness: 0.2
+      roughness: 0.15
     });
-    const topCone = new THREE.Mesh(new THREE.ConeGeometry(0.16, 0.28, 6), plumbobMat);
-    topCone.position.y = 0.14;
-    const botCone = new THREE.Mesh(new THREE.ConeGeometry(0.16, 0.28, 6), plumbobMat);
+    const topCone = new THREE.Mesh(new THREE.ConeGeometry(0.14, 0.25, 6), plumbobMat);
+    topCone.position.y = 0.125;
+    const botCone = new THREE.Mesh(new THREE.ConeGeometry(0.14, 0.25, 6), plumbobMat);
     botCone.rotation.x = Math.PI;
-    botCone.position.y = -0.14;
+    botCone.position.y = -0.125;
     plumbobGroup.add(topCone, botCone);
 
-    // Fungsi Memperbarui Penampilan 3D Sim dari CAS
     function updateSimAppearance() {
-      skinMat.color.set(simState.skinColor);
-      hairMat.color.set(simState.hairColor);
-      topMat.color.set(simState.topColor);
-      bottomMat.color.set(simState.bottomColor);
-
-      // Update Gaya Rambut
-      while (hairContainer.children.length > 0) {
-        hairContainer.remove(hairContainer.children[0]);
-      }
-
-      if (simState.hairStyle === 'short') {
-        const topHair = new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.14, 0.45), hairMat);
-        topHair.position.set(0, 0.23, 0);
-        const backHair = new THREE.Mesh(new THREE.BoxGeometry(0.44, 0.26, 0.12), hairMat);
-        backHair.position.set(0, 0.08, -0.19);
-        hairContainer.add(topHair, backHair);
-      } else if (simState.hairStyle === 'spiky') {
-        const base = new THREE.Mesh(new THREE.BoxGeometry(0.44, 0.12, 0.44), hairMat);
-        base.position.set(0, 0.22, 0);
-        hairContainer.add(base);
-        for (let i = -1; i <= 1; i++) {
-          const spike = new THREE.Mesh(new THREE.ConeGeometry(0.09, 0.2, 5), hairMat);
-          spike.position.set(i * 0.12, 0.34, 0.04);
-          hairContainer.add(spike);
-        }
-      } else if (simState.hairStyle === 'long') {
-        const topHair = new THREE.Mesh(new THREE.BoxGeometry(0.46, 0.14, 0.46), hairMat);
-        topHair.position.set(0, 0.23, 0);
-        const longBack = new THREE.Mesh(new THREE.BoxGeometry(0.46, 0.62, 0.16), hairMat);
-        longBack.position.set(0, -0.06, -0.18);
-        const sideL = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.48, 0.24), hairMat);
-        sideL.position.set(-0.22, -0.02, 0.02);
-        const sideR = sideL.clone();
-        sideR.position.x = 0.22;
-        hairContainer.add(topHair, longBack, sideL, sideR);
-      } else if (simState.hairStyle === 'buzz') {
-        const buzz = new THREE.Mesh(new THREE.BoxGeometry(0.43, 0.07, 0.43), hairMat);
-        buzz.position.set(0, 0.21, 0);
-        hairContainer.add(buzz);
-      }
-
-      // Update Gaya Baju (Kaos / Kemeja / Jaket)
-      while (outfitDetailGroup.children.length > 0) {
-        outfitDetailGroup.remove(outfitDetailGroup.children[0]);
-      }
-
-      if (simState.topStyle === 'shirt') {
-        const collar = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.08, 0.32), new THREE.MeshStandardMaterial({ color: '#ffffff' }));
-        collar.position.set(0, 0.34, 0.01);
-        const buttons = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.62, 0.02), new THREE.MeshStandardMaterial({ color: '#ffffff' }));
-        buttons.position.set(0, 0, 0.155);
-        outfitDetailGroup.add(collar, buttons);
-        leftArm.sleeve.scale.y = 1.0;
-        rightArm.sleeve.scale.y = 1.0;
-      } else if (simState.topStyle === 'jacket') {
-        const innerShirt = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.68, 0.03), new THREE.MeshStandardMaterial({ color: '#f5f6fa' }));
-        innerShirt.position.set(0, 0, 0.145);
-        outfitDetailGroup.add(innerShirt);
-        leftArm.sleeve.scale.y = 1.85;
-        rightArm.sleeve.scale.y = 1.85;
-      } else {
-        leftArm.sleeve.scale.y = 1.0;
-        rightArm.sleeve.scale.y = 1.0;
-      }
-
-      // Update Gaya Celana (Panjang vs Pendek)
-      const legMat = simState.bottomStyle === 'shorts' ? skinMat : bottomMat;
-      leftLeg.lowerLeg.material = legMat;
-      rightLeg.lowerLeg.material = legMat;
-
-      // Update Nama di HUD
+      applyCharacterStyle(playerRig, simState);
       document.getElementById('hud-sim-name').textContent = simState.name || 'Sim';
     }
-
     updateSimAppearance();
 
     // ==========================================
-    // 5. LOGIKA KUSTOMISASI CREATE-A-SIM (UI)
+    // 7. NPC TAMU / TETANGGA & DIALOG CERITA
+    // ==========================================
+    const npcConfigs = [
+      {
+        id: 'praja',
+        name: 'Praja (Tetangga)',
+        skinColor: '#d99e73',
+        hairStyle: 'spiky',
+        hairColor: '#1a1a1a',
+        topStyle: 'jacket',
+        topColor: '#27ae60',
+        bottomStyle: 'pants',
+        bottomColor: '#1e272e',
+        pos: new THREE.Vector3(-1.8, 0.16, 4.2),
+        waypoints: [new THREE.Vector3(-1.8, 0.16, 4.2), new THREE.Vector3(-3.2, 0.16, 3.0), new THREE.Vector3(-1.5, 0.16, 6.8)],
+        relationship: 30,
+        talkedCount: 0,
+        greetings: [
+          'Halo! Aku Praja, tetangga sebelah rumahmu. Senang akhirnya ada penghuni baru di Sunset Valley!',
+          'Keren banget rumahmu setelah ditata. Kapan-kapan kita main musik atau nongkrong bareng ya!'
+        ]
+      },
+      {
+        id: 'nadia',
+        name: 'Nadia (Desainer)',
+        skinColor: '#f2c6a0',
+        hairStyle: 'long',
+        hairColor: '#4a2c16',
+        topStyle: 'shirt',
+        topColor: '#e84393',
+        bottomStyle: 'pants',
+        bottomColor: '#2c3e50',
+        pos: new THREE.Vector3(2.8, 0.16, 3.6),
+        waypoints: [new THREE.Vector3(2.8, 0.16, 3.6), new THREE.Vector3(1.5, 0.16, 1.5), new THREE.Vector3(3.4, 0.16, 6.2)],
+        relationship: 25,
+        talkedCount: 0,
+        greetings: [
+          'Hai! Namaku Nadia. Aku suka banget lihat penataan interior rumah—kalau butuh inspirasi renovasi, bilang aja ya!',
+          'Wah, suasananya makin hidup! Jangan lupa istirahat dan minum kopi biar staminamu tetap terjaga.'
+        ]
+      },
+      {
+        id: 'raka',
+        name: 'Raka (Musisi & Tech)',
+        skinColor: '#c68642',
+        hairStyle: 'short',
+        hairColor: '#1c1c1c',
+        topStyle: 'tshirt',
+        topColor: '#f39c12',
+        bottomStyle: 'shorts',
+        bottomColor: '#34495e',
+        pos: new THREE.Vector3(0.5, 0.0, 9.2),
+        waypoints: [new THREE.Vector3(0.5, 0.0, 9.2), new THREE.Vector3(-3.5, 0.0, 9.8), new THREE.Vector3(2.5, 0.0, 8.5)],
+        relationship: 20,
+        talkedCount: 0,
+        greetings: [
+          'Yo! Aku Raka. Tadi aku dengar kamu punya setup hobi keren di dalam. Sudah coba latihan skill hari ini?',
+          'Mantap! Makin tinggi level hobimu, makin besar juga penghasilan Simoleons yang bisa kamu kumpulkan.'
+        ]
+      }
+    ];
+
+    const npcs = npcConfigs.map(cfg => {
+      const rig = buildSmoothCharacter(cfg);
+      applyCharacterStyle(rig, cfg);
+      rig.root.position.copy(cfg.pos);
+      scene.add(rig.root);
+
+      const npcObj = {
+        ...cfg,
+        rig,
+        wpIndex: 0,
+        waitTimer: 2 + Math.random() * 3,
+        isTalking: false
+      };
+
+      rig.root.userData = {
+        isNPC: true,
+        npcRef: npcObj,
+        interactiveName: cfg.name,
+        actions: [
+          { label: '👋 Samperin & Ngobrol (+Sosial)', icon: '💬', talkToNPC: npcObj },
+          { label: '😄 Ajak Bercanda (+Sosial, +Hiburan)', icon: '😄', talkToNPC: npcObj, jokeMode: true }
+        ]
+      };
+      rig.root.traverse(c => {
+        if (c.isMesh) c.userData.parentInteractive = rig.root;
+      });
+      interactiveObjects.push(rig.root);
+      return npcObj;
+    });
+
+    function openNPCDialogue(npc, jokeMode = false) {
+      npc.isTalking = true;
+      npc.talkedCount += 1;
+      npc.relationship = Math.min(100, npc.relationship + (jokeMode ? 14 : 10));
+      simState.needs.social = Math.min(100, simState.needs.social + 28);
+      if (jokeMode) simState.needs.fun = Math.min(100, simState.needs.fun + 20);
+
+      const dirToNPC = npc.rig.root.position.clone().sub(simState.position);
+      simState.rotationY = Math.atan2(dirToNPC.x, dirToNPC.z);
+      npc.rig.root.rotation.y = Math.atan2(-dirToNPC.x, -dirToNPC.z);
+
+      const modal = document.getElementById('dialogue-modal');
+      document.getElementById('dlg-npc-name').textContent = npc.name;
+      const relLabel = npc.relationship >= 60 ? 'Sahabat Dekat' : npc.relationship >= 40 ? 'Teman Baik' : 'Kenalan';
+      document.getElementById('dlg-rel-badge').textContent = `${relLabel} (${npc.relationship}/100)`;
+      document.getElementById('dlg-speech').textContent = `"${npc.greetings[npc.talkedCount % npc.greetings.length]}"`;
+
+      const choicesBox = document.getElementById('dlg-choices');
+      choicesBox.innerHTML = '';
+
+      const options = [
+        {
+          text: '😊 Puji Penampilan & Rumahnya (+12 Hubungan)',
+          reply: `"Terima kasih banyak, ${simState.name}! Kamu juga ramah sekali."`,
+          rel: 12,
+          social: 18
+        },
+        {
+          text: '🎹 Ceritakan Tentang Hobi & Musik (+10 Hubungan)',
+          reply: '"Seru banget! Aku juga suka melihat orang yang tekun mengasah skill dan hobinya."',
+          rel: 10,
+          social: 15
+        },
+        {
+          text: '🤣 Ceritakan Lelucon Lucu (+14 Hubungan)',
+          reply: '"Hahaha! Lucu banget sih kamu, suasana langsung cair!"',
+          rel: 14,
+          social: 20
+        },
+        {
+          text: '👋 Pamit & Lanjutkan Aktivitas',
+          reply: null,
+          close: true
+        }
+      ];
+
+      options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'dlg-choice-btn';
+        btn.textContent = opt.text;
+        btn.addEventListener('click', () => {
+          if (opt.close) {
+            modal.style.display = 'none';
+            npc.isTalking = false;
+            return;
+          }
+          npc.relationship = Math.min(100, npc.relationship + opt.rel);
+          simState.needs.social = Math.min(100, simState.needs.social + opt.social);
+          const updatedLabel = npc.relationship >= 60 ? 'Sahabat Dekat' : npc.relationship >= 40 ? 'Teman Baik' : 'Kenalan';
+          document.getElementById('dlg-rel-badge').textContent = `${updatedLabel} (${npc.relationship}/100)`;
+          document.getElementById('dlg-speech').textContent = opt.reply;
+          checkStoryProgress();
+        });
+        choicesBox.appendChild(btn);
+      });
+
+      modal.style.display = 'block';
+      checkStoryProgress();
+    }
+
+    // ==========================================
+    // 8. UI KUSTOMISASI CAS & HOBI & RENOVASI
     // ==========================================
     const skinPalette = ['#ffdfc4', '#f0c097', '#e0ac84', '#c68642', '#8d5524', '#523218'];
     const hairPalette = ['#1c1c1c', '#4a2e16', '#8c5327', '#e6be5a', '#b83227', '#dce4ec'];
@@ -1206,53 +2223,136 @@
       updateSimAppearance();
     });
 
-    document.getElementById('top-custom-color').addEventListener('input', e => {
-      simState.topColor = e.target.value;
-      updateSimAppearance();
-    });
+    document.getElementById('top-custom-color').addEventListener('input', e => { simState.topColor = e.target.value; updateSimAppearance(); });
+    document.getElementById('bottom-custom-color').addEventListener('input', e => { simState.bottomColor = e.target.value; updateSimAppearance(); });
+    document.getElementById('sim-name-input').addEventListener('input', e => { simState.name = e.target.value.trim() || 'Sim'; updateSimAppearance(); });
 
-    document.getElementById('bottom-custom-color').addEventListener('input', e => {
-      simState.bottomColor = e.target.value;
-      updateSimAppearance();
-    });
-
-    document.getElementById('sim-name-input').addEventListener('input', e => {
-      simState.name = e.target.value.trim() || 'Sim';
-      updateSimAppearance();
-    });
-
-    function setupPills(containerId, callback) {
-      const container = document.getElementById(containerId);
-      container.querySelectorAll('.style-pill').forEach(pill => {
-        pill.addEventListener('click', () => {
-          container.querySelectorAll('.style-pill').forEach(p => p.classList.remove('active'));
-          pill.classList.add('active');
-          callback(pill.dataset.style);
+    function setupPills(containerId, cb) {
+      const box = document.getElementById(containerId);
+      box.querySelectorAll('.style-pill').forEach(p => {
+        p.addEventListener('click', () => {
+          box.querySelectorAll('.style-pill').forEach(x => x.classList.remove('active'));
+          p.classList.add('active');
+          cb(p.dataset.style);
         });
       });
     }
+    setupPills('hair-styles', s => { simState.hairStyle = s; updateSimAppearance(); });
+    setupPills('top-styles', s => { simState.topStyle = s; updateSimAppearance(); });
+    setupPills('bottom-styles', s => { simState.bottomStyle = s; updateSimAppearance(); });
 
-    setupPills('hair-styles', style => { simState.hairStyle = style; updateSimAppearance(); });
-    setupPills('top-styles', style => { simState.topStyle = style; updateSimAppearance(); });
-    setupPills('bottom-styles', style => { simState.bottomStyle = style; updateSimAppearance(); });
-
-    const casModal = document.getElementById('cas-modal');
     document.getElementById('confirm-cas-btn').addEventListener('click', () => {
-      casModal.style.display = 'none';
+      document.getElementById('cas-modal').style.display = 'none';
       simState.inCAS = false;
     });
 
     document.getElementById('open-cas-btn').addEventListener('click', () => {
-      casModal.style.display = 'block';
+      if (worldState.buildMode) toggleBuildMode();
+      document.getElementById('cas-modal').style.display = 'block';
       simState.inCAS = true;
-      simState.currentAction = null;
-      simState.targetPos = null;
-      simState.pose = 'idle';
-      renderActionQueue();
+      cancelCurrentAction();
+    });
+
+    document.getElementById('toggle-hobby-btn').addEventListener('click', () => {
+      const hp = document.getElementById('hobby-panel');
+      hp.style.display = hp.style.display === 'block' ? 'none' : 'block';
     });
 
     // ==========================================
-    // 6. KONTROL KAMERA & INTERAKSI KLIK 3D
+    // 9. MODE RENOVASI RUMAH (BUILD & BUY)
+    // ==========================================
+    let ghostMesh = null;
+
+    function buildCatalogUI() {
+      const box = document.getElementById('build-catalog');
+      box.innerHTML = '';
+      buildCatalogList.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'catalog-card';
+        card.innerHTML = `
+          <div class="catalog-icon">${item.icon}</div>
+          <div class="catalog-name">${item.name}</div>
+          <div class="catalog-price">§ ${item.price}</div>
+        `;
+        card.addEventListener('click', () => {
+          box.querySelectorAll('.catalog-card').forEach(c => c.classList.remove('selected'));
+          card.classList.add('selected');
+          selectBuildItem(item);
+        });
+        box.appendChild(card);
+      });
+    }
+    buildCatalogUI();
+
+    function selectBuildItem(item) {
+      worldState.selectedCatalogItem = item;
+      if (ghostMesh) scene.remove(ghostMesh);
+      ghostMesh = createFurnitureMesh(item.type);
+      ghostMesh.traverse(c => {
+        if (c.isMesh) {
+          c.material = c.material.clone();
+          c.material.transparent = true;
+          c.material.opacity = 0.6;
+        }
+      });
+      scene.add(ghostMesh);
+    }
+
+    function toggleBuildMode() {
+      worldState.buildMode = !worldState.buildMode;
+      const btn = document.getElementById('toggle-build-btn');
+      const buildPanel = document.getElementById('build-panel');
+      const liveHud = document.getElementById('sims3-hud');
+
+      if (worldState.buildMode) {
+        btn.classList.add('active-mode');
+        buildPanel.style.display = 'block';
+        liveHud.style.display = 'none';
+        document.getElementById('build-money').textContent = '§ ' + simState.money.toLocaleString('id-ID');
+        showToast('🔨 Mode Renovasi Aktif: Pilih furnitur atau ganti lantai/dinding!');
+      } else {
+        btn.classList.remove('active-mode');
+        buildPanel.style.display = 'none';
+        liveHud.style.display = 'grid';
+        worldState.selectedCatalogItem = null;
+        if (ghostMesh) {
+          scene.remove(ghostMesh);
+          ghostMesh = null;
+        }
+      }
+    }
+
+    document.getElementById('toggle-build-btn').addEventListener('click', toggleBuildMode);
+
+    document.querySelectorAll('[data-floor]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const key = btn.dataset.floor;
+        houseFloorMat.map = floorTextures[key];
+        houseFloorMat.needsUpdate = true;
+        renovationDone = true;
+        checkStoryProgress();
+        showToast('🪵 Motif lantai rumah berhasil diperbarui!');
+      });
+    });
+
+    document.querySelectorAll('[data-wall]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        wallMat.color.set(btn.dataset.wall);
+        renovationDone = true;
+        checkStoryProgress();
+        showToast('🧱 Warna cat dinding rumah berhasil diganti!');
+      });
+    });
+
+    window.addEventListener('keydown', e => {
+      if ((e.key === 'r' || e.key === 'R') && worldState.buildMode && ghostMesh) {
+        worldState.ghostRotation += Math.PI / 2;
+        ghostMesh.rotation.y = worldState.ghostRotation;
+      }
+    });
+
+    // ==========================================
+    // 10. KONTROL KAMERA & INTERAKSI KLIK 3D
     // ==========================================
     let isRightDragging = false;
     let prevMouse = { x: 0, y: 0 };
@@ -1264,6 +2364,7 @@
     canvas.addEventListener('contextmenu', e => e.preventDefault());
 
     canvas.addEventListener('mousedown', e => {
+      if (e.target !== canvas || simState.inMenu) return;
       if (e.button === 2) {
         isRightDragging = true;
         prevMouse = { x: e.clientX, y: e.clientY };
@@ -1272,23 +2373,38 @@
       }
     });
 
-    window.addEventListener('mouseup', () => {
-      isRightDragging = false;
-    });
+    window.addEventListener('mouseup', () => { isRightDragging = false; });
 
     window.addEventListener('mousemove', e => {
+      if (simState.inMenu) return;
       if (isRightDragging) {
         const dx = e.clientX - prevMouse.x;
         const dy = e.clientY - prevMouse.y;
         prevMouse = { x: e.clientX, y: e.clientY };
         worldState.cameraYaw -= dx * 0.007;
-        worldState.cameraPitch = Math.max(0.22, Math.min(1.35, worldState.cameraPitch + dy * 0.006));
-      } else if (!simState.inCAS) {
+        worldState.cameraPitch = Math.max(0.22, Math.min(1.32, worldState.cameraPitch + dy * 0.006));
+        return;
+      }
+
+      if (worldState.buildMode && ghostMesh) {
+        const hits = getRaycastHits(e);
+        const floorHit = hits.find(h => h.object === houseFloorMesh || h.object === lawnMesh);
+        if (floorHit) {
+          const sx = Math.round(floorHit.point.x * 2) / 2;
+          const sz = Math.round(floorHit.point.z * 2) / 2;
+          const sy = floorHit.object === houseFloorMesh ? 0.16 : 0.0;
+          ghostMesh.position.set(sx, sy, sz);
+        }
+        return;
+      }
+
+      if (!simState.inCAS) {
         updateHoverTooltip(e);
       }
     });
 
     canvas.addEventListener('wheel', e => {
+      if (simState.inMenu) return;
       worldState.cameraDistance = Math.max(5.5, Math.min(28, worldState.cameraDistance + e.deltaY * 0.01));
     }, { passive: true });
 
@@ -1307,19 +2423,18 @@
 
     function updateHoverTooltip(e) {
       const hits = getRaycastHits(e);
-      let foundObj = null;
+      let found = null;
       for (const hit of hits) {
         if (hit.object.userData && hit.object.userData.parentInteractive) {
-          foundObj = hit.object.userData.parentInteractive;
+          found = hit.object.userData.parentInteractive;
           break;
         }
       }
-
-      if (foundObj) {
+      if (found) {
         tooltip.style.display = 'block';
         tooltip.style.left = e.clientX + 'px';
         tooltip.style.top = e.clientY + 'px';
-        tooltip.textContent = '✨ ' + foundObj.userData.interactiveName;
+        tooltip.textContent = (found.userData.isNPC ? '💬 ' : '✨ ') + found.userData.interactiveName;
         document.body.style.cursor = 'pointer';
       } else {
         tooltip.style.display = 'none';
@@ -1329,116 +2444,193 @@
 
     function handleWorldClick(e) {
       pieMenu.style.display = 'none';
-      if (simState.inCAS) return;
+      if (simState.inCAS || simState.inMenu) return;
 
       const hits = getRaycastHits(e);
       if (hits.length === 0) return;
 
-      // Cek apakah klik objek interaktif
+      if (worldState.buildMode) {
+        if (worldState.selectedCatalogItem && ghostMesh) {
+          const item = worldState.selectedCatalogItem;
+          if (simState.money < item.price) {
+            showToast('❌ Simoleons (§) tidak cukup untuk membeli furnitur ini!');
+            return;
+          }
+          simState.money -= item.price;
+          document.getElementById('build-money').textContent = '§ ' + simState.money.toLocaleString('id-ID');
+          spawnFurniture(item.type, item.name, ghostMesh.position.x, ghostMesh.position.y, ghostMesh.position.z, worldState.ghostRotation, true);
+          renovationDone = true;
+          checkStoryProgress();
+          showToast(`✅ ${item.name} berhasil dipasang!`);
+          return;
+        }
+
+        for (const hit of hits) {
+          const parent = hit.object.userData && hit.object.userData.parentInteractive;
+          if (parent && parent.userData.isFurniture && parent.userData.removable) {
+            openPieMenu(e.clientX, e.clientY, parent.userData.interactiveName, [
+              {
+                label: '💰 Jual Furnitur (+§ 150)',
+                customFn: () => {
+                  scene.remove(parent);
+                  const idx = interactiveObjects.indexOf(parent);
+                  if (idx > -1) interactiveObjects.splice(idx, 1);
+                  simState.money += 150;
+                  document.getElementById('build-money').textContent = '§ ' + simState.money.toLocaleString('id-ID');
+                  showToast('💰 Furnitur dijual (+§ 150)');
+                }
+              }
+            ]);
+            return;
+          }
+        }
+        return;
+      }
+
       for (const hit of hits) {
         if (hit.object.userData && hit.object.userData.parentInteractive) {
           const obj = hit.object.userData.parentInteractive;
-          openPieMenu(e.clientX, e.clientY, obj);
+          openPieMenu(e.clientX, e.clientY, obj.userData.interactiveName, obj.userData.actions, obj);
           return;
         }
       }
 
-      // Jika klik lantai/rumput, gerakkan Sim ke posisi tersebut
       for (const hit of hits) {
-        if (walkableFloors.includes(hit.object)) {
+        if (hit.object === houseFloorMesh || hit.object === lawnMesh) {
           const dest = hit.point.clone();
           dest.x = Math.max(-22, Math.min(22, dest.x));
           dest.z = Math.max(-22, Math.min(22, dest.z));
-          dest.y = 0;
+          dest.y = hit.object === houseFloorMesh ? 0.16 : 0.0;
 
           cancelCurrentAction();
           simState.targetPos = dest;
-          destMarker.position.set(dest.x, 0.21, dest.z);
+          destMarker.position.set(dest.x, dest.y + 0.03, dest.z);
           destMarker.visible = true;
           return;
         }
       }
     }
 
-    function openPieMenu(x, y, obj) {
+    function openPieMenu(x, y, title, actions, targetObj = null) {
       const header = document.getElementById('pie-menu-header');
-      const optionsBox = document.getElementById('pie-menu-options');
-      header.textContent = obj.userData.interactiveName;
-      optionsBox.innerHTML = '';
+      const box = document.getElementById('pie-menu-options');
+      header.textContent = title;
+      box.innerHTML = '';
 
-      obj.userData.actions.forEach(act => {
+      actions.forEach(act => {
         const btn = document.createElement('button');
         btn.className = 'pie-option';
         btn.textContent = act.label;
         btn.addEventListener('click', () => {
           pieMenu.style.display = 'none';
-          startSimAction(obj, act);
+          if (act.customFn) {
+            act.customFn();
+          } else {
+            startSimAction(targetObj, act);
+          }
         });
-        optionsBox.appendChild(btn);
+        box.appendChild(btn);
       });
 
-      const menuX = Math.min(window.innerWidth - 220, x + 10);
-      const menuY = Math.min(window.innerHeight - 180, y + 10);
-      pieMenu.style.left = menuX + 'px';
-      pieMenu.style.top = menuY + 'px';
+      pieMenu.style.left = Math.min(window.innerWidth - 230, x + 10) + 'px';
+      pieMenu.style.top = Math.min(window.innerHeight - 170, y + 10) + 'px';
       pieMenu.style.display = 'block';
     }
 
     // ==========================================
-    // 7. SISTEM AKSI SIM & KEBUTUHAN (NEEDS)
+    // 11. LOGIKA AKSI, STAMINA, HOBI & STORY
     // ==========================================
     function cancelCurrentAction() {
       simState.currentAction = null;
       simState.actionProgress = 0;
       simState.pose = 'idle';
-      tvScreenMat.emissive.set('#000000');
+      if (tvScreenMat) tvScreenMat.emissive.set('#000000');
       renderActionQueue();
     }
 
     function startSimAction(obj, act) {
       if (act.cost && simState.money < act.cost) {
-        alert('Simoleons (§) tidak cukup!');
+        showToast('❌ Simoleons (§) tidak cukup!');
         return;
       }
 
-      const dest = obj.position.clone().add(act.standOffset || new THREE.Vector3(0, 0, 1));
-      dest.y = 0;
+      let dest;
+      if (act.talkToNPC) {
+        const npcPos = act.talkToNPC.rig.root.position;
+        const approachDir = simState.position.clone().sub(npcPos).normalize();
+        if (approachDir.lengthSq() < 0.01) approachDir.set(0, 0, 1);
+        dest = npcPos.clone().add(approachDir.multiplyScalar(1.25));
+      } else {
+        const localOffset = new THREE.Vector3(act.offset ? act.offset[0] : 0, 0, act.offset ? act.offset[1] : 1);
+        localOffset.applyAxisAngle(new THREE.Vector3(0, 1, 0), obj.rotation.y);
+        dest = obj.position.clone().add(localOffset);
+      }
 
       simState.targetPos = dest;
-      simState.currentAction = {
-        obj,
-        act,
-        started: false
-      };
+      simState.currentAction = { obj, act, started: false };
       simState.actionProgress = 0;
-      destMarker.position.set(dest.x, 0.21, dest.z);
+      destMarker.position.set(dest.x, dest.y + 0.03, dest.z);
       destMarker.visible = true;
       renderActionQueue();
     }
 
     function renderActionQueue() {
-      const queue = document.getElementById('action-queue');
-      queue.innerHTML = '';
-      if (!simState.currentAction) return;
-
+      const box = document.getElementById('action-queue-box');
+      if (!simState.currentAction) {
+        box.style.display = 'none';
+        return;
+      }
+      box.style.display = 'block';
       const { obj, act, started } = simState.currentAction;
       const pct = started ? Math.min(100, Math.round((simState.actionProgress / act.duration) * 100)) : 0;
 
-      const card = document.createElement('div');
-      card.className = 'action-card';
-      card.innerHTML = `
-        <div class="action-icon">${act.icon}</div>
-        <div class="action-info">
-          <div class="action-title">${obj.userData.interactiveName}</div>
-          <div class="action-sub">${started ? `Berlangsung... (${pct}%)` : 'Berjalan menuju objek...'}</div>
+      box.innerHTML = `
+        <div class="action-card">
+          <div class="action-icon">${act.icon}</div>
+          <div class="action-info">
+            <div class="action-title">${obj.userData.interactiveName}</div>
+            <div class="action-sub">${started ? `Berlangsung... (${pct}%)` : 'Menuju lokasi...'}</div>
+          </div>
+          <button class="cancel-btn" title="Batalkan">✕</button>
         </div>
-        <button class="cancel-action-btn" title="Batalkan">✕</button>
       `;
-      card.querySelector('.cancel-action-btn').addEventListener('click', cancelCurrentAction);
-      queue.appendChild(card);
+      box.querySelector('.cancel-btn').addEventListener('click', cancelCurrentAction);
     }
 
-    // Kontrol Kecepatan Waktu Sims 3
+    function addHobbyXP(hobbyKey, amount) {
+      const h = simState.hobbies[hobbyKey];
+      if (!h) return;
+      h.xp += amount;
+      while (h.xp >= 100 && h.level < 10) {
+        h.xp -= 100;
+        h.level += 1;
+        showToast(`🎉 Naik Level! Hobi ${hobbyKey.toUpperCase()} mencapai Level ${h.level}!`);
+      }
+      updateHobbyUI();
+      checkStoryProgress();
+    }
+
+    function updateHobbyUI() {
+      ['music', 'coding', 'painting', 'fitness'].forEach(k => {
+        const h = simState.hobbies[k];
+        document.getElementById('lvl-' + k).textContent = 'Lv. ' + h.level;
+        document.getElementById('xp-' + k).style.width = Math.min(100, h.xp) + '%';
+      });
+    }
+    updateHobbyUI();
+
+    function checkStoryProgress() {
+      if (worldState.gameMode !== 'story') return;
+      if (currentStoryIdx >= storyChapters.length) return;
+      const q = storyChapters[currentStoryIdx];
+      if (q.check()) {
+        simState.money += q.reward;
+        showToast(`🏆 Misi Selesai: "${q.title}" (+§ ${q.reward})`);
+        currentStoryIdx += 1;
+        refreshModeTrackerUI();
+      }
+    }
+
     document.querySelectorAll('.speed-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
@@ -1449,43 +2641,40 @@
 
     function updateHUD() {
       const n = simState.needs;
-      const keys = ['hunger', 'energy', 'hygiene', 'bladder', 'fun', 'social'];
-      let total = 0;
+      const keys = ['energy', 'hunger', 'hygiene', 'bladder', 'fun', 'social'];
+      let sum = 0;
 
       keys.forEach(k => {
-        const val = Math.max(0, Math.min(100, n[k]));
-        total += val;
-        document.getElementById('val-' + k).textContent = Math.round(val) + '%';
+        const v = Math.max(0, Math.min(100, n[k]));
+        sum += v;
+        document.getElementById('val-' + k).textContent = Math.round(v) + '%';
         const bar = document.getElementById('bar-' + k);
-        bar.style.width = val + '%';
-
-        if (val > 55) {
-          bar.style.background = 'linear-gradient(90deg, #27ae60, #5eff6c)';
-        } else if (val > 25) {
-          bar.style.background = 'linear-gradient(90deg, #f39c12, #ffe047)';
-        } else {
-          bar.style.background = 'linear-gradient(90deg, #c0392b, #ff5e4d)';
-        }
+        bar.style.width = v + '%';
+        bar.style.background = v > 55
+          ? 'linear-gradient(90deg, #27ae60, #5eff6c)'
+          : v > 25
+            ? 'linear-gradient(90deg, #f39c12, #ffe047)'
+            : 'linear-gradient(90deg, #c0392b, #ff5e4d)';
       });
 
-      const avg = total / keys.length;
-      const hudPlumbob = document.getElementById('hud-plumbob');
+      const avg = sum / keys.length;
       const moodEl = document.getElementById('hud-mood');
+      const hudPlumbob = document.getElementById('hud-plumbob');
 
-      if (avg > 65) {
+      if (avg > 62) {
         moodEl.textContent = 'Suasana Hati: Sangat Bahagia';
         moodEl.style.color = '#88ff82';
         hudPlumbob.style.background = 'linear-gradient(135deg, #7dff6b, #1ca628)';
         plumbobMat.color.set('#4dff47');
         plumbobMat.emissive.set('#1fa81b');
-      } else if (avg > 35) {
-        moodEl.textContent = 'Suasana Hati: Biasa Saja';
+      } else if (avg > 34) {
+        moodEl.textContent = 'Suasana Hati: Cukup Baik';
         moodEl.style.color = '#ffe56b';
         hudPlumbob.style.background = 'linear-gradient(135deg, #fff06b, #d4a017)';
         plumbobMat.color.set('#ffdf38');
         plumbobMat.emissive.set('#b8920b');
       } else {
-        moodEl.textContent = 'Suasana Hati: Kurang Nyaman';
+        moodEl.textContent = 'Suasana Hati: Lelah / Butuh Istirahat';
         moodEl.style.color = '#ff7b6b';
         hudPlumbob.style.background = 'linear-gradient(135deg, #ff796b, #b82518)';
         plumbobMat.color.set('#ff4738');
@@ -1496,13 +2685,57 @@
 
       const hrs = Math.floor(worldState.minutes / 60) % 24;
       const mins = Math.floor(worldState.minutes % 60);
-      const timeStr = `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}`;
-      document.getElementById('hud-clock').textContent = `Hari ${worldState.day} • ${timeStr}`;
+      document.getElementById('hud-clock').textContent = `Hari ${worldState.day} • ${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}`;
     }
 
     // ==========================================
-    // 8. ANIMASI & GAME LOOP UTAMA
+    // 12. ANIMASI KARAKTER & GAME LOOP
     // ==========================================
+    function animateRig(rig, pose, t, activeSpeed) {
+      rig.body.position.set(0, 0, 0);
+      rig.body.rotation.set(0, 0, 0);
+      rig.leftArm.pivot.rotation.set(0, 0, 0);
+      rig.rightArm.pivot.rotation.set(0, 0, 0);
+      rig.leftLeg.pivot.rotation.set(0, 0, 0);
+      rig.rightLeg.pivot.rotation.set(0, 0, 0);
+
+      if (pose === 'walk' && activeSpeed > 0) {
+        const s = Math.sin(t * 10) * 0.6;
+        rig.leftLeg.pivot.rotation.x = s;
+        rig.rightLeg.pivot.rotation.x = -s;
+        rig.leftArm.pivot.rotation.x = -s * 0.65;
+        rig.rightArm.pivot.rotation.x = s * 0.65;
+        rig.body.position.y = Math.abs(Math.sin(t * 10)) * 0.05;
+      } else if (pose === 'sit') {
+        rig.body.position.y = -0.34;
+        rig.leftLeg.pivot.rotation.x = -Math.PI / 2;
+        rig.rightLeg.pivot.rotation.x = -Math.PI / 2;
+        rig.leftArm.pivot.rotation.x = -0.45 + Math.sin(t * 9) * 0.08;
+        rig.rightArm.pivot.rotation.x = -0.45 - Math.sin(t * 9) * 0.08;
+      } else if (pose === 'play_music' && activeSpeed > 0) {
+        rig.leftArm.pivot.rotation.x = -0.75 + Math.sin(t * 12) * 0.16;
+        rig.rightArm.pivot.rotation.x = -0.75 - Math.cos(t * 12) * 0.16;
+        rig.body.rotation.z = Math.sin(t * 4) * 0.05;
+      } else if (pose === 'sleep') {
+        rig.body.position.set(-1.3, 0.78, 0);
+        rig.body.rotation.z = Math.PI / 2;
+      } else if (pose === 'workout' && activeSpeed > 0) {
+        const lift = Math.sin(t * 6) * 0.7 - 1.25;
+        rig.leftArm.pivot.rotation.x = lift;
+        rig.rightArm.pivot.rotation.x = lift;
+        rig.body.position.y = Math.abs(Math.sin(t * 6)) * 0.07;
+      } else if (pose === 'shower' && activeSpeed > 0) {
+        rig.body.rotation.y = Math.sin(t * 4) * 0.35;
+        rig.leftArm.pivot.rotation.x = -0.6 + Math.sin(t * 8) * 0.2;
+        rig.rightArm.pivot.rotation.x = -0.6 - Math.sin(t * 8) * 0.2;
+      } else if (pose === 'talk' && activeSpeed > 0) {
+        rig.leftArm.pivot.rotation.x = -0.4 + Math.sin(t * 6) * 0.25;
+        rig.rightArm.pivot.rotation.x = -0.5 - Math.cos(t * 6) * 0.25;
+      } else {
+        rig.body.position.y = Math.sin(t * 2.5) * 0.018;
+      }
+    }
+
     const clock = new THREE.Clock();
 
     function animate() {
@@ -1512,24 +2745,35 @@
       const elapsed = clock.getElapsedTime();
       const simDt = rawDt * worldState.gameSpeed;
 
-      // Putar & Apungkan Plumbob di atas kepala Sim
-      plumbobGroup.rotation.y += rawDt * 2.2;
-      plumbobGroup.position.y = 2.45 + Math.sin(elapsed * 3.5) * 0.06;
+      plumbobGroup.rotation.y += rawDt * 2.3;
+      plumbobGroup.position.y = 2.36 + Math.sin(elapsed * 3.5) * 0.05;
 
-      // Jika sedang di Create-A-Sim, arahkan kamera dekat ke karakter agar mudah dilihat
-      if (simState.inCAS) {
-        simRoot.position.copy(simState.position);
-        simRoot.rotation.y = Math.sin(elapsed * 0.8) * 0.35;
-        resetLimbs();
+      // Kamera Panorama Berputar Otomatis saat di Opening Screen ("WILLIAM GAME")
+      if (simState.inMenu) {
+        playerRig.root.position.copy(simState.position);
+        animateRig(playerRig, 'idle', elapsed, 1);
 
-        const casCamPos = simState.position.clone().add(new THREE.Vector3(1.1, 1.55, 3.1));
-        camera.position.lerp(casCamPos, 0.12);
-        camera.lookAt(simState.position.x - 0.45, simState.position.y + 1.25, simState.position.z);
+        const menuAngle = elapsed * 0.18;
+        camera.position.set(Math.sin(menuAngle) * 18.5, 9.5, Math.cos(menuAngle) * 18.5);
+        camera.lookAt(0, 1.4, -0.5);
         renderer.render(scene, camera);
         return;
       }
 
-      // Waktu Dunia & Penurunan Kebutuhan (Needs)
+      // Kamera Close-up saat Create-A-Sim
+      if (simState.inCAS) {
+        playerRig.root.position.copy(simState.position);
+        playerRig.root.rotation.y = Math.sin(elapsed * 0.8) * 0.35;
+        animateRig(playerRig, 'idle', elapsed, 1);
+
+        const camGoal = simState.position.clone().add(new THREE.Vector3(1.0, 1.48, 2.75));
+        camera.position.lerp(camGoal, 0.12);
+        camera.lookAt(simState.position.x - 0.38, simState.position.y + 1.25, simState.position.z);
+        renderer.render(scene, camera);
+        return;
+      }
+
+      // Simulasi Waktu & Kebutuhan
       if (worldState.gameSpeed > 0) {
         worldState.minutes += simDt * 3.5;
         if (worldState.minutes >= 24 * 60) {
@@ -1537,39 +2781,58 @@
           worldState.day += 1;
         }
 
-        // Siklus Cahaya Siang / Malam Dinamis
         const hour = (worldState.minutes / 60) % 24;
         const isNight = hour < 6 || hour >= 19;
-        if (isNight) {
-          scene.background.lerp(new THREE.Color('#132238'), 0.02);
-          scene.fog.color.lerp(new THREE.Color('#132238'), 0.02);
-          sunLight.intensity = THREE.MathUtils.lerp(sunLight.intensity, 0.25, 0.02);
-        } else {
-          scene.background.lerp(new THREE.Color('#7ec8ff'), 0.02);
-          scene.fog.color.lerp(new THREE.Color('#7ec8ff'), 0.02);
-          sunLight.intensity = THREE.MathUtils.lerp(sunLight.intensity, 1.05, 0.02);
-        }
+        scene.background.lerp(new THREE.Color(isNight ? '#132238' : '#78c5ff'), 0.02);
+        scene.fog.color.lerp(new THREE.Color(isNight ? '#132238' : '#88ceff'), 0.02);
+        sunLight.intensity = THREE.MathUtils.lerp(sunLight.intensity, isNight ? 0.28 : 1.15, 0.02);
 
-        // Deplesi Needs perlahan
-        simState.needs.hunger = Math.max(0, simState.needs.hunger - simDt * 0.55);
-        simState.needs.energy = Math.max(0, simState.needs.energy - simDt * 0.45);
-        simState.needs.hygiene = Math.max(0, simState.needs.hygiene - simDt * 0.4);
-        simState.needs.bladder = Math.max(0, simState.needs.bladder - simDt * 0.5);
-        simState.needs.fun = Math.max(0, simState.needs.fun - simDt * 0.45);
-        simState.needs.social = Math.max(0, simState.needs.social - simDt * 0.35);
+        const activeDrainMult = simState.pose !== 'idle' ? 1.55 : 0.85;
+        simState.needs.energy = Math.max(0, simState.needs.energy - simDt * 1.15 * activeDrainMult);
+        simState.needs.hunger = Math.max(0, simState.needs.hunger - simDt * 0.75);
+        simState.needs.hygiene = Math.max(0, simState.needs.hygiene - simDt * 0.55);
+        simState.needs.bladder = Math.max(0, simState.needs.bladder - simDt * 0.65);
+        simState.needs.fun = Math.max(0, simState.needs.fun - simDt * 0.65);
+        simState.needs.social = Math.max(0, simState.needs.social - simDt * 0.5);
       }
 
-      // Pergerakan Sim menuju target
+      // Update Pergerakan NPC Tamu
+      npcs.forEach(npc => {
+        if (npc.isTalking) {
+          animateRig(npc.rig, 'talk', elapsed, worldState.gameSpeed);
+          return;
+        }
+        if (worldState.gameSpeed === 0) return;
+
+        const targetWP = npc.waypoints[npc.wpIndex];
+        const diff = targetWP.clone().sub(npc.rig.root.position);
+        diff.y = 0;
+
+        if (diff.length() > 0.15) {
+          const dir = diff.normalize();
+          npc.rig.root.position.add(dir.multiplyScalar(simDt * 1.65));
+          npc.rig.root.rotation.y = Math.atan2(dir.x, dir.z);
+          animateRig(npc.rig, 'walk', elapsed, 1);
+        } else {
+          animateRig(npc.rig, 'idle', elapsed, 1);
+          npc.waitTimer -= simDt;
+          if (npc.waitTimer <= 0) {
+            npc.waitTimer = 3 + Math.random() * 4;
+            npc.wpIndex = (npc.wpIndex + 1) % npc.waypoints.length;
+          }
+        }
+      });
+
+      // Pergerakan Karakter Utama
       if (simState.targetPos && worldState.gameSpeed > 0) {
         const diff = simState.targetPos.clone().sub(simState.position);
         diff.y = 0;
         const dist = diff.length();
 
-        if (dist > 0.12) {
+        if (dist > 0.14) {
           simState.pose = 'walk';
           const dir = diff.normalize();
-          const moveStep = Math.min(dist, simDt * 3.6);
-          simState.position.add(dir.multiplyScalar(moveStep));
+          simState.position.add(dir.multiplyScalar(Math.min(dist, simDt * 3.8)));
           simState.rotationY = Math.atan2(dir.x, dir.z);
         } else {
           simState.position.copy(simState.targetPos);
@@ -1578,22 +2841,21 @@
 
           if (simState.currentAction) {
             const { obj, act } = simState.currentAction;
-            if (act.openCAS) {
-              simState.currentAction = null;
-              renderActionQueue();
-              document.getElementById('open-cas-btn').click();
+            if (act.talkToNPC) {
+              const npcRef = act.talkToNPC;
+              const isJoke = !!act.jokeMode;
+              cancelCurrentAction();
+              openNPCDialogue(npcRef, isJoke);
             } else {
-              if (act.cost) {
-                simState.money -= act.cost;
-              }
+              if (act.cost) simState.money -= act.cost;
               simState.currentAction.started = true;
               simState.pose = act.pose || 'idle';
-              if (act.tvOn) {
-                tvScreenMat.emissive.set('#2894ff');
-              }
-              if (act.faceTarget) {
-                const lookDir = act.faceTarget.clone().sub(simState.position);
-                simState.rotationY = Math.atan2(lookDir.x, lookDir.z);
+              if (act.tvOn && tvScreenMat) tvScreenMat.emissive.set('#2894ff');
+
+              if (act.face) {
+                simState.rotationY = Math.atan2(act.face[0] - simState.position.x, act.face[1] - simState.position.z);
+              } else {
+                simState.rotationY = Math.atan2(obj.position.x - simState.position.x, obj.position.z - simState.position.z);
               }
               renderActionQueue();
             }
@@ -1603,12 +2865,11 @@
         }
       }
 
-      // Eksekusi Aksi yang Sedang Berlangsung
+      // Eksekusi Aktivitas Berlangsung
       if (simState.currentAction && simState.currentAction.started && worldState.gameSpeed > 0) {
-        const { obj, act } = simState.currentAction;
+        const { act } = simState.currentAction;
         simState.actionProgress += simDt;
 
-        // Isi needs secara bertahap selama aksi berjalan
         if (act.effect) {
           const rate = simDt / act.duration;
           Object.keys(act.effect).forEach(k => {
@@ -1621,16 +2882,24 @@
         }
 
         if (simState.actionProgress >= act.duration) {
+          if (act.hobby && act.xpGain) {
+            addHobbyXP(act.hobby, act.xpGain);
+          }
+          if (act.earn) {
+            const bonus = simState.hobbies[act.hobby] ? simState.hobbies[act.hobby].level * 25 : 0;
+            const totalEarn = act.earn + bonus;
+            simState.money += totalEarn;
+            showToast(`💵 Penghasilan Hobi: +§ ${totalEarn}!`);
+            checkStoryProgress();
+          }
           cancelCurrentAction();
         }
       }
 
-      // Terapkan Transformasi & Pose Tubuh Sim
-      simRoot.position.copy(simState.position);
-      simRoot.rotation.y = simState.rotationY;
-      animateSimPose(elapsed);
+      playerRig.root.position.copy(simState.position);
+      playerRig.root.rotation.y = simState.rotationY;
+      animateRig(playerRig, simState.pose, elapsed, worldState.gameSpeed);
 
-      // Update Posisi Kamera Orbit
       if (worldState.followSim) {
         worldState.cameraTarget.lerp(new THREE.Vector3(simState.position.x, 1.2, simState.position.z), 0.08);
       }
@@ -1643,50 +2912,6 @@
 
       updateHUD();
       renderer.render(scene, camera);
-    }
-
-    function resetLimbs() {
-      simBodyGroup.position.set(0, 0, 0);
-      simBodyGroup.rotation.set(0, 0, 0);
-      leftArm.pivot.rotation.set(0, 0, 0);
-      rightArm.pivot.rotation.set(0, 0, 0);
-      leftLeg.pivot.rotation.set(0, 0, 0);
-      rightLeg.pivot.rotation.set(0, 0, 0);
-    }
-
-    function animateSimPose(t) {
-      resetLimbs();
-      const speedMult = worldState.gameSpeed === 0 ? 0 : 1;
-
-      if (simState.pose === 'walk' && speedMult > 0) {
-        const swing = Math.sin(t * 10) * 0.65;
-        leftLeg.pivot.rotation.x = swing;
-        rightLeg.pivot.rotation.x = -swing;
-        leftArm.pivot.rotation.x = -swing * 0.7;
-        rightArm.pivot.rotation.x = swing * 0.7;
-        simBodyGroup.position.y = Math.abs(Math.sin(t * 10)) * 0.06;
-      } else if (simState.pose === 'sit') {
-        simBodyGroup.position.y = -0.35;
-        leftLeg.pivot.rotation.x = -Math.PI / 2;
-        rightLeg.pivot.rotation.x = -Math.PI / 2;
-        leftArm.pivot.rotation.x = -0.35;
-        rightArm.pivot.rotation.x = -0.35;
-      } else if (simState.pose === 'sleep') {
-        simBodyGroup.position.set(-1.4, 0.78, 0);
-        simBodyGroup.rotation.z = Math.PI / 2;
-      } else if (simState.pose === 'workout' && speedMult > 0) {
-        const lift = Math.sin(t * 6) * 0.8 - 1.2;
-        leftArm.pivot.rotation.x = lift;
-        rightArm.pivot.rotation.x = lift;
-        simBodyGroup.position.y = Math.abs(Math.sin(t * 6)) * 0.08;
-      } else if (simState.pose === 'shower' && speedMult > 0) {
-        simBodyGroup.rotation.y = Math.sin(t * 4) * 0.4;
-        leftArm.pivot.rotation.x = -0.6 + Math.sin(t * 8) * 0.2;
-        rightArm.pivot.rotation.x = -0.6 - Math.sin(t * 8) * 0.2;
-      } else {
-        // Napas halus saat berdiri diam
-        simBodyGroup.position.y = Math.sin(t * 2.5) * 0.02;
-      }
     }
 
     window.addEventListener('resize', () => {
