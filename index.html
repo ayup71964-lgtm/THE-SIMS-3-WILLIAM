@@ -6,6 +6,7 @@
   <title>WILLIAM GAME - Realistic 3D Life Sim</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/utils/SkeletonUtils.js"></script>
   <style>
     * {
       box-sizing: border-box;
@@ -17,7 +18,7 @@
 
     body {
       overflow: hidden;
-      background: #0d1b2a;
+      background: #0b1624;
       width: 100vw;
       height: 100vh;
     }
@@ -35,41 +36,35 @@
       position: fixed;
       inset: 0;
       z-index: 100;
-      background: radial-gradient(circle at center, rgba(14, 42, 78, 0.45) 0%, rgba(7, 20, 40, 0.88) 100%);
-      backdrop-filter: blur(4px);
+      background: radial-gradient(circle at center, rgba(12, 34, 62, 0.42) 0%, rgba(5, 14, 28, 0.88) 100%);
+      backdrop-filter: blur(5px);
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 20px;
-      transition: opacity 0.4s ease;
+      transition: opacity 0.35s ease;
     }
 
     .menu-container {
-      width: min(710px, 95vw);
-      background: linear-gradient(180deg, rgba(24, 72, 132, 0.94), rgba(10, 31, 62, 0.97));
+      width: min(720px, 95vw);
+      background: linear-gradient(180deg, rgba(20, 58, 108, 0.95), rgba(8, 25, 52, 0.98));
       border: 2px solid #84ceff;
-      border-radius: 30px;
-      padding: 34px 30px;
+      border-radius: 28px;
+      padding: 32px 28px;
       text-align: center;
       color: #fff;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.75), inset 0 2px 2px rgba(255, 255, 255, 0.4);
-      animation: menuPop 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    @keyframes menuPop {
-      from { opacity: 0; transform: scale(0.92) translateY(16px); }
-      to { opacity: 1; transform: scale(1) translateY(0); }
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.8), inset 0 1px 2px rgba(255, 255, 255, 0.35);
     }
 
     .menu-plumbob-wrap {
       display: flex;
       justify-content: center;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     .menu-plumbob {
-      width: 34px;
-      height: 54px;
+      width: 32px;
+      height: 52px;
       background: linear-gradient(135deg, #8cff7a 0%, #27c937 55%, #127a1d 100%);
       clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
       filter: drop-shadow(0 0 14px rgba(93, 255, 79, 0.85));
@@ -77,55 +72,52 @@
     }
 
     @keyframes floatDiamond {
-      0%, 100% { transform: translateY(0px) scale(1); }
-      50% { transform: translateY(-7px) scale(1.05); }
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-7px); }
     }
 
     .studio-tag {
       display: inline-block;
       font-size: 11px;
       font-weight: 800;
-      letter-spacing: 3px;
+      letter-spacing: 2.5px;
       text-transform: uppercase;
       color: #9cd6ff;
       background: rgba(255, 255, 255, 0.08);
       border: 1px solid rgba(132, 206, 255, 0.35);
       padding: 4px 14px;
       border-radius: 20px;
-      margin-bottom: 10px;
-    }
-
-    .game-main-title {
-      font-size: clamp(34px, 6vw, 54px);
-      font-weight: 900;
-      letter-spacing: 2px;
-      line-height: 1.05;
-      background: linear-gradient(180deg, #ffffff 15%, #9eff9c 65%, #3be053 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.65));
       margin-bottom: 8px;
     }
 
+    .game-main-title {
+      font-size: clamp(32px, 5.5vw, 52px);
+      font-weight: 900;
+      letter-spacing: 2px;
+      background: linear-gradient(180deg, #ffffff 15%, #9eff9c 65%, #3be053 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 6px;
+    }
+
     .game-sub-title {
-      font-size: 14px;
-      font-weight: 600;
+      font-size: 13.5px;
       color: #cceaff;
-      margin-bottom: 24px;
+      margin-bottom: 22px;
     }
 
     .mode-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin-bottom: 18px;
+      gap: 15px;
+      margin-bottom: 16px;
     }
 
     .mode-card {
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.11), rgba(14, 42, 82, 0.72));
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(12, 36, 72, 0.78));
       border: 2px solid #79c4ff;
-      border-radius: 20px;
-      padding: 18px;
+      border-radius: 18px;
+      padding: 16px;
       cursor: pointer;
       text-align: left;
       color: #fff;
@@ -133,37 +125,19 @@
     }
 
     .mode-card:hover {
-      transform: translateY(-4px);
+      transform: translateY(-3px);
       border-color: #9eff9c;
-      background: linear-gradient(180deg, rgba(56, 184, 73, 0.38), rgba(18, 62, 112, 0.92));
-      box-shadow: 0 12px 28px rgba(45, 204, 72, 0.35);
+      background: linear-gradient(180deg, rgba(56, 184, 73, 0.35), rgba(16, 54, 100, 0.92));
     }
 
     .mode-card.freeplay:hover {
       border-color: #ffd57e;
-      background: linear-gradient(180deg, rgba(230, 126, 34, 0.38), rgba(18, 62, 112, 0.92));
-      box-shadow: 0 12px 28px rgba(230, 126, 34, 0.35);
+      background: linear-gradient(180deg, rgba(230, 126, 34, 0.35), rgba(16, 54, 100, 0.92));
     }
 
-    .mode-icon {
-      font-size: 30px;
-      margin-bottom: 8px;
-      display: block;
-    }
-
-    .mode-title {
-      font-size: 18px;
-      font-weight: 800;
-      margin-bottom: 5px;
-    }
-
-    .mode-desc {
-      font-size: 12px;
-      color: #cde8ff;
-      line-height: 1.45;
-      margin-bottom: 10px;
-    }
-
+    .mode-icon { font-size: 28px; margin-bottom: 6px; display: block; }
+    .mode-title { font-size: 17px; font-weight: 800; margin-bottom: 4px; }
+    .mode-desc { font-size: 12px; color: #cde8ff; line-height: 1.4; margin-bottom: 10px; }
     .mode-pill {
       display: inline-block;
       font-size: 11px;
@@ -174,20 +148,15 @@
       border: 1px solid #7dff6b;
       color: #a6ffa1;
     }
-
     .mode-card.freeplay .mode-pill {
       background: rgba(255, 213, 126, 0.2);
       border-color: #ffd57e;
       color: #ffe6a8;
     }
-
-    .menu-footer-note {
-      font-size: 11.5px;
-      color: #9cd6ff;
-    }
+    .menu-footer-note { font-size: 11.5px; color: #9cd6ff; }
 
     /* ==========================================
-       IN-GAME HUD & PANELS
+       HUD & FLOATING PANELS
        ========================================== */
     #top-left-stack {
       position: fixed;
@@ -195,47 +164,27 @@
       left: 14px;
       display: none;
       flex-direction: column;
-      gap: 9px;
+      gap: 8px;
       z-index: 20;
-      max-width: 305px;
+      max-width: 300px;
       pointer-events: none;
     }
 
     .glass-panel {
-      background: linear-gradient(180deg, rgba(24, 72, 132, 0.93), rgba(11, 34, 68, 0.97));
+      background: linear-gradient(180deg, rgba(20, 62, 114, 0.94), rgba(9, 28, 58, 0.97));
       border: 1.5px solid #7ec8ff;
-      border-radius: 16px;
+      border-radius: 15px;
       padding: 10px 13px;
       color: #fff;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
       pointer-events: auto;
     }
 
-    .action-card {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .action-icon {
-      font-size: 22px;
-    }
-
-    .action-info {
-      flex: 1;
-    }
-
-    .action-title {
-      font-size: 12.5px;
-      font-weight: 700;
-      color: #e6f5ff;
-    }
-
-    .action-sub {
-      font-size: 11px;
-      color: #9cd4ff;
-    }
-
+    .action-card { display: flex; align-items: center; gap: 10px; }
+    .action-icon { font-size: 22px; }
+    .action-info { flex: 1; }
+    .action-title { font-size: 12.5px; font-weight: 700; color: #e6f5ff; }
+    .action-sub { font-size: 11px; color: #9cd4ff; }
     .cancel-btn {
       background: #e74c3c;
       border: 1px solid #ff9a8f;
@@ -257,40 +206,16 @@
       padding: 2px 8px;
       border-radius: 10px;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
       margin-bottom: 4px;
     }
-
-    .story-title {
-      font-size: 13px;
-      font-weight: 700;
-      color: #ffe885;
-      margin-bottom: 3px;
-    }
-
-    .story-desc {
-      font-size: 11.5px;
-      color: #d6eeff;
-      line-height: 1.35;
-    }
-
-    .story-reward {
-      margin-top: 5px;
-      font-size: 11px;
-      font-weight: 700;
-      color: #82ff80;
-    }
+    .story-title { font-size: 13px; font-weight: 700; color: #ffe885; margin-bottom: 3px; }
+    .story-desc { font-size: 11.5px; color: #d6eeff; line-height: 1.35; }
+    .story-reward { margin-top: 5px; font-size: 11px; font-weight: 700; color: #82ff80; }
 
     #burglar-alert {
       background: linear-gradient(90deg, rgba(192, 57, 43, 0.96), rgba(120, 20, 15, 0.98));
       border: 2px solid #ff9a8f;
-      animation: pulseAlert 1s infinite alternate;
       display: none;
-    }
-
-    @keyframes pulseAlert {
-      from { box-shadow: 0 0 8px rgba(255, 75, 55, 0.5); }
-      to { box-shadow: 0 0 22px rgba(255, 75, 55, 0.95); }
     }
 
     #top-right-panel {
@@ -300,60 +225,39 @@
       display: none;
       flex-wrap: wrap;
       justify-content: flex-end;
-      gap: 7px;
+      gap: 6px;
       z-index: 25;
-      max-width: 680px;
+      max-width: 700px;
     }
 
     .top-btn {
       background: linear-gradient(180deg, #2b6cb8, #143d73);
       border: 1.5px solid #82caff;
       color: #fff;
-      padding: 7px 12px;
-      border-radius: 18px;
-      font-size: 12px;
+      padding: 7px 11px;
+      border-radius: 16px;
+      font-size: 11.5px;
       font-weight: 600;
       cursor: pointer;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
       transition: all 0.15s;
     }
-
-    .top-btn:hover {
-      filter: brightness(1.15);
-      transform: translateY(-1px);
-    }
-
-    .top-btn.green {
-      background: linear-gradient(180deg, #35b346, #1c7528);
-      border-color: #9effa9;
-    }
-
-    .top-btn.orange {
-      background: linear-gradient(180deg, #e67e22, #a85308);
-      border-color: #ffd09e;
-    }
-
-    .top-btn.purple {
-      background: linear-gradient(180deg, #8e44ad, #5b2c6f);
-      border-color: #e8daef;
-    }
-
-    .top-btn.active-mode {
-      box-shadow: 0 0 14px #ffe066;
-      border-color: #fff2a6;
-    }
+    .top-btn:hover { filter: brightness(1.15); transform: translateY(-1px); }
+    .top-btn.green { background: linear-gradient(180deg, #35b346, #1c7528); border-color: #9effa9; }
+    .top-btn.orange { background: linear-gradient(180deg, #e67e22, #a85308); border-color: #ffd09e; }
+    .top-btn.purple { background: linear-gradient(180deg, #8e44ad, #5b2c6f); border-color: #e8daef; }
+    .top-btn.active-mode { box-shadow: 0 0 14px #ffe066; border-color: #fff2a6; }
 
     .side-drawer {
       position: fixed;
-      top: 92px;
+      top: 86px;
       right: 14px;
-      width: 310px;
-      max-height: calc(100vh - 220px);
+      width: 305px;
+      max-height: calc(100vh - 210px);
       overflow-y: auto;
       display: none;
       z-index: 30;
     }
-
     .side-drawer h3 {
       font-size: 14px;
       color: #9eff9c;
@@ -374,12 +278,7 @@
       padding: 9px 11px;
       margin-bottom: 8px;
     }
-
-    .job-card.current {
-      border-color: #7dff6b;
-      background: rgba(39, 174, 96, 0.22);
-    }
-
+    .job-card.current { border-color: #7dff6b; background: rgba(39, 174, 96, 0.22); }
     .job-title { font-size: 12.5px; font-weight: 700; color: #fff; }
     .job-meta { font-size: 11px; color: #bce4ff; margin: 3px 0 6px; }
 
@@ -394,11 +293,7 @@
       font-weight: 700;
       cursor: pointer;
     }
-
-    .action-mini-btn.secondary {
-      background: linear-gradient(180deg, #2b6cb8, #143d73);
-      border-color: #82caff;
-    }
+    .action-mini-btn.secondary { background: linear-gradient(180deg, #2b6cb8, #143d73); border-color: #82caff; }
 
     #hover-tooltip {
       position: fixed;
@@ -422,12 +317,11 @@
       z-index: 50;
       background: radial-gradient(circle at top, rgba(35, 96, 166, 0.97), rgba(12, 38, 74, 0.99));
       border: 2px solid #8ad0ff;
-      border-radius: 18px;
+      border-radius: 16px;
       padding: 10px;
-      min-width: 225px;
+      min-width: 230px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.65);
     }
-
     #pie-menu-header {
       text-align: center;
       font-size: 12px;
@@ -438,7 +332,6 @@
       border-bottom: 1px solid rgba(138, 208, 255, 0.3);
       text-transform: uppercase;
     }
-
     .pie-option {
       display: block;
       width: 100%;
@@ -447,20 +340,14 @@
       color: #fff;
       padding: 8px 11px;
       margin-bottom: 5px;
-      border-radius: 11px;
-      font-size: 12.5px;
+      border-radius: 10px;
+      font-size: 12px;
       font-weight: 600;
       cursor: pointer;
       text-align: left;
-      transition: all 0.12s;
     }
-
     .pie-option:last-child { margin-bottom: 0; }
-    .pie-option:hover {
-      background: linear-gradient(90deg, #2e8be6, #24b354);
-      border-color: #ffffff;
-      transform: scale(1.02);
-    }
+    .pie-option:hover { background: linear-gradient(90deg, #2e8be6, #24b354); border-color: #fff; }
 
     #sims3-hud {
       position: fixed;
@@ -468,55 +355,55 @@
       left: 50%;
       transform: translateX(-50%);
       width: min(1020px, 98vw);
-      background: linear-gradient(180deg, rgba(40, 108, 184, 0.95) 0%, rgba(16, 51, 98, 0.98) 60%, rgba(10, 32, 64, 0.99) 100%);
+      background: linear-gradient(180deg, rgba(36, 98, 170, 0.96) 0%, rgba(14, 46, 90, 0.98) 60%, rgba(9, 28, 58, 0.99) 100%);
       border: 2px solid #7ecaff;
       border-bottom: none;
-      border-radius: 32px 32px 0 0;
-      padding: 10px 22px 12px;
+      border-radius: 28px 28px 0 0;
+      padding: 10px 20px 12px;
       display: none;
-      grid-template-columns: 255px 1fr 220px;
-      gap: 16px;
+      grid-template-columns: 250px 1fr 215px;
+      gap: 14px;
       align-items: center;
-      box-shadow: 0 -6px 28px rgba(0, 0, 0, 0.55), inset 0 2px 3px rgba(255, 255, 255, 0.4);
+      box-shadow: 0 -6px 28px rgba(0, 0, 0, 0.55);
       z-index: 25;
     }
 
     .hud-profile { display: flex; align-items: center; gap: 11px; }
     .plumbob-badge {
-      width: 50px; height: 50px; border-radius: 50%;
+      width: 48px; height: 48px; border-radius: 50%;
       background: radial-gradient(circle at 30% 30%, #2a6db5, #0e2c54);
       border: 2px solid #8fd2ff;
       display: flex; align-items: center; justify-content: center; flex-shrink: 0;
     }
     .plumbob-diamond {
-      width: 18px; height: 29px;
+      width: 17px; height: 28px;
       background: linear-gradient(135deg, #7dff6b, #1ca628);
       clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
       filter: drop-shadow(0 0 6px #57ff47);
     }
-    .sim-identity h2 { color: #ffffff; font-size: 15px; font-weight: 700; max-width: 180px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .sim-mood-text { font-size: 11px; font-weight: 600; color: #88ff82; margin-top: 1px; }
-    .sim-job-badge { font-size: 11px; font-weight: 600; color: #b8e3ff; margin-top: 1px; }
-    .sim-money { font-size: 12.5px; color: #ffe47a; font-weight: 800; margin-top: 1px; }
+    .sim-identity h2 { color: #ffffff; font-size: 14.5px; font-weight: 700; max-width: 175px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .sim-mood-text { font-size: 11px; font-weight: 600; color: #88ff82; }
+    .sim-job-badge { font-size: 11px; color: #b8e3ff; }
+    .sim-money { font-size: 12.5px; color: #ffe47a; font-weight: 800; }
 
     .hud-needs {
       display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px 14px;
-      background: rgba(8, 25, 50, 0.55); padding: 8px 13px; border-radius: 16px;
+      background: rgba(8, 25, 50, 0.55); padding: 8px 13px; border-radius: 15px;
       border: 1px solid rgba(132, 204, 255, 0.3);
     }
     .need-item { display: flex; flex-direction: column; gap: 2px; }
     .need-label-row { display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; color: #d6eeff; }
     .need-bar-bg { width: 100%; height: 8px; background: #0a192e; border-radius: 5px; border: 1px solid rgba(145, 209, 255, 0.35); overflow: hidden; }
-    .need-bar-fill { height: 100%; width: 85%; background: linear-gradient(90deg, #27ae60, #5eff6c); border-radius: 4px; transition: width 0.2s ease, background 0.3s ease; }
+    .need-bar-fill { height: 100%; width: 85%; background: linear-gradient(90deg, #27ae60, #5eff6c); border-radius: 4px; transition: width 0.2s ease; }
 
     .hud-time-panel {
       display: flex; flex-direction: column; align-items: center; gap: 6px;
-      background: rgba(8, 25, 50, 0.55); padding: 8px 12px; border-radius: 16px;
+      background: rgba(8, 25, 50, 0.55); padding: 8px 12px; border-radius: 15px;
       border: 1px solid rgba(132, 204, 255, 0.3);
     }
-    .clock-display { color: #ffffff; font-size: 12.5px; font-weight: 700; }
+    .clock-display { color: #ffffff; font-size: 12px; font-weight: 700; }
     .speed-controls { display: flex; gap: 5px; }
-    .speed-btn { background: linear-gradient(180deg, #2863a8, #143866); border: 1.5px solid #79c4ff; color: #d9f0ff; padding: 4px 10px; border-radius: 10px; font-size: 11px; font-weight: 700; cursor: pointer; }
+    .speed-btn { background: linear-gradient(180deg, #2863a8, #143866); border: 1.5px solid #79c4ff; color: #d9f0ff; padding: 4px 10px; border-radius: 9px; font-size: 11px; font-weight: 700; cursor: pointer; }
     .speed-btn.active { background: linear-gradient(180deg, #43d158, #1e872e); border-color: #b8ffc2; color: #fff; }
 
     /* Renovasi Rumah */
@@ -525,19 +412,19 @@
       bottom: 0; left: 50%; transform: translateX(-50%);
       width: min(1060px, 98vw);
       background: linear-gradient(180deg, rgba(168, 92, 20, 0.96), rgba(84, 42, 8, 0.99));
-      border: 2px solid #ffd28a; border-bottom: none; border-radius: 26px 26px 0 0;
-      padding: 12px 20px 14px; color: #fff;
+      border: 2px solid #ffd28a; border-bottom: none; border-radius: 24px 24px 0 0;
+      padding: 12px 18px 14px; color: #fff;
       box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.65);
       z-index: 35; display: none;
     }
-    .build-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid rgba(255, 210, 138, 0.3); }
+    .build-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 9px; padding-bottom: 6px; border-bottom: 1px solid rgba(255, 210, 138, 0.3); }
     .build-header h3 { font-size: 14px; color: #ffe89e; }
     .build-tips { font-size: 11.5px; color: #ffdfba; }
     .build-grid { display: grid; grid-template-columns: 1.75fr 1fr; gap: 14px; }
     .catalog-items { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
-    .catalog-card { background: rgba(35, 16, 4, 0.65); border: 1.5px solid rgba(255, 210, 138, 0.45); border-radius: 12px; padding: 8px 10px; min-width: 110px; text-align: center; cursor: pointer; flex-shrink: 0; }
-    .catalog-card:hover, .catalog-card.selected { background: rgba(230, 126, 34, 0.45); border-color: #fff; transform: translateY(-2px); }
-    .catalog-icon { font-size: 21px; margin-bottom: 3px; }
+    .catalog-card { background: rgba(35, 16, 4, 0.65); border: 1.5px solid rgba(255, 210, 138, 0.45); border-radius: 12px; padding: 8px 10px; min-width: 108px; text-align: center; cursor: pointer; flex-shrink: 0; }
+    .catalog-card:hover, .catalog-card.selected { background: rgba(230, 126, 34, 0.45); border-color: #fff; }
+    .catalog-icon { font-size: 20px; margin-bottom: 3px; }
     .catalog-name { font-size: 11px; font-weight: 700; color: #fff; }
     .catalog-price { font-size: 11px; font-weight: 800; color: #ffe680; margin-top: 2px; }
     .surface-controls { display: flex; flex-direction: column; gap: 7px; background: rgba(35, 16, 4, 0.55); padding: 8px 12px; border-radius: 12px; border: 1px solid rgba(255, 210, 138, 0.3); }
@@ -545,17 +432,17 @@
     .mini-pill { background: rgba(255, 255, 255, 0.14); border: 1px solid #ffd28a; color: #fff; padding: 3px 8px; border-radius: 8px; font-size: 10.5px; cursor: pointer; }
     .mini-pill:hover { background: #e67e22; }
 
-    /* Create-A-Sim (CAS) Panel */
+    /* Create-A-Sim (CAS) */
     #cas-modal {
       position: fixed;
-      top: 14px; left: 14px; width: 355px; max-height: calc(100vh - 28px);
+      top: 14px; left: 14px; width: 350px; max-height: calc(100vh - 28px);
       overflow-y: auto;
-      background: linear-gradient(180deg, rgba(26, 78, 140, 0.97), rgba(12, 37, 74, 0.99));
-      border: 2px solid #84ceff; border-radius: 22px; padding: 16px; color: #fff;
+      background: linear-gradient(180deg, rgba(22, 68, 124, 0.97), rgba(10, 32, 64, 0.99));
+      border: 2px solid #84ceff; border-radius: 20px; padding: 15px; color: #fff;
       box-shadow: 0 12px 38px rgba(0, 0, 0, 0.7);
       z-index: 60; display: none;
     }
-    #cas-modal h1 { font-size: 18px; color: #9eff9c; margin-bottom: 3px; }
+    #cas-modal h1 { font-size: 17px; color: #9eff9c; margin-bottom: 3px; }
     #cas-modal p.subtitle { font-size: 11.5px; color: #b8e2ff; margin-bottom: 10px; }
     .cas-group { margin-bottom: 9px; background: rgba(7, 23, 46, 0.55); padding: 9px 10px; border-radius: 12px; border: 1px solid rgba(132, 206, 255, 0.25); }
     .cas-group label { display: block; font-size: 11px; font-weight: 700; color: #9cd6ff; margin-bottom: 5px; }
@@ -566,38 +453,38 @@
     .swatch-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
     .swatch { width: 22px; height: 22px; border-radius: 50%; border: 2px solid rgba(255, 255, 255, 0.65); cursor: pointer; }
     .swatch.selected { transform: scale(1.16); border-color: #7dff6b; box-shadow: 0 0 8px #7dff6b; }
-    .cas-confirm-btn { width: 100%; padding: 11px; border-radius: 14px; border: 2px solid #adffae; background: linear-gradient(180deg, #43d158, #1d872d); color: #fff; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 4px; }
+    .cas-confirm-btn { width: 100%; padding: 10px; border-radius: 13px; border: 2px solid #adffae; background: linear-gradient(180deg, #43d158, #1d872d); color: #fff; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 4px; }
 
     /* NPC Dialogue Modal */
     #dialogue-modal {
       position: fixed;
-      bottom: 120px; left: 50%; transform: translateX(-50%);
-      width: min(560px, 94vw);
+      bottom: 118px; left: 50%; transform: translateX(-50%);
+      width: min(550px, 94vw);
       background: linear-gradient(180deg, rgba(24, 72, 132, 0.97), rgba(11, 34, 68, 0.99));
-      border: 2px solid #8ad0ff; border-radius: 22px; padding: 16px 20px; color: #fff;
+      border: 2px solid #8ad0ff; border-radius: 20px; padding: 15px 18px; color: #fff;
       box-shadow: 0 14px 40px rgba(0, 0, 0, 0.7);
       z-index: 55; display: none;
     }
     .dlg-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-    .dlg-npc-name { font-size: 16px; font-weight: 800; color: #9eff9c; }
-    .dlg-rel-badge { background: rgba(255, 255, 255, 0.12); border: 1px solid #8ad0ff; padding: 3px 10px; border-radius: 12px; font-size: 11.5px; font-weight: 700; color: #ffe680; }
-    .dlg-speech { background: rgba(7, 22, 44, 0.65); border-left: 3px solid #5eff6c; padding: 10px 13px; border-radius: 10px; font-size: 13px; line-height: 1.45; color: #eaf6ff; margin-bottom: 11px; }
-    .dlg-choices { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .dlg-choice-btn { background: rgba(255, 255, 255, 0.1); border: 1px solid #79c4ff; color: #fff; padding: 8px 11px; border-radius: 11px; font-size: 12px; font-weight: 600; cursor: pointer; text-align: left; }
+    .dlg-npc-name { font-size: 15.5px; font-weight: 800; color: #9eff9c; }
+    .dlg-rel-badge { background: rgba(255, 255, 255, 0.12); border: 1px solid #8ad0ff; padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; color: #ffe680; }
+    .dlg-speech { background: rgba(7, 22, 44, 0.65); border-left: 3px solid #5eff6c; padding: 10px 13px; border-radius: 10px; font-size: 13px; line-height: 1.45; color: #eaf6ff; margin-bottom: 10px; }
+    .dlg-choices { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+    .dlg-choice-btn { background: rgba(255, 255, 255, 0.1); border: 1px solid #79c4ff; color: #fff; padding: 8px 10px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; text-align: left; }
     .dlg-choice-btn:hover { background: linear-gradient(90deg, #2b86de, #24b354); border-color: #fff; }
 
     #toast-banner {
       position: fixed;
       top: 68px; left: 50%; transform: translateX(-50%);
       background: linear-gradient(90deg, #1f7a32, #27ae60);
-      border: 2px solid #b8ffc2; color: #fff; padding: 9px 18px; border-radius: 20px;
-      font-size: 13px; font-weight: 700; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+      border: 2px solid #b8ffc2; color: #fff; padding: 8px 18px; border-radius: 20px;
+      font-size: 12.5px; font-weight: 700; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
       z-index: 70; display: none;
     }
 
     @media (max-width: 820px) {
       .mode-grid { grid-template-columns: 1fr; }
-      #sims3-hud { grid-template-columns: 1fr; gap: 8px; border-radius: 20px 20px 0 0; }
+      #sims3-hud { grid-template-columns: 1fr; gap: 8px; }
       .build-grid { grid-template-columns: 1fr; }
       .dlg-choices { grid-template-columns: 1fr; }
     }
@@ -606,17 +493,13 @@
 <body>
   <canvas id="game-canvas"></canvas>
 
-  <!-- ==========================================
-       OPENING SCREEN ("WILLIAM GAME")
-       ========================================== -->
+  <!-- OPENING SCREEN -->
   <div id="start-screen">
     <div class="menu-container">
-      <div class="menu-plumbob-wrap">
-        <div class="menu-plumbob"></div>
-      </div>
-      <div class="studio-tag">✦ HIGH-POLY 3D EDITION ✦</div>
+      <div class="menu-plumbob-wrap"><div class="menu-plumbob"></div></div>
+      <div class="studio-tag">✦ PHOTOREALISTIC PBR 3D EDITION ✦</div>
       <h1 class="game-main-title">WILLIAM GAME</h1>
-      <p class="game-sub-title">Simulasi Kehidupan 3D • Karakter Rigged Asli, Mansion 2 Lantai & Anti-Tembus Dinding</p>
+      <p class="game-sub-title">Simulasi Kehidupan 3D • Karakter Manusia Rigged Asli, Mansion 2 Lantai & Kolam Renang</p>
 
       <div class="mode-grid">
         <button class="mode-card story" id="btn-mode-story">
@@ -634,14 +517,13 @@
         </button>
       </div>
 
-      <div class="menu-footer-note">🔊 Klik salah satu mode untuk menyalakan musik latar & masuk ke Create-A-Sim 3D</div>
+      <div class="menu-footer-note">Kontrol: Klik Lantai / Objek atau tombol WASD • Drag Kanan / Tengah untuk Putar Kamera • Scroll untuk Zoom</div>
     </div>
   </div>
 
-  <!-- Toast Notification -->
   <div id="toast-banner"></div>
 
-  <!-- Top-Left Action Queue + Burglar Alert + Story Quest -->
+  <!-- TOP LEFT HUD -->
   <div id="top-left-stack">
     <div id="burglar-alert" class="glass-panel">
       <div class="action-card">
@@ -663,7 +545,7 @@
     </div>
   </div>
 
-  <!-- Top-Right Controls -->
+  <!-- TOP RIGHT CONTROLS -->
   <div id="top-right-panel">
     <button class="top-btn green" id="open-cas-btn">👕 Model 3D & Karakter</button>
     <button class="top-btn purple" id="toggle-pet-btn">🐾 Hewan Peliharaan</button>
@@ -675,7 +557,7 @@
     <button class="top-btn" id="back-menu-btn">🚪 Menu</button>
   </div>
 
-  <!-- Drawer 1: Hobi & Skill -->
+  <!-- DRAWER 1: HOBI -->
   <div id="hobby-panel" class="glass-panel side-drawer">
     <h3>⭐ Hobi & Tingkat Skill</h3>
     <div class="hobby-row">
@@ -691,12 +573,12 @@
       <div class="hobby-bar"><div class="hobby-fill" id="xp-painting"></div></div>
     </div>
     <div class="hobby-row">
-      <div class="hobby-head"><span>💪 Atletik & Renang</span><span id="lvl-fitness">Lv. 1</span></div>
+      <div class="hobby-head"><span>🏊 Atletik & Renang</span><span id="lvl-fitness">Lv. 1</span></div>
       <div class="hobby-bar"><div class="hobby-fill" id="xp-fitness"></div></div>
     </div>
   </div>
 
-  <!-- Drawer 2: Cari Kerja / Karier -->
+  <!-- DRAWER 2: KARIER -->
   <div id="career-panel" class="glass-panel side-drawer">
     <h3>💼 Pusat Karier & Lowongan Kerja</h3>
     <div id="current-job-status" class="job-card current" style="display:none;">
@@ -707,7 +589,7 @@
     <div id="job-listings"></div>
   </div>
 
-  <!-- Drawer 3: Hewan Peliharaan -->
+  <!-- DRAWER 3: HEWAN PELIHARAAN -->
   <div id="pet-panel" class="glass-panel side-drawer">
     <h3>🐾 Toko & Editor Hewan Peliharaan</h3>
     <div id="pet-editor-box" class="pet-card" style="display:none;">
@@ -716,7 +598,7 @@
       <input type="text" id="pet-name-input" class="cas-input" style="margin:3px 0 7px;padding:5px 8px;font-size:12px;" value="Mochi" maxlength="18" />
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-size:11.5px;">
         <span>Warna Bulu:</span>
-        <input type="color" id="pet-fur-color" value="#f5e6d3" style="cursor:pointer;" />
+        <input type="color" id="pet-fur-color" value="#e8cfa8" style="cursor:pointer;" />
       </div>
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-size:11.5px;">
         <span>Warna Kalung:</span>
@@ -742,16 +624,13 @@
     </div>
   </div>
 
-  <!-- Hover Tooltip -->
   <div id="hover-tooltip"></div>
 
-  <!-- Pie / Context Action Menu -->
   <div id="pie-menu">
     <div id="pie-menu-header">Objek</div>
     <div id="pie-menu-options"></div>
   </div>
 
-  <!-- NPC Dialogue Modal -->
   <div id="dialogue-modal">
     <div class="dlg-top">
       <div class="dlg-npc-name" id="dlg-npc-name">Nadia</div>
@@ -761,10 +640,10 @@
     <div class="dlg-choices" id="dlg-choices"></div>
   </div>
 
-  <!-- Create-A-Sim (CAS) 3D Sculpted Model Panel -->
+  <!-- CREATE-A-SIM (CAS) 3D -->
   <div id="cas-modal">
     <h1>♦ Create-A-Sim 3D Realistis</h1>
-    <p class="subtitle">Pilih model 3D sculpted asli atau unggah file <b>.glb</b> milikmu sendiri.</p>
+    <p class="subtitle">Karakter 3D manusia rigged realistis atau unggah file <b>.glb</b> milikmu sendiri.</p>
 
     <div class="cas-group">
       <label for="sim-name-input">Nama Karakter (Bebas)</label>
@@ -772,33 +651,33 @@
     </div>
 
     <div class="cas-group">
-      <label>Pilih Model 3D Sculpted (GLB Rigged)</label>
+      <label>Pilih Model Karakter 3D Realistis</label>
       <div class="style-pills" id="model-presets">
-        <button class="style-pill active" data-model="female">👩 Model 3D Wanita (Stylized)</button>
-        <button class="style-pill" data-model="male">👨 Model 3D Pria (Realistis)</button>
+        <button class="style-pill active" data-model="realistic_tactical">👨 Manusia 3D Rigged (Realistis)</button>
+        <button class="style-pill" data-model="realistic_urban">🧥 Manusia 3D Urban Coat</button>
       </div>
     </div>
 
     <div class="cas-group">
-      <label>Import File 3D Sendiri (.glb)</label>
+      <label>Import File 3D Sendiri (.glb / .gltf)</label>
       <input type="file" id="glb-file-input" accept=".glb,.gltf" style="font-size:11px;color:#cde8ff;width:100%;" />
     </div>
 
     <div class="cas-group">
-      <label>Nuansa Warna Pakaian / Pencahayaan Model</label>
+      <label>Nuansa Warna Pakaian</label>
       <div class="swatch-row" id="tint-swatches">
-        <input type="color" id="tint-custom-color" value="#ffffff" style="width:24px;height:24px;border:none;background:transparent;cursor:pointer;" title="Warna Custom" />
+        <input type="color" id="tint-custom-color" value="#ffffff" style="width:26px;height:26px;border:none;background:transparent;cursor:pointer;" title="Pilih Warna" />
       </div>
     </div>
 
     <button class="cas-confirm-btn" id="confirm-cas-btn">✔ Mulai Kehidupan Sim</button>
   </div>
 
-  <!-- Build & Buy / Renovasi Rumah Panel -->
+  <!-- BUILD & BUY PANEL -->
   <div id="build-panel">
     <div class="build-header">
       <h3>🔨 Mode Renovasi Rumah 2 Lantai — Dana: <span id="build-money">§ 3,000</span></h3>
-      <div class="build-tips">Klik katalog lalu klik lantai • Tekan <b>R</b> untuk Putar • Pasang Alarm untuk cegah Copet!</div>
+      <div class="build-tips">Klik katalog lalu klik lantai • Tekan <b>R</b> untuk Putar • Pasang Alarm cegah Copet!</div>
     </div>
     <div class="build-grid">
       <div class="catalog-items" id="build-catalog"></div>
@@ -808,28 +687,26 @@
           <div>
             <button class="mini-pill" data-floor="oak">Kayu Oak</button>
             <button class="mini-pill" data-floor="marble">Marmer</button>
-            <button class="mini-pill" data-floor="dark">Parket Gelap</button>
+            <button class="mini-pill" data-floor="dark">Walnut Gelap</button>
           </div>
         </div>
         <div class="surface-row">
           <span>🧱 Dinding:</span>
           <div>
-            <button class="mini-pill" data-wall="#f7f3eb">Putih Klasik</button>
-            <button class="mini-pill" data-wall="#d6eaf8">Biru Pastel</button>
-            <button class="mini-pill" data-wall="#d5f5e3">Hijau Mint</button>
-            <button class="mini-pill" data-wall="#fadbd8">Peach</button>
+            <button class="mini-pill" data-wall="#f4efe6">Putih Gading</button>
+            <button class="mini-pill" data-wall="#d4e4f2">Biru Batu</button>
+            <button class="mini-pill" data-wall="#d8eadc">Sage Hijau</button>
+            <button class="mini-pill" data-wall="#edd8d0">Terracotta</button>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Classic The Sims 3 HUD -->
+  <!-- SIMS 3 HUD -->
   <div id="sims3-hud">
     <div class="hud-profile">
-      <div class="plumbob-badge">
-        <div class="plumbob-diamond" id="hud-plumbob"></div>
-      </div>
+      <div class="plumbob-badge"><div class="plumbob-diamond" id="hud-plumbob"></div></div>
       <div class="sim-identity">
         <h2 id="hud-sim-name">William Samadara</h2>
         <div class="sim-mood-text" id="hud-mood">Suasana Hati: Sangat Bahagia</div>
@@ -878,7 +755,7 @@
 
   <script>
     // ==========================================
-    // 1. WEB AUDIO ENGINE (MUSIK SIMS & EFEK SUARA)
+    // 1. WEB AUDIO ENGINE
     // ==========================================
     class SimsSoundEngine {
       constructor() {
@@ -886,36 +763,26 @@
         this.muted = false;
         this.bgmTimer = null;
         this.noteIdx = 0;
-        this.melody = [
-          523.25, 659.25, 783.99, 659.25, 587.33, 698.46, 880.00, 698.46,
-          659.25, 783.99, 987.77, 783.99, 523.25, 659.25, 587.33, 493.88
-        ];
+        this.melody = [523.25, 659.25, 783.99, 659.25, 587.33, 698.46, 880.00, 698.46, 659.25, 783.99, 987.77, 783.99, 523.25, 659.25, 587.33, 493.88];
         this.bass = [261.63, 261.63, 293.66, 293.66, 329.63, 329.63, 196.00, 196.00];
       }
-
       init() {
-        if (!this.ctx) {
-          this.ctx = new (window.AudioContext || window.webkitAudioContext)();
-        }
+        if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)();
         if (this.ctx.state === 'suspended') this.ctx.resume();
         this.startBGM();
       }
-
       startBGM() {
         if (this.bgmTimer) return;
         this.bgmTimer = setInterval(() => {
           if (this.muted || !this.ctx || this.ctx.state !== 'running') return;
           const now = this.ctx.currentTime;
-          const freq = this.melody[this.noteIdx % this.melody.length];
-          this.playTone(freq, 'triangle', 0.24, 0.045, now);
+          this.playTone(this.melody[this.noteIdx % this.melody.length], 'triangle', 0.24, 0.04, now);
           if (this.noteIdx % 2 === 0) {
-            const bFreq = this.bass[(this.noteIdx / 2) % this.bass.length];
-            this.playTone(bFreq, 'sine', 0.42, 0.055, now);
+            this.playTone(this.bass[(this.noteIdx / 2) % this.bass.length], 'sine', 0.42, 0.05, now);
           }
           this.noteIdx++;
-        }, 310);
+        }, 320);
       }
-
       playTone(freq, type, duration, vol, startTime = null) {
         if (this.muted || !this.ctx) return;
         const t = startTime || this.ctx.currentTime;
@@ -930,24 +797,18 @@
         osc.start(t);
         osc.stop(t + duration);
       }
-
-      playClick() { this.playTone(680, 'sine', 0.08, 0.08); }
-
+      playClick() { this.playTone(680, 'sine', 0.08, 0.07); }
       playCoin() {
         if (this.muted || !this.ctx) return;
         const now = this.ctx.currentTime;
         this.playTone(987.77, 'sine', 0.14, 0.1, now);
         this.playTone(1318.51, 'sine', 0.28, 0.11, now + 0.09);
       }
-
       playSimlish() {
         if (this.muted || !this.ctx) return;
         const now = this.ctx.currentTime;
-        [340, 440, 390, 510, 420].forEach((p, i) => {
-          this.playTone(p + Math.random() * 60, 'triangle', 0.11, 0.07, now + i * 0.11);
-        });
+        [340, 440, 390, 510, 420].forEach((p, i) => this.playTone(p + Math.random() * 50, 'triangle', 0.11, 0.06, now + i * 0.11));
       }
-
       playPetSound(species) {
         if (this.muted || !this.ctx) return;
         const now = this.ctx.currentTime;
@@ -957,14 +818,14 @@
           osc.type = 'sawtooth';
           osc.frequency.setValueAtTime(240, now);
           osc.frequency.exponentialRampToValueAtTime(140, now + 0.14);
-          gain.gain.setValueAtTime(0.11, now);
+          gain.gain.setValueAtTime(0.1, now);
           gain.gain.exponentialRampToValueAtTime(0.001, now + 0.16);
         } else {
           osc.type = 'sine';
           osc.frequency.setValueAtTime(520, now);
           osc.frequency.linearRampToValueAtTime(760, now + 0.15);
           osc.frequency.exponentialRampToValueAtTime(420, now + 0.42);
-          gain.gain.setValueAtTime(0.09, now);
+          gain.gain.setValueAtTime(0.08, now);
           gain.gain.exponentialRampToValueAtTime(0.001, now + 0.44);
         }
         osc.connect(gain);
@@ -972,29 +833,22 @@
         osc.start(now);
         osc.stop(now + 0.44);
       }
-
       playBurglarAlarm() {
         if (this.muted || !this.ctx) return;
         const now = this.ctx.currentTime;
-        for (let i = 0; i < 4; i++) {
-          this.playTone(i % 2 === 0 ? 780 : 560, 'sawtooth', 0.18, 0.1, now + i * 0.18);
-        }
+        for (let i = 0; i < 4; i++) this.playTone(i % 2 === 0 ? 780 : 560, 'sawtooth', 0.18, 0.1, now + i * 0.18);
       }
     }
-
     const soundFX = new SimsSoundEngine();
 
     // ==========================================
-    // 2. STATE UTAMA GAME, KARIER, PET & STORY
+    // 2. GAME STATE & CATALOGS
     // ==========================================
-    const MODEL_URLS = {
-      female: 'https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/models/gltf/Michelle.glb',
-      male: 'https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/models/gltf/Soldier.glb'
-    };
+    const REALISTIC_HUMAN_GLB = 'https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/models/gltf/Soldier.glb';
 
     const simState = {
       name: 'William Samadara',
-      modelType: 'female',
+      modelType: 'realistic_tactical',
       tintColor: '#ffffff',
       money: 3000,
       floorLevel: 1,
@@ -1008,12 +862,11 @@
       career: null,
       atWork: false,
       workTimer: 0,
-      position: new THREE.Vector3(0, 0.16, 2.5),
+      position: new THREE.Vector3(0, 0.16, 2.2),
       waypoints: [],
       rotationY: 0,
       currentAction: null,
       actionProgress: 0,
-      pose: 'idle',
       inMenu: true,
       inCAS: false
     };
@@ -1025,10 +878,10 @@
       minutes: 8 * 60 + 30,
       followSim: true,
       viewMode: 'floor1',
-      cameraYaw: 0.68,
-      cameraPitch: 0.62,
+      cameraYaw: 0.62,
+      cameraPitch: 0.58,
       cameraDistance: 17.5,
-      cameraTarget: new THREE.Vector3(0, 1.5, 1.5),
+      cameraTarget: new THREE.Vector3(0, 1.4, 1.5),
       buildMode: false,
       selectedCatalogItem: null,
       ghostRotation: 0,
@@ -1043,41 +896,11 @@
     ];
 
     const storyChapters = [
-      {
-        chapter: 'Bab 1 • Tetangga Ramah',
-        title: 'Sambut Tamu Berkunjung',
-        desc: 'Klik tamu yang berkunjung ke rumahmu, lalu pilih "Samperin & Ngobrol".',
-        reward: 450,
-        check: () => npcs.some(n => n.talkedCount >= 1)
-      },
-      {
-        chapter: 'Bab 2 • Meniti Karier',
-        title: 'Lamar Pekerjaan Pertama',
-        desc: 'Buka menu "💼 Cari Kerja", pilih profesi impianmu, lalu berangkat kerja 1 kali.',
-        reward: 600,
-        check: () => careerShiftsDone >= 1
-      },
-      {
-        chapter: 'Bab 3 • Sahabat Berbulu',
-        title: 'Adopsi Hewan Peliharaan',
-        desc: 'Buka menu "🐾 Hewan Peliharaan" dan adopsi Anjing atau Kucing.',
-        reward: 650,
-        check: () => petState.active
-      },
-      {
-        chapter: 'Bab 4 • Mansion 2 Lantai',
-        title: 'Renovasi Rumah Klasik',
-        desc: 'Buka "🔨 Renovasi Rumah", pasang 1 furnitur baru (atau Alarm Anti-Copet) atau ganti lantai/dinding.',
-        reward: 800,
-        check: () => renovationDone
-      },
-      {
-        chapter: 'Bab 5 • Keamanan Lingkungan',
-        title: 'Tangkap & Usir Copet!',
-        desc: 'Saat Copet muncul menyelinap ke rumah, klik si Copet lalu pilih "🚨 Tangkap & Usir Copet!".',
-        reward: 1200,
-        check: () => burglarsCaught >= 1
-      }
+      { chapter: 'Bab 1 • Tetangga Ramah', title: 'Sambut Tamu Berkunjung', desc: 'Klik tamu yang berkunjung ke rumahmu, lalu pilih "Samperin & Ngobrol".', reward: 450, check: () => npcs.some(n => n.talkedCount >= 1) },
+      { chapter: 'Bab 2 • Meniti Karier', title: 'Lamar Pekerjaan Pertama', desc: 'Buka menu "💼 Cari Kerja", pilih profesi impianmu, lalu berangkat kerja 1 kali.', reward: 600, check: () => careerShiftsDone >= 1 },
+      { chapter: 'Bab 3 • Sahabat Berbulu', title: 'Adopsi Hewan Peliharaan', desc: 'Buka menu "🐾 Hewan Peliharaan" dan adopsi Anjing atau Kucing.', reward: 650, check: () => petState.active },
+      { chapter: 'Bab 4 • Mansion 2 Lantai', title: 'Renovasi Rumah Klasik', desc: 'Buka "🔨 Renovasi Rumah", pasang 1 furnitur baru atau ganti lantai/dinding.', reward: 800, check: () => renovationDone },
+      { chapter: 'Bab 5 • Keamanan Lingkungan', title: 'Tangkap & Usir Copet!', desc: 'Saat Copet menyelinap ke rumah, klik si Copet lalu pilih "🚨 Tangkap & Usir Copet!".', reward: 1200, check: () => burglarsCaught >= 1 }
     ];
     let currentStoryIdx = 0;
     let renovationDone = false;
@@ -1093,249 +916,318 @@
     }
 
     // ==========================================
-    // 3. OPENING SCREEN & NAVIGATION
-    // ==========================================
-    function refreshModeTrackerUI() {
-      const badge = document.getElementById('story-chapter-badge');
-      const title = document.getElementById('story-title');
-      const desc = document.getElementById('story-desc');
-      const reward = document.getElementById('story-reward');
-
-      if (worldState.gameMode === 'freeplay') {
-        badge.textContent = 'Mode Freeplay • Sandbox Bebas';
-        badge.style.background = 'linear-gradient(90deg, #27ae60, #16a085)';
-        title.textContent = 'Kehidupan Bebas Mansion 2 Lantai';
-        desc.textContent = 'Main bebas tanpa target misi. Karakter kini berjalan lewat pintu & tidak tembus dinding.';
-        reward.textContent = 'Status: Mode Bebas Aktif';
-      } else {
-        badge.style.background = 'linear-gradient(90deg, #f39c12, #e67e22)';
-        if (currentStoryIdx < storyChapters.length) {
-          const q = storyChapters[currentStoryIdx];
-          badge.textContent = q.chapter;
-          title.textContent = q.title;
-          desc.textContent = q.desc;
-          reward.textContent = `Hadiah: § ${q.reward}`;
-        } else {
-          badge.textContent = 'Story Tamat • Mode Bebas';
-          title.textContent = 'Legenda Sunset Valley!';
-          desc.textContent = 'Semua bab cerita selesai! Terus kembangkan karier, hewan peliharaan, dan mansion 2 lantaimu.';
-          reward.textContent = 'Status: Master Sim';
-        }
-      }
-    }
-
-    function enterGameWithMode(mode) {
-      soundFX.init();
-      soundFX.playClick();
-      worldState.gameMode = mode;
-      simState.inMenu = false;
-      simState.inCAS = true;
-      simState.money = mode === 'freeplay' ? 30000 : 3000;
-      if (mode === 'story') {
-        currentStoryIdx = 0;
-        renovationDone = false;
-        careerShiftsDone = 0;
-        burglarsCaught = 0;
-      }
-
-      refreshModeTrackerUI();
-
-      const startScreen = document.getElementById('start-screen');
-      startScreen.style.opacity = '0';
-      setTimeout(() => { startScreen.style.display = 'none'; }, 350);
-
-      document.getElementById('cas-modal').style.display = 'block';
-      document.getElementById('top-right-panel').style.display = 'flex';
-      document.getElementById('sims3-hud').style.display = 'grid';
-      document.getElementById('top-left-stack').style.display = 'flex';
-    }
-
-    document.getElementById('btn-mode-story').addEventListener('click', () => enterGameWithMode('story'));
-    document.getElementById('btn-mode-freeplay').addEventListener('click', () => enterGameWithMode('freeplay'));
-
-    document.getElementById('toggle-sound-btn').addEventListener('click', e => {
-      soundFX.init();
-      soundFX.muted = !soundFX.muted;
-      e.target.textContent = soundFX.muted ? '🔇 Musik: OFF' : '🔊 Musik: ON';
-    });
-
-    document.getElementById('back-menu-btn').addEventListener('click', () => {
-      soundFX.playClick();
-      if (worldState.buildMode) toggleBuildMode();
-      cancelCurrentAction();
-      closeAllDrawers();
-      document.getElementById('cas-modal').style.display = 'none';
-      document.getElementById('top-right-panel').style.display = 'none';
-      document.getElementById('sims3-hud').style.display = 'none';
-      document.getElementById('top-left-stack').style.display = 'none';
-
-      simState.inCAS = false;
-      simState.inMenu = true;
-      const startScreen = document.getElementById('start-screen');
-      startScreen.style.display = 'flex';
-      requestAnimationFrame(() => { startScreen.style.opacity = '1'; });
-    });
-
-    function closeAllDrawers() {
-      document.getElementById('hobby-panel').style.display = 'none';
-      document.getElementById('career-panel').style.display = 'none';
-      document.getElementById('pet-panel').style.display = 'none';
-      document.getElementById('dialogue-modal').style.display = 'none';
-    }
-
-    // ==========================================
-    // 4. THREE.JS SCENE & PBR TEXTURES
+    // 3. THREE.JS PHOTOREALISTIC PBR RENDERER & IBL
     // ==========================================
     const canvas = document.getElementById('game-canvas');
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.08;
+    renderer.toneMappingExposure = 1.05;
+    renderer.outputEncoding = THREE.sRGBEncoding;
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color('#78c5ff');
-    scene.fog = new THREE.FogExp2('#88ceff', 0.0085);
+    scene.fog = new THREE.FogExp2('#9dc8e8', 0.0068);
 
-    const camera = new THREE.PerspectiveCamera(44, window.innerWidth / window.innerHeight, 0.1, 200);
+    const camera = new THREE.PerspectiveCamera(42, window.innerWidth / window.innerHeight, 0.1, 220);
 
-    const hemiLight = new THREE.HemisphereLight('#ffffff', '#4a7c44', 0.85);
+    // Sky Dome + Realistic PBR Environment Reflection Map (IBL)
+    function createSkyAndIBL() {
+      const skyCanvas = document.createElement('canvas');
+      skyCanvas.width = 1024;
+      skyCanvas.height = 512;
+      const ctx = skyCanvas.getContext('2d');
+      const grad = ctx.createLinearGradient(0, 0, 0, 512);
+      grad.addColorStop(0.0, '#1e5799');
+      grad.addColorStop(0.38, '#6bb2e8');
+      grad.addColorStop(0.50, '#d8ebf8');
+      grad.addColorStop(0.52, '#567546');
+      grad.addColorStop(1.0, '#2c3e24');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 1024, 512);
+
+      // Soft cirrus clouds & warm sun glow
+      const sunGrad = ctx.createRadialGradient(740, 155, 5, 740, 155, 130);
+      sunGrad.addColorStop(0, 'rgba(255,250,235,1)');
+      sunGrad.addColorStop(0.25, 'rgba(255,236,195,0.55)');
+      sunGrad.addColorStop(1, 'rgba(255,236,195,0)');
+      ctx.fillStyle = sunGrad;
+      ctx.fillRect(0, 0, 1024, 512);
+
+      ctx.fillStyle = 'rgba(255,255,255,0.22)';
+      for (let i = 0; i < 38; i++) {
+        const cx = (i * 97) % 1024;
+        const cy = 90 + (i % 7) * 20;
+        ctx.beginPath();
+        ctx.ellipse(cx, cy, 48 + (i % 4) * 18, 9 + (i % 3) * 4, 0, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      const envTex = new THREE.CanvasTexture(skyCanvas);
+      envTex.mapping = THREE.EquirectangularReflectionMapping;
+      envTex.encoding = THREE.sRGBEncoding;
+
+      const pmrem = new THREE.PMREMGenerator(renderer);
+      pmrem.compileEquirectangularShader();
+      const envRT = pmrem.fromEquirectangular(envTex);
+      scene.environment = envRT.texture;
+      scene.background = envTex;
+      pmrem.dispose();
+    }
+    createSkyAndIBL();
+
+    const hemiLight = new THREE.HemisphereLight('#eef7ff', '#3f5934', 0.65);
     scene.add(hemiLight);
 
-    const sunLight = new THREE.DirectionalLight('#fff2db', 1.25);
-    sunLight.position.set(20, 32, 18);
+    const sunLight = new THREE.DirectionalLight('#fff0d6', 1.45);
+    sunLight.position.set(22, 34, 19);
     sunLight.castShadow = true;
     sunLight.shadow.mapSize.width = 2048;
     sunLight.shadow.mapSize.height = 2048;
     sunLight.shadow.camera.near = 2;
-    sunLight.shadow.camera.far = 85;
-    const d = 26;
+    sunLight.shadow.camera.far = 90;
+    const d = 28;
     sunLight.shadow.camera.left = -d;
     sunLight.shadow.camera.right = d;
     sunLight.shadow.camera.top = d;
     sunLight.shadow.camera.bottom = -d;
-    sunLight.shadow.bias = -0.0004;
+    sunLight.shadow.bias = -0.0003;
     scene.add(sunLight);
 
-    const indoorLight1 = new THREE.PointLight('#ffe0b2', 0.7, 18);
-    indoorLight1.position.set(-3.5, 2.5, -1.5);
-    const indoorLight2 = new THREE.PointLight('#ffe0b2', 0.7, 18);
-    indoorLight2.position.set(3.5, 5.2, -1.5);
+    const indoorLight1 = new THREE.PointLight('#ffe4bd', 0.85, 20);
+    indoorLight1.position.set(-2.5, 2.55, -1.0);
+    const indoorLight2 = new THREE.PointLight('#ffe4bd', 0.85, 20);
+    indoorLight2.position.set(2.5, 5.25, -1.0);
     scene.add(indoorLight1, indoorLight2);
 
-    function makeProceduralTexture(type, baseColor, accentColor) {
-      const c = document.createElement('canvas');
-      c.width = 256;
-      c.height = 256;
-      const ctx = c.getContext('2d');
-      ctx.fillStyle = baseColor;
-      ctx.fillRect(0, 0, 256, 256);
+    // ==========================================
+    // 4. HIGH-RES PBR DIFFUSE + BUMP TEXTURES (512x512)
+    // ==========================================
+    function createPBRTextureSet(type, c1, c2, repeatX = 4, repeatY = 4) {
+      const diffCanvas = document.createElement('canvas');
+      const bumpCanvas = document.createElement('canvas');
+      diffCanvas.width = bumpCanvas.width = 512;
+      diffCanvas.height = bumpCanvas.height = 512;
+      const dCtx = diffCanvas.getContext('2d');
+      const bCtx = bumpCanvas.getContext('2d');
+
+      dCtx.fillStyle = c1;
+      dCtx.fillRect(0, 0, 512, 512);
+      bCtx.fillStyle = '#808080';
+      bCtx.fillRect(0, 0, 512, 512);
 
       if (type === 'wood') {
-        ctx.strokeStyle = accentColor;
-        ctx.lineWidth = 2;
-        for (let y = 0; y < 256; y += 32) {
-          ctx.beginPath();
-          ctx.moveTo(0, y);
-          ctx.lineTo(256, y);
-          ctx.stroke();
+        for (let y = 0; y < 512; y += 2) {
+          const wave = Math.sin(y * 0.08) * 10;
+          dCtx.fillStyle = y % 4 === 0 ? c2 : c1;
+          dCtx.globalAlpha = 0.28;
+          dCtx.fillRect(0, y, 512, 2);
+          bCtx.fillStyle = y % 6 === 0 ? '#686868' : '#969696';
+          bCtx.fillRect(0, y, 512, 1);
+        }
+        dCtx.globalAlpha = 1;
+        for (let p = 0; p < 512; p += 64) {
+          dCtx.strokeStyle = c2;
+          dCtx.lineWidth = 2;
+          dCtx.beginPath();
+          dCtx.moveTo(0, p);
+          dCtx.lineTo(512, p);
+          dCtx.stroke();
+          bCtx.strokeStyle = '#303030';
+          bCtx.lineWidth = 3;
+          bCtx.beginPath();
+          bCtx.moveTo(0, p);
+          bCtx.lineTo(512, p);
+          bCtx.stroke();
         }
       } else if (type === 'marble') {
-        ctx.strokeStyle = accentColor;
-        ctx.lineWidth = 2;
-        for (let x = 0; x < 256; x += 64) {
-          for (let y = 0; y < 256; y += 64) {
-            ctx.strokeRect(x, y, 64, 64);
+        for (let i = 0; i < 35; i++) {
+          dCtx.strokeStyle = c2;
+          dCtx.lineWidth = 1 + (i % 3);
+          dCtx.globalAlpha = 0.24;
+          dCtx.beginPath();
+          let vx = (i * 47) % 512;
+          let vy = 0;
+          dCtx.moveTo(vx, vy);
+          while (vy < 512) {
+            vy += 32;
+            vx += Math.sin(vy * 0.03 + i) * 18;
+            dCtx.lineTo(vx, vy);
+          }
+          dCtx.stroke();
+        }
+        dCtx.globalAlpha = 1;
+        for (let x = 0; x < 512; x += 128) {
+          for (let y = 0; y < 512; y += 128) {
+            dCtx.strokeStyle = 'rgba(130,145,160,0.45)';
+            dCtx.strokeRect(x, y, 128, 128);
+            bCtx.strokeStyle = '#353535';
+            bCtx.strokeRect(x, y, 128, 128);
           }
         }
       } else if (type === 'grass') {
-        for (let i = 0; i < 1500; i++) {
-          ctx.fillStyle = Math.random() > 0.5 ? accentColor : '#68bd53';
-          ctx.globalAlpha = 0.35;
-          ctx.fillRect(Math.random() * 256, Math.random() * 256, 2, 5);
+        for (let i = 0; i < 6500; i++) {
+          const gx = Math.random() * 512;
+          const gy = Math.random() * 512;
+          dCtx.fillStyle = Math.random() > 0.45 ? c2 : '#5e8c3a';
+          dCtx.globalAlpha = 0.42;
+          dCtx.fillRect(gx, gy, 2, 7);
+          bCtx.fillStyle = Math.random() > 0.5 ? '#b5b5b5' : '#555555';
+          bCtx.fillRect(gx, gy, 2, 6);
         }
-        ctx.globalAlpha = 1;
+        dCtx.globalAlpha = 1;
       } else if (type === 'siding') {
-        ctx.strokeStyle = accentColor;
-        ctx.lineWidth = 2;
-        for (let y = 0; y < 256; y += 22) {
-          ctx.beginPath();
-          ctx.moveTo(0, y);
-          ctx.lineTo(256, y);
-          ctx.stroke();
+        for (let y = 0; y < 512; y += 32) {
+          const g = dCtx.createLinearGradient(0, y, 0, y + 32);
+          g.addColorStop(0, c2);
+          g.addColorStop(0.2, c1);
+          g.addColorStop(1, c1);
+          dCtx.fillStyle = g;
+          dCtx.fillRect(0, y, 512, 32);
+          bCtx.fillStyle = '#404040';
+          bCtx.fillRect(0, y, 512, 3);
+          bCtx.fillStyle = '#a8a8a8';
+          bCtx.fillRect(0, y + 3, 512, 29);
+        }
+      } else if (type === 'fabric') {
+        for (let x = 0; x < 512; x += 4) {
+          for (let y = 0; y < 512; y += 4) {
+            const alt = ((x + y) / 4) % 2 === 0;
+            dCtx.fillStyle = alt ? c1 : c2;
+            dCtx.fillRect(x, y, 4, 4);
+            bCtx.fillStyle = alt ? '#9c9c9c' : '#646464';
+            bCtx.fillRect(x, y, 4, 4);
+          }
+        }
+      } else if (type === 'asphalt') {
+        for (let i = 0; i < 8000; i++) {
+          const ax = Math.random() * 512;
+          const ay = Math.random() * 512;
+          dCtx.fillStyle = Math.random() > 0.5 ? '#484d56' : '#282c32';
+          dCtx.fillRect(ax, ay, 2, 2);
+          bCtx.fillStyle = Math.random() > 0.5 ? '#a0a0a0' : '#505050';
+          bCtx.fillRect(ax, ay, 2, 2);
         }
       }
 
-      const tex = new THREE.CanvasTexture(c);
-      tex.wrapS = THREE.RepeatWrapping;
-      tex.wrapT = THREE.RepeatWrapping;
-      return tex;
+      const map = new THREE.CanvasTexture(diffCanvas);
+      const bumpMap = new THREE.CanvasTexture(bumpCanvas);
+      map.encoding = THREE.sRGBEncoding;
+      [map, bumpMap].forEach(t => {
+        t.wrapS = THREE.RepeatWrapping;
+        t.wrapT = THREE.RepeatWrapping;
+        t.repeat.set(repeatX, repeatY);
+      });
+      return { map, bumpMap };
     }
 
-    const grassTex = makeProceduralTexture('grass', '#4fa33e', '#3c852e');
-    grassTex.repeat.set(20, 20);
+    const grassPBR = createPBRTextureSet('grass', '#46732d', '#33591f', 24, 24);
+    const asphaltPBR = createPBRTextureSet('asphalt', '#353940', '#23262b', 20, 2);
+    const sidingPBR = createPBRTextureSet('siding', '#f4efe6', '#d8d0c3', 5, 3);
+    const sofaFabricPBR = createPBRTextureSet('fabric', '#8c583a', '#73452b', 6, 6);
 
-    const floorTextures = {
-      oak: (() => { const t = makeProceduralTexture('wood', '#c9935b', '#8f5e30'); t.repeat.set(6, 5); return t; })(),
-      marble: (() => { const t = makeProceduralTexture('marble', '#f2f5f7', '#b8c6d1'); t.repeat.set(6, 5); return t; })(),
-      dark: (() => { const t = makeProceduralTexture('wood', '#6e472b', '#3d2413'); t.repeat.set(6, 5); return t; })()
+    const floorPBRSets = {
+      oak: createPBRTextureSet('wood', '#b8824c', '#7a4d24', 6, 5),
+      marble: createPBRTextureSet('marble', '#eff2f5', '#9aa8b5', 5, 4),
+      dark: createPBRTextureSet('wood', '#593820', '#331d0e', 6, 5)
     };
 
-    const sidingTex = makeProceduralTexture('siding', '#ffffff', '#d6cfc2');
-    sidingTex.repeat.set(4, 3);
-
     // ==========================================
-    // 5. RUMAH 2 LANTAI + SOLID WALL COLLIDERS
+    // 5. MANSION 2 LANTAI + KOLAM RENANG + ANTI-TEMBUS COLLIDER
     // ==========================================
     const interactiveObjects = [];
     const secondFloorGroup = new THREE.Group();
     const roofGroup = new THREE.Group();
     scene.add(secondFloorGroup, roofGroup);
 
-    // Daftar Collider Dinding Fisik (Mencegah Karakter Tembus Rumah!)
-    const wallColliders = [];
+    // Daftar Collider Fisik Solid (Dinding, Kolom, Pagar, Pohon, Tangga, dan Furnitur)
+    const solidColliders = [];
 
+    function registerBoxCollider(minX, maxX, minZ, maxZ, floor = 1, refMesh = null) {
+      const col = { minX, maxX, minZ, maxZ, floor, refMesh };
+      solidColliders.push(col);
+      return col;
+    }
+
+    // Halaman Rumput, Jalan Aspal, Trotoar & Jalur Batu
     const lawnMesh = new THREE.Mesh(
-      new THREE.BoxGeometry(86, 0.4, 86),
-      new THREE.MeshStandardMaterial({ map: grassTex, roughness: 0.85 })
+      new THREE.BoxGeometry(92, 0.4, 92),
+      new THREE.MeshStandardMaterial({ map: grassPBR.map, bumpMap: grassPBR.bumpMap, bumpScale: 0.04, roughness: 0.88 })
     );
     lawnMesh.position.set(0, -0.2, 0);
     lawnMesh.receiveShadow = true;
     scene.add(lawnMesh);
 
     const streetRoad = new THREE.Mesh(
-      new THREE.BoxGeometry(86, 0.06, 4.4),
-      new THREE.MeshStandardMaterial({ color: '#3b4048', roughness: 0.85 })
+      new THREE.BoxGeometry(92, 0.06, 4.6),
+      new THREE.MeshStandardMaterial({ map: asphaltPBR.map, bumpMap: asphaltPBR.bumpMap, bumpScale: 0.03, roughness: 0.85 })
     );
-    streetRoad.position.set(0, 0.01, 18.2);
+    streetRoad.position.set(0, 0.01, 18.4);
     streetRoad.receiveShadow = true;
     scene.add(streetRoad);
 
-    for (let rx = -36; rx <= 36; rx += 5) {
-      const dash = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.07, 0.16), new THREE.MeshBasicMaterial({ color: '#f1c40f' }));
-      dash.position.set(rx, 0.015, 18.2);
+    for (let rx = -40; rx <= 40; rx += 5) {
+      const dash = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.07, 0.15), new THREE.MeshStandardMaterial({ color: '#e6b822', roughness: 0.6 }));
+      dash.position.set(rx, 0.015, 18.4);
       scene.add(dash);
     }
 
     const sidewalk = new THREE.Mesh(
-      new THREE.BoxGeometry(86, 0.07, 1.4),
-      new THREE.MeshStandardMaterial({ color: '#d5d8dc', roughness: 0.7 })
+      new THREE.BoxGeometry(92, 0.08, 1.5),
+      new THREE.MeshStandardMaterial({ map: floorPBRSets.marble.map, bumpMap: floorPBRSets.marble.bumpMap, bumpScale: 0.015, roughness: 0.72 })
     );
     sidewalk.position.set(0, 0.02, 15.3);
     sidewalk.receiveShadow = true;
     scene.add(sidewalk);
 
     const pathMesh = new THREE.Mesh(
-      new THREE.BoxGeometry(2.8, 0.06, 9.2),
-      new THREE.MeshStandardMaterial({ map: floorTextures.marble, roughness: 0.6 })
+      new THREE.BoxGeometry(2.9, 0.07, 9.2),
+      new THREE.MeshStandardMaterial({ map: floorPBRSets.marble.map, bumpMap: floorPBRSets.marble.bumpMap, bumpScale: 0.02, roughness: 0.55 })
     );
     pathMesh.position.set(0, 0.025, 10.6);
     pathMesh.receiveShadow = true;
     scene.add(pathMesh);
 
-    const houseFloorMat = new THREE.MeshStandardMaterial({ map: floorTextures.oak, roughness: 0.45 });
+    // Kolam Renang Outdoor di Halaman Kanan (Sangat Realistis dengan Pantulan Langit!)
+    const poolGroup = new THREE.Group();
+    poolGroup.position.set(12.2, 0.02, 2.2);
+    const poolDeck = new THREE.Mesh(
+      new THREE.BoxGeometry(5.6, 0.1, 8.2),
+      new THREE.MeshStandardMaterial({ map: floorPBRSets.marble.map, bumpMap: floorPBRSets.marble.bumpMap, bumpScale: 0.02, roughness: 0.5 })
+    );
+    poolDeck.receiveShadow = true;
+    const poolWaterMat = new THREE.MeshPhysicalMaterial({
+      color: '#1e88a8',
+      roughness: 0.08,
+      metalness: 0.1,
+      transmission: 0.45,
+      transparent: true,
+      opacity: 0.88,
+      reflectivity: 0.95
+    });
+    const poolWater = new THREE.Mesh(new THREE.BoxGeometry(4.4, 0.12, 7.0), poolWaterMat);
+    poolWater.position.y = 0.02;
+    poolGroup.add(poolDeck, poolWater);
+    poolGroup.userData = {
+      interactiveName: 'Kolam Renang Outdoor',
+      actions: [
+        { label: '🏊 Berenang Santai (+Atletik, +Kebersihan, +Hiburan)', icon: '🏊', offset: [0, 0], duration: 4.0, hobby: 'fitness', xpGain: 48, effect: { hygiene: 40, fun: 42, energy: -15 } }
+      ]
+    };
+    poolGroup.traverse(c => { if (c.isMesh) c.userData.parentInteractive = poolGroup; });
+    interactiveObjects.push(poolGroup);
+    scene.add(poolGroup);
+
+    // Lantai & Teras Mansion
+    const houseFloorMat = new THREE.MeshStandardMaterial({
+      map: floorPBRSets.oak.map,
+      bumpMap: floorPBRSets.oak.bumpMap,
+      bumpScale: 0.025,
+      roughness: 0.38,
+      metalness: 0.05
+    });
     const houseFloorMesh = new THREE.Mesh(new THREE.BoxGeometry(15.6, 0.16, 11.4), houseFloorMat);
     houseFloorMesh.position.set(0, 0.08, -1.2);
     houseFloorMesh.receiveShadow = true;
@@ -1343,42 +1235,49 @@
 
     const porchFloor = new THREE.Mesh(
       new THREE.BoxGeometry(15.6, 0.16, 2.2),
-      new THREE.MeshStandardMaterial({ color: '#eceff1', roughness: 0.5 })
+      new THREE.MeshStandardMaterial({ map: floorPBRSets.marble.map, bumpMap: floorPBRSets.marble.bumpMap, bumpScale: 0.02, roughness: 0.45 })
     );
     porchFloor.position.set(0, 0.08, 5.5);
     porchFloor.receiveShadow = true;
     scene.add(porchFloor);
 
-    const whiteTrimMat = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.45 });
-    const wallMat = new THREE.MeshStandardMaterial({ color: '#f7f3eb', map: sidingTex, roughness: 0.65 });
+    const whiteTrimMat = new THREE.MeshStandardMaterial({ color: '#f7f5f0', roughness: 0.35, metalness: 0.05 });
+    const wallMat = new THREE.MeshStandardMaterial({
+      color: '#f4efe6',
+      map: sidingPBR.map,
+      bumpMap: sidingPBR.bumpMap,
+      bumpScale: 0.035,
+      roughness: 0.62
+    });
 
     function buildPorchRailingsAndColumns(parentGroup, baseY, zPos, addColliders = false) {
-      const colPositions = [-7.5, -4.5, -1.6, 1.6, 4.5, 7.5];
+      const colPositions = [-7.5, -4.5, -1.65, 1.65, 4.5, 7.5];
       colPositions.forEach(cx => {
-        const col = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.13, 2.65, 12), whiteTrimMat);
+        const basePedestal = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.35, 0.32), whiteTrimMat);
+        basePedestal.position.set(cx, baseY + 0.175, zPos);
+        const col = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.13, 2.65, 18), whiteTrimMat);
         col.position.set(cx, baseY + 1.32, zPos);
         col.castShadow = true;
-        parentGroup.add(col);
+        parentGroup.add(basePedestal, col);
+        if (addColliders) {
+          registerBoxCollider(cx - 0.18, cx + 0.18, zPos - 0.18, zPos + 0.18, 1);
+        }
       });
 
-      [-4.55, 4.55].forEach(rx => {
-        const topRail = new THREE.Mesh(new THREE.BoxGeometry(5.8, 0.08, 0.1), whiteTrimMat);
-        topRail.position.set(rx, baseY + 0.85, zPos);
+      [-4.58, 4.58].forEach(rx => {
+        const topRail = new THREE.Mesh(new THREE.BoxGeometry(5.75, 0.09, 0.12), whiteTrimMat);
+        topRail.position.set(rx, baseY + 0.88, zPos);
         const botRail = topRail.clone();
         botRail.position.y = baseY + 0.15;
         parentGroup.add(topRail, botRail);
 
         if (addColliders) {
-          wallColliders.push({
-            minX: rx - 2.9, maxX: rx + 2.9,
-            minZ: zPos - 0.18, maxZ: zPos + 0.18,
-            floor: 1
-          });
+          registerBoxCollider(rx - 2.9, rx + 2.9, zPos - 0.16, zPos + 0.16, 1);
         }
 
-        for (let bx = rx - 2.6; bx <= rx + 2.6; bx += 0.45) {
-          const baluster = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.7, 0.05), whiteTrimMat);
-          baluster.position.set(bx, baseY + 0.5, zPos);
+        for (let bx = rx - 2.6; bx <= rx + 2.6; bx += 0.42) {
+          const baluster = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.72, 8), whiteTrimMat);
+          baluster.position.set(bx, baseY + 0.51, zPos);
           parentGroup.add(baluster);
         }
       });
@@ -1391,87 +1290,128 @@
       m.castShadow = true;
       m.receiveShadow = true;
       targetGroup.add(m);
-
-      wallColliders.push({
-        minX: x - w / 2,
-        maxX: x + w / 2,
-        minZ: z - d / 2,
-        maxZ: z + d / 2,
-        floor: floorNum
-      });
+      registerBoxCollider(x - w / 2, x + w / 2, z - d / 2, z + d / 2, floorNum);
       return m;
     }
 
-    // Dinding Lantai 1 (Dengan Pintu Masuk Utama Lebar 3.2m di Tengah x = -1.6 .. 1.6)
-    addSolidWall(scene, 15.8, 2.75, 0.28, 0, 1.5, -6.9, 1);      // Belakang
-    addSolidWall(scene, 0.28, 2.75, 11.6, -7.8, 1.5, -1.2, 1);  // Kiri
-    addSolidWall(scene, 0.28, 2.75, 11.6, 7.8, 1.5, -1.2, 1);   // Kanan
-    addSolidWall(scene, 6.2, 2.75, 0.28, -4.7, 1.5, 4.4, 1);    // Depan Kiri
-    addSolidWall(scene, 6.2, 2.75, 0.28, 4.7, 1.5, 4.4, 1);     // Depan Kanan
-    addSolidWall(scene, 4.2, 2.4, 0.24, 5.6, 1.35, -2.2, 1);    // Sekat Kamar Mandi (Pintu di x = 2.4..3.5)
+    // Dinding Lantai 1 (Pintu Depan Terbuka di Tengah x = -1.6 .. 1.6, z = 4.4)
+    addSolidWall(scene, 15.8, 2.75, 0.32, 0, 1.5, -6.9, 1);      // Belakang
+    addSolidWall(scene, 0.32, 2.75, 11.6, -7.8, 1.5, -1.2, 1);  // Kiri
+    addSolidWall(scene, 0.32, 2.75, 11.6, 7.8, 1.5, -1.2, 1);   // Kanan
+    addSolidWall(scene, 6.2, 2.75, 0.32, -4.7, 1.5, 4.4, 1);    // Depan Kiri
+    addSolidWall(scene, 6.2, 2.75, 0.32, 4.7, 1.5, 4.4, 1);     // Depan Kanan
+    addSolidWall(scene, 4.3, 2.5, 0.26, 5.55, 1.38, -2.2, 1);   // Sekat Kamar Mandi (Pintu di x = 2.2 .. 3.4)
 
-    // Kusen Pintu Depan Putih Klasik
-    const doorHeader = new THREE.Mesh(new THREE.BoxGeometry(3.2, 0.45, 0.34), whiteTrimMat);
+    // Kusen & Daun Pintu Depan Terbuka Elegan
+    const doorHeader = new THREE.Mesh(new THREE.BoxGeometry(3.3, 0.45, 0.38), whiteTrimMat);
     doorHeader.position.set(0, 2.65, 4.4);
-    scene.add(doorHeader);
+    const openDoorLeaf = new THREE.Mesh(new THREE.BoxGeometry(0.08, 2.35, 1.25), new THREE.MeshStandardMaterial({ color: '#5c381e', roughness: 0.35 }));
+    openDoorLeaf.position.set(-1.55, 1.32, 3.8);
+    scene.add(doorHeader, openDoorLeaf);
 
-    // Fungsi Resolusi Tabrakan Dinding (Anti-Tembus!)
-    function resolveWallCollisions(pos, floorLevel, radius = 0.38) {
-      for (const w of wallColliders) {
-        if (w.floor !== floorLevel) continue;
-        const closestX = Math.max(w.minX, Math.min(pos.x, w.maxX));
-        const closestZ = Math.max(w.minZ, Math.min(pos.z, w.maxZ));
-        const dx = pos.x - closestX;
-        const dz = pos.z - closestZ;
-        const distSq = dx * dx + dz * dz;
+    // ==========================================
+    // SISTEM ANTI-TEMBUS (COLLISION + SAFE TARGET + DOORWAY ROUTING)
+    // ==========================================
+    function isPositionBlocked(x, z, floorLevel, radius = 0.42) {
+      for (const c of solidColliders) {
+        if (c.floor !== floorLevel) continue;
+        if (c.refMesh && !c.refMesh.parent) continue;
+        const closestX = Math.max(c.minX, Math.min(x, c.maxX));
+        const closestZ = Math.max(c.minZ, Math.min(z, c.maxZ));
+        const dx = x - closestX;
+        const dz = z - closestZ;
+        if (dx * dx + dz * dz < radius * radius) return true;
+      }
+      return false;
+    }
 
-        if (distSq < radius * radius) {
-          const dist = Math.sqrt(distSq);
-          if (dist > 0.0001) {
-            const overlap = radius - dist;
-            pos.x += (dx / dist) * overlap;
-            pos.z += (dz / dist) * overlap;
-          } else {
-            pos.z += radius;
+    function findNearestWalkablePoint(targetPos, floorLevel, radius = 0.45) {
+      const p = targetPos.clone();
+      p.x = Math.max(-42, Math.min(42, p.x));
+      p.z = Math.max(-42, Math.min(42, p.z));
+      if (!isPositionBlocked(p.x, p.z, floorLevel, radius)) return p;
+
+      for (let r = 0.35; r <= 3.5; r += 0.35) {
+        for (let a = 0; a < Math.PI * 2; a += Math.PI / 8) {
+          const tx = p.x + Math.cos(a) * r;
+          const tz = p.z + Math.sin(a) * r;
+          if (!isPositionBlocked(tx, tz, floorLevel, radius)) {
+            return new THREE.Vector3(tx, p.y, tz);
+          }
+        }
+      }
+      return p;
+    }
+
+    function resolveWallCollisions(pos, floorLevel, radius = 0.42) {
+      for (let pass = 0; pass < 2; pass++) {
+        for (const c of solidColliders) {
+          if (c.floor !== floorLevel) continue;
+          if (c.refMesh && !c.refMesh.parent) continue;
+          const closestX = Math.max(c.minX, Math.min(pos.x, c.maxX));
+          const closestZ = Math.max(c.minZ, Math.min(pos.z, c.maxZ));
+          const dx = pos.x - closestX;
+          const dz = pos.z - closestZ;
+          const distSq = dx * dx + dz * dz;
+
+          if (distSq < radius * radius) {
+            const dist = Math.sqrt(distSq);
+            if (dist > 0.0001) {
+              const overlap = radius - dist;
+              pos.x += (dx / dist) * overlap;
+              pos.z += (dz / dist) * overlap;
+            } else {
+              // Dorong keluar ke sisi terdekat jika berada tepat di pusat kotak
+              const penLeft = Math.abs(pos.x - c.minX);
+              const penRight = Math.abs(c.maxX - pos.x);
+              const penTop = Math.abs(pos.z - c.minZ);
+              const penBot = Math.abs(c.maxZ - pos.z);
+              const minPen = Math.min(penLeft, penRight, penTop, penBot);
+              if (minPen === penLeft) pos.x = c.minX - radius;
+              else if (minPen === penRight) pos.x = c.maxX + radius;
+              else if (minPen === penTop) pos.z = c.minZ - radius;
+              else pos.z = c.maxZ + radius;
+            }
           }
         }
       }
     }
 
-    // Penghitung Jalur Pintar Lewat Pintu (Doorway Pathfinding)
-    function computePathWaypoints(startPos, endPos, floorLevel) {
+    function computePathWaypoints(startPos, rawEndPos, floorLevel) {
+      const endPos = findNearestWalkablePoint(rawEndPos, floorLevel);
       const points = [];
       if (floorLevel === 1) {
         const startOutside = startPos.z > 4.4;
         const endOutside = endPos.z > 4.4;
+        const startBath = startPos.x > 3.3 && startPos.z < -2.2;
+        const endBath = endPos.x > 3.3 && endPos.z < -2.2;
 
-        // Jika menyeberangi pintu depan rumah (z = 4.4)
+        // 1. Keluar dari kamar mandi dulu jika posisi awal di dalam kamar mandi
+        if (startBath && !endBath) {
+          points.push(new THREE.Vector3(2.7, 0.16, -3.1));
+          points.push(new THREE.Vector3(2.7, 0.16, -1.3));
+        }
+
+        // 2. Lewati pintu depan utama (x = 0, z = 4.4)
         if (startOutside !== endOutside) {
           if (startOutside) {
-            points.push(new THREE.Vector3(0, 0.08, 6.8));
+            points.push(new THREE.Vector3(0, 0.08, 6.9));
             points.push(new THREE.Vector3(0, 0.16, 4.9));
-            points.push(new THREE.Vector3(0, 0.16, 3.6));
+            points.push(new THREE.Vector3(0, 0.16, 3.4));
           } else {
-            points.push(new THREE.Vector3(0, 0.16, 3.6));
+            points.push(new THREE.Vector3(0, 0.16, 3.4));
             points.push(new THREE.Vector3(0, 0.16, 4.9));
-            points.push(new THREE.Vector3(0, 0.08, 6.8));
+            points.push(new THREE.Vector3(0, 0.08, 6.9));
           }
         }
 
-        // Jika masuk atau keluar kamar mandi (x > 3.5 && z < -2.2)
-        const startBath = startPos.x > 3.5 && startPos.z < -2.2;
-        const endBath = endPos.x > 3.5 && endPos.z < -2.2;
-        if (startBath !== endBath) {
-          if (startBath) {
-            points.push(new THREE.Vector3(2.8, 0.16, -3.1));
-            points.push(new THREE.Vector3(2.8, 0.16, -1.4));
-          } else {
-            points.push(new THREE.Vector3(2.8, 0.16, -1.4));
-            points.push(new THREE.Vector3(2.8, 0.16, -3.1));
-          }
+        // 3. Masuk ke pintu kamar mandi jika tujuan di dalam kamar mandi
+        if (!startBath && endBath) {
+          points.push(new THREE.Vector3(2.7, 0.16, -1.3));
+          points.push(new THREE.Vector3(2.7, 0.16, -3.1));
         }
       }
-      points.push(endPos.clone());
+      points.push(endPos);
       return points;
     }
 
@@ -1479,11 +1419,15 @@
     const stairsGroup = new THREE.Group();
     stairsGroup.position.set(-5.8, 0.16, -4.6);
     for (let s = 0; s < 10; s++) {
-      const step = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.14, 0.42), new THREE.MeshStandardMaterial({ color: '#7d4e27' }));
+      const step = new THREE.Mesh(
+        new THREE.BoxGeometry(1.65, 0.14, 0.42),
+        new THREE.MeshStandardMaterial({ map: floorPBRSets.dark.map, bumpMap: floorPBRSets.dark.bumpMap, bumpScale: 0.02, roughness: 0.4 })
+      );
       step.position.set(0, s * 0.28 + 0.1, s * 0.34);
       step.castShadow = true;
       stairsGroup.add(step);
     }
+    registerBoxCollider(-6.75, -4.85, -4.9, -1.3, 1);
     stairsGroup.userData = {
       interactiveName: 'Tangga Kayu (Lantai 1 ↔ Lantai 2)',
       actions: [
@@ -1496,44 +1440,47 @@
     scene.add(stairsGroup);
 
     // ==========================================
-    // LANTAI 2 & BALKON KLASIK + ATAP MANSION
+    // LANTAI 2, JENDELA REALISTIS & ATAP
     // ==========================================
     const floor2Slab = new THREE.Mesh(new THREE.BoxGeometry(15.6, 0.18, 13.6), houseFloorMat);
     floor2Slab.position.set(0, 2.95, -0.1);
     floor2Slab.receiveShadow = true;
     secondFloorGroup.add(floor2Slab);
 
-    addSolidWall(secondFloorGroup, 15.8, 2.65, 0.28, 0, 4.35, -6.9, 2);
-    addSolidWall(secondFloorGroup, 0.28, 2.65, 11.6, -7.8, 4.35, -1.2, 2);
-    addSolidWall(secondFloorGroup, 0.28, 2.65, 11.6, 7.8, 4.35, -1.2, 2);
-    addSolidWall(secondFloorGroup, 6.2, 2.65, 0.28, -4.7, 4.35, 4.4, 2);
-    addSolidWall(secondFloorGroup, 6.2, 2.65, 0.28, 4.7, 4.35, 4.4, 2);
-
+    addSolidWall(secondFloorGroup, 15.8, 2.65, 0.32, 0, 4.35, -6.9, 2);
+    addSolidWall(secondFloorGroup, 0.32, 2.65, 11.6, -7.8, 4.35, -1.2, 2);
+    addSolidWall(secondFloorGroup, 0.32, 2.65, 11.6, 7.8, 4.35, -1.2, 2);
+    addSolidWall(secondFloorGroup, 6.2, 2.65, 0.32, -4.7, 4.35, 4.4, 2);
+    addSolidWall(secondFloorGroup, 6.2, 2.65, 0.32, 4.7, 4.35, 4.4, 2);
     buildPorchRailingsAndColumns(secondFloorGroup, 3.04, 6.45, false);
 
-    function addClassicWindow(targetGroup, x, y, z) {
-      const frame = new THREE.Mesh(new THREE.BoxGeometry(1.5, 1.45, 0.34), whiteTrimMat);
+    function addArchitecturalWindow(targetGroup, x, y, z) {
+      const frame = new THREE.Mesh(new THREE.BoxGeometry(1.55, 1.5, 0.38), whiteTrimMat);
       frame.position.set(x, y, z);
       const glass = new THREE.Mesh(
-        new THREE.BoxGeometry(1.22, 1.18, 0.36),
-        new THREE.MeshPhysicalMaterial({ color: '#bce8ff', transparent: true, opacity: 0.65, roughness: 0.1 })
+        new THREE.BoxGeometry(1.26, 1.22, 0.4),
+        new THREE.MeshPhysicalMaterial({ color: '#cce8ff', roughness: 0.05, metalness: 0.1, transmission: 0.55, transparent: true, opacity: 0.72, reflectivity: 1.0 })
       );
       glass.position.set(x, y, z);
-      targetGroup.add(frame, glass);
+      const mullionV = new THREE.Mesh(new THREE.BoxGeometry(0.05, 1.25, 0.42), whiteTrimMat);
+      mullionV.position.set(x, y, z);
+      const mullionH = new THREE.Mesh(new THREE.BoxGeometry(1.28, 0.05, 0.42), whiteTrimMat);
+      mullionH.position.set(x, y, z);
+      targetGroup.add(frame, glass, mullionV, mullionH);
     }
     [-5.2, -3.2, 3.2, 5.2].forEach(wx => {
-      addClassicWindow(scene, wx, 1.65, 4.4);
-      addClassicWindow(secondFloorGroup, wx, 4.4, 4.4);
+      addArchitecturalWindow(scene, wx, 1.65, 4.4);
+      addArchitecturalWindow(secondFloorGroup, wx, 4.4, 4.4);
     });
 
-    const cornice = new THREE.Mesh(new THREE.BoxGeometry(16.4, 0.35, 14.4), whiteTrimMat);
+    const cornice = new THREE.Mesh(new THREE.BoxGeometry(16.4, 0.36, 14.4), whiteTrimMat);
     cornice.position.set(0, 5.82, -0.1);
     const roofCap = new THREE.Mesh(
-      new THREE.ConeGeometry(11.4, 2.3, 4),
-      new THREE.MeshStandardMaterial({ color: '#3b424c', roughness: 0.75 })
+      new THREE.ConeGeometry(11.4, 2.35, 4),
+      new THREE.MeshStandardMaterial({ color: '#2f353d', bumpMap: asphaltPBR.bumpMap, bumpScale: 0.03, roughness: 0.75 })
     );
     roofCap.rotation.y = Math.PI / 4;
-    roofCap.position.set(0, 7.1, -0.1);
+    roofCap.position.set(0, 7.12, -0.1);
     roofGroup.add(cornice, roofCap);
 
     function setHouseViewMode(mode) {
@@ -1557,143 +1504,192 @@
         f.visible = (mode === 'floor1') ? (fLevel === 1) : true;
       });
     }
-
     document.getElementById('toggle-view-btn').addEventListener('click', () => {
       soundFX.playClick();
       const order = ['floor1', 'floor2', 'exterior'];
       setHouseViewMode(order[(order.indexOf(worldState.viewMode) + 1) % order.length]);
     });
 
-    // Kotak Surat & Pepohonan
+    // Mailbox & Pepohonan Layered Realistis + Collider Batang
     const mailboxGroup = new THREE.Group();
     mailboxGroup.position.set(-2.1, 0, 14.3);
-    const mbPost = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 1.15, 10), whiteTrimMat);
+    const mbPost = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.07, 1.15, 14), whiteTrimMat);
     mbPost.position.y = 0.575;
-    const mbBox = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.26, 0.52), new THREE.MeshStandardMaterial({ color: '#2980b9' }));
+    const mbBox = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.26, 0.52), new THREE.MeshStandardMaterial({ color: '#1f5f8b', metalness: 0.4, roughness: 0.35 }));
     mbBox.position.y = 1.22;
-    const mbFlag = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.22, 0.08), new THREE.MeshStandardMaterial({ color: '#e74c3c' }));
+    const mbFlag = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.22, 0.08), new THREE.MeshStandardMaterial({ color: '#c0392b' }));
     mbFlag.position.set(0.16, 1.32, 0.1);
     mailboxGroup.add(mbPost, mbBox, mbFlag);
+    registerBoxCollider(-2.3, -1.9, 14.1, 14.5, 1);
     mailboxGroup.userData = {
       interactiveName: 'Kotak Surat (Mailbox)',
       actions: [
         { label: '💼 Buka Lowongan Kerja', icon: '💼', openCareer: true },
-        { label: '📬 Cek Surat & Tagihan (+Hiburan)', icon: '📬', offset: [0.8, 0], duration: 2.2, effect: { fun: 15 } }
+        { label: '📬 Cek Surat & Tagihan (+Hiburan)', icon: '📬', offset: [0.85, 0], duration: 2.2, effect: { fun: 15 } }
       ]
     };
     mailboxGroup.traverse(c => { if (c.isMesh) c.userData.parentInteractive = mailboxGroup; });
     interactiveObjects.push(mailboxGroup);
     scene.add(mailboxGroup);
 
-    function addTree(x, z, scale = 1) {
+    function addRealisticTree(x, z, scale = 1) {
       const g = new THREE.Group();
       g.position.set(x, 0, z);
-      const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.22 * scale, 0.34 * scale, 2.4 * scale, 12), new THREE.MeshStandardMaterial({ color: '#6b4423', roughness: 0.8 }));
-      trunk.position.y = 1.2 * scale;
+      const barkMat = new THREE.MeshStandardMaterial({ map: floorPBRSets.dark.map, bumpMap: floorPBRSets.dark.bumpMap, bumpScale: 0.05, roughness: 0.9 });
+      const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.2 * scale, 0.36 * scale, 2.5 * scale, 16), barkMat);
+      trunk.position.y = 1.25 * scale;
       trunk.castShadow = true;
-      const crown1 = new THREE.Mesh(new THREE.SphereGeometry(1.5 * scale, 16, 14), new THREE.MeshStandardMaterial({ color: '#37872e', roughness: 0.75 }));
-      crown1.position.y = 2.8 * scale;
-      crown1.castShadow = true;
-      const crown2 = new THREE.Mesh(new THREE.SphereGeometry(1.15 * scale, 14, 12), new THREE.MeshStandardMaterial({ color: '#4ca642', roughness: 0.75 }));
-      crown2.position.set(0.55 * scale, 3.4 * scale, 0.35 * scale);
-      g.add(trunk, crown1, crown2);
+      g.add(trunk);
+
+      const leafOffsets = [
+        [0, 2.9, 0, 1.35, '#2d5a27'],
+        [-0.75, 2.6, 0.45, 1.05, '#3b7332'],
+        [0.8, 2.7, -0.35, 1.1, '#264d20'],
+        [0.2, 3.6, 0.25, 1.05, '#47853c'],
+        [-0.35, 3.3, -0.5, 0.95, '#35692c']
+      ];
+      leafOffsets.forEach(([lx, ly, lz, lr, col]) => {
+        const crown = new THREE.Mesh(
+          new THREE.DodecahedronGeometry(lr * scale, 2),
+          new THREE.MeshStandardMaterial({ color: col, bumpMap: grassPBR.bumpMap, bumpScale: 0.04, roughness: 0.82 })
+        );
+        crown.position.set(lx * scale, ly * scale, lz * scale);
+        crown.castShadow = true;
+        crown.receiveShadow = true;
+        g.add(crown);
+      });
+      registerBoxCollider(x - 0.35 * scale, x + 0.35 * scale, z - 0.35 * scale, z + 0.35 * scale, 1);
       scene.add(g);
     }
-    addTree(-11.5, 8.5, 1.25);
-    addTree(11.5, 7.5, 1.2);
-    addTree(-12.5, -8, 1.15);
-    addTree(12.5, -8, 1.15);
+    addRealisticTree(-11.5, 8.5, 1.25);
+    addRealisticTree(11.5, 10.5, 1.15);
+    addRealisticTree(-12.5, -8, 1.2);
+    addRealisticTree(12.5, -8, 1.2);
 
     // ==========================================
-    // 6. FURNITUR LANTAI 1 & LANTAI 2
+    // 6. FURNITUR HIGH-DETAIL PBR + COLLIDER OTOMATIS
     // ==========================================
     let tvScreenMat = null;
 
     function createFurnitureMesh(type) {
       const group = new THREE.Group();
+      const walnutMat = new THREE.MeshStandardMaterial({ map: floorPBRSets.dark.map, bumpMap: floorPBRSets.dark.bumpMap, bumpScale: 0.02, roughness: 0.38 });
+      const oakMat = new THREE.MeshStandardMaterial({ map: floorPBRSets.oak.map, bumpMap: floorPBRSets.oak.bumpMap, bumpScale: 0.02, roughness: 0.42 });
+
       if (type === 'bed') {
-        const frame = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.42, 3.3), new THREE.MeshStandardMaterial({ color: '#5c3a21' }));
-        frame.position.y = 0.21;
-        const headboard = new THREE.Mesh(new THREE.BoxGeometry(2.4, 1.15, 0.2), new THREE.MeshStandardMaterial({ color: '#4a2e19' }));
-        headboard.position.set(0, 0.58, -1.55);
-        const mattress = new THREE.Mesh(new THREE.BoxGeometry(2.22, 0.28, 3.1), new THREE.MeshStandardMaterial({ color: '#f8f9fa' }));
+        const frame = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.38, 3.3), walnutMat);
+        frame.position.y = 0.22;
+        const headboard = new THREE.Mesh(new THREE.BoxGeometry(2.45, 1.22, 0.18), walnutMat);
+        headboard.position.set(0, 0.62, -1.58);
+        const mattress = new THREE.Mesh(new THREE.BoxGeometry(2.22, 0.28, 3.1), new THREE.MeshStandardMaterial({ color: '#f4f6f8', roughness: 0.85 }));
         mattress.position.y = 0.52;
-        const duvet = new THREE.Mesh(new THREE.BoxGeometry(2.26, 0.31, 2.0), new THREE.MeshStandardMaterial({ color: '#2980b9' }));
-        duvet.position.set(0, 0.53, 0.52);
+        const duvet = new THREE.Mesh(
+          new THREE.BoxGeometry(2.28, 0.31, 2.05),
+          new THREE.MeshStandardMaterial({ color: '#2b4c7e', map: sofaFabricPBR.map, bumpMap: sofaFabricPBR.bumpMap, bumpScale: 0.02, roughness: 0.85 })
+        );
+        duvet.position.set(0, 0.54, 0.5);
+        [-0.58, 0.58].forEach(px => {
+          const pillow = new THREE.Mesh(new THREE.BoxGeometry(0.85, 0.16, 0.52), new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.8 }));
+          pillow.position.set(px, 0.72, -1.15);
+          group.add(pillow);
+        });
         group.add(frame, headboard, mattress, duvet);
       } else if (type === 'sofa') {
-        const base = new THREE.Mesh(new THREE.BoxGeometry(1.25, 0.44, 2.9), new THREE.MeshStandardMaterial({ color: '#d35400' }));
+        const sofaMat = new THREE.MeshStandardMaterial({ map: sofaFabricPBR.map, bumpMap: sofaFabricPBR.bumpMap, bumpScale: 0.025, roughness: 0.85 });
+        const base = new THREE.Mesh(new THREE.BoxGeometry(1.18, 0.36, 2.85), sofaMat);
         base.position.y = 0.22;
-        const back = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.92, 2.9), new THREE.MeshStandardMaterial({ color: '#ba4a00' }));
-        back.position.set(-0.46, 0.46, 0);
+        const back = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.88, 2.85), sofaMat);
+        back.position.set(-0.45, 0.52, 0);
+        [-1.32, 1.32].forEach(az => {
+          const arm = new THREE.Mesh(new THREE.BoxGeometry(1.15, 0.58, 0.22), sofaMat);
+          arm.position.set(0, 0.35, az);
+          group.add(arm);
+        });
+        [-0.82, 0, 0.82].forEach(cz => {
+          const cushion = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.16, 0.82), sofaMat);
+          cushion.position.set(0.1, 0.46, cz);
+          group.add(cushion);
+        });
         group.add(base, back);
       } else if (type === 'tv') {
-        const stand = new THREE.Mesh(new THREE.BoxGeometry(0.68, 0.52, 2.2), new THREE.MeshStandardMaterial({ color: '#3b2818' }));
+        const stand = new THREE.Mesh(new THREE.BoxGeometry(0.66, 0.52, 2.2), walnutMat);
         stand.position.y = 0.26;
-        const bezel = new THREE.Mesh(new THREE.BoxGeometry(0.12, 1.05, 1.85), new THREE.MeshStandardMaterial({ color: '#141414' }));
+        const bezel = new THREE.Mesh(new THREE.BoxGeometry(0.1, 1.05, 1.85), new THREE.MeshStandardMaterial({ color: '#141619', metalness: 0.6, roughness: 0.25 }));
         bezel.position.y = 1.12;
-        const screenMat = new THREE.MeshStandardMaterial({ color: '#111822', emissive: '#000000' });
+        const screenMat = new THREE.MeshStandardMaterial({ color: '#0d141c', emissive: '#081826', roughness: 0.08, metalness: 0.3 });
         if (!tvScreenMat) tvScreenMat = screenMat;
-        const screen = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.92, 1.7), screenMat);
+        const screen = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.92, 1.72), screenMat);
         screen.position.y = 1.12;
         group.add(stand, bezel, screen);
       } else if (type === 'fridge') {
-        const body = new THREE.Mesh(new THREE.BoxGeometry(1.05, 2.15, 0.98), new THREE.MeshStandardMaterial({ color: '#ecf0f1', metalness: 0.35, roughness: 0.25 }));
+        const steelMat = new THREE.MeshStandardMaterial({ color: '#d8dee3', metalness: 0.72, roughness: 0.22 });
+        const body = new THREE.Mesh(new THREE.BoxGeometry(1.05, 2.15, 0.98), steelMat);
         body.position.y = 1.075;
-        group.add(body);
+        const handle = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.85, 0.06), new THREE.MeshStandardMaterial({ color: '#444', metalness: 0.9, roughness: 0.15 }));
+        handle.position.set(0.42, 1.25, 0.51);
+        group.add(body, handle);
       } else if (type === 'espresso') {
-        const counter = new THREE.Mesh(new THREE.BoxGeometry(1.1, 0.92, 0.9), new THREE.MeshStandardMaterial({ color: '#d5dbdb' }));
+        const counter = new THREE.Mesh(new THREE.BoxGeometry(1.1, 0.92, 0.9), oakMat);
         counter.position.y = 0.46;
-        const machine = new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.48, 0.42), new THREE.MeshStandardMaterial({ color: '#c0392b', metalness: 0.5 }));
-        machine.position.y = 1.16;
-        group.add(counter, machine);
+        const topMarble = new THREE.Mesh(new THREE.BoxGeometry(1.14, 0.06, 0.94), new THREE.MeshStandardMaterial({ map: floorPBRSets.marble.map, roughness: 0.2 }));
+        topMarble.position.y = 0.94;
+        const machine = new THREE.Mesh(new THREE.BoxGeometry(0.44, 0.48, 0.4), new THREE.MeshStandardMaterial({ color: '#9e2a2b', metalness: 0.65, roughness: 0.2 }));
+        machine.position.y = 1.2;
+        group.add(counter, topMarble, machine);
       } else if (type === 'shower') {
-        const tray = new THREE.Mesh(new THREE.BoxGeometry(1.45, 0.14, 1.45), new THREE.MeshStandardMaterial({ color: '#ffffff' }));
+        const tray = new THREE.Mesh(new THREE.BoxGeometry(1.45, 0.14, 1.45), new THREE.MeshStandardMaterial({ color: '#f5f7fa', roughness: 0.2 }));
         tray.position.y = 0.07;
-        const glassMat = new THREE.MeshPhysicalMaterial({ color: '#a8e6ff', transparent: true, opacity: 0.38 });
+        const glassMat = new THREE.MeshPhysicalMaterial({ color: '#bfe8ff', transparent: true, opacity: 0.34, roughness: 0.05, reflectivity: 1 });
         const g1 = new THREE.Mesh(new THREE.BoxGeometry(0.05, 2.05, 1.45), glassMat);
         g1.position.set(-0.7, 1.05, 0);
         const g2 = new THREE.Mesh(new THREE.BoxGeometry(1.45, 2.05, 0.05), glassMat);
         g2.position.set(0, 1.05, 0.7);
         group.add(tray, g1, g2);
       } else if (type === 'toilet') {
-        const bowl = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.22, 0.48, 16), new THREE.MeshStandardMaterial({ color: '#ffffff' }));
+        const porcMat = new THREE.MeshPhysicalMaterial({ color: '#ffffff', roughness: 0.12, clearcoat: 0.8 });
+        const bowl = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.22, 0.48, 20), porcMat);
         bowl.position.set(0, 0.24, 0.12);
-        const tank = new THREE.Mesh(new THREE.BoxGeometry(0.58, 0.65, 0.24), new THREE.MeshStandardMaterial({ color: '#f4f6f7' }));
+        const tank = new THREE.Mesh(new THREE.BoxGeometry(0.58, 0.65, 0.24), porcMat);
         tank.position.set(0, 0.72, -0.22);
         group.add(bowl, tank);
       } else if (type === 'keyboard_music') {
-        const legL = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.78, 0.5), new THREE.MeshStandardMaterial({ color: '#1c1c1c' }));
+        const metalLeg = new THREE.MeshStandardMaterial({ color: '#1e2024', metalness: 0.7, roughness: 0.3 });
+        const legL = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.78, 0.5), metalLeg);
         legL.position.set(-0.65, 0.39, 0);
         const legR = legL.clone();
         legR.position.x = 0.65;
-        const body = new THREE.Mesh(new THREE.BoxGeometry(1.65, 0.14, 0.52), new THREE.MeshStandardMaterial({ color: '#222831' }));
+        const body = new THREE.Mesh(new THREE.BoxGeometry(1.65, 0.14, 0.52), metalLeg);
         body.position.y = 0.82;
-        const keys = new THREE.Mesh(new THREE.BoxGeometry(1.52, 0.05, 0.22), new THREE.MeshStandardMaterial({ color: '#ffffff' }));
+        const keys = new THREE.Mesh(new THREE.BoxGeometry(1.52, 0.05, 0.22), new THREE.MeshStandardMaterial({ color: '#fafafa', roughness: 0.2 }));
         keys.position.set(0, 0.89, 0.12);
         group.add(legL, legR, body, keys);
       } else if (type === 'pc_desk') {
-        const desk = new THREE.Mesh(new THREE.BoxGeometry(1.7, 0.08, 0.85), new THREE.MeshStandardMaterial({ color: '#7d5230' }));
+        const desk = new THREE.Mesh(new THREE.BoxGeometry(1.7, 0.08, 0.85), oakMat);
         desk.position.y = 0.78;
-        const monitor = new THREE.Mesh(new THREE.BoxGeometry(0.95, 0.55, 0.06), new THREE.MeshStandardMaterial({ color: '#111', emissive: '#1b4f72', emissiveIntensity: 0.6 }));
+        [[-0.78, -0.35], [0.78, -0.35], [-0.78, 0.35], [0.78, 0.35]].forEach(([lx, lz]) => {
+          const leg = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.78, 0.07), new THREE.MeshStandardMaterial({ color: '#222', metalness: 0.6 }));
+          leg.position.set(lx, 0.39, lz);
+          group.add(leg);
+        });
+        const monitor = new THREE.Mesh(new THREE.BoxGeometry(0.98, 0.56, 0.05), new THREE.MeshStandardMaterial({ color: '#111', emissive: '#1a4971', emissiveIntensity: 0.75, roughness: 0.1 }));
         monitor.position.set(0, 1.18, -0.15);
         group.add(desk, monitor);
       } else if (type === 'easel') {
-        const stand = new THREE.Mesh(new THREE.BoxGeometry(0.12, 1.65, 0.12), new THREE.MeshStandardMaterial({ color: '#8e5b32' }));
+        const stand = new THREE.Mesh(new THREE.BoxGeometry(0.12, 1.65, 0.12), oakMat);
         stand.position.y = 0.82;
-        const canvasBoard = new THREE.Mesh(new THREE.BoxGeometry(0.95, 0.85, 0.06), new THREE.MeshStandardMaterial({ color: '#fff9e6' }));
+        const canvasBoard = new THREE.Mesh(new THREE.BoxGeometry(0.95, 0.85, 0.06), new THREE.MeshStandardMaterial({ color: '#f7f1e3', roughness: 0.9 }));
         canvasBoard.position.set(0, 1.15, 0.08);
         group.add(stand, canvasBoard);
       } else if (type === 'alarm') {
-        const box = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.45, 0.16), new THREE.MeshStandardMaterial({ color: '#ecf0f1' }));
+        const box = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.45, 0.16), new THREE.MeshStandardMaterial({ color: '#ecf0f1', metalness: 0.3 }));
         box.position.y = 1.45;
-        const siren = new THREE.Mesh(new THREE.SphereGeometry(0.11, 12, 10), new THREE.MeshStandardMaterial({ color: '#e74c3c', emissive: '#c0392b', emissiveIntensity: 0.7 }));
+        const siren = new THREE.Mesh(new THREE.SphereGeometry(0.11, 14, 12), new THREE.MeshStandardMaterial({ color: '#e74c3c', emissive: '#c0392b', emissiveIntensity: 0.8 }));
         siren.position.set(0, 1.72, 0);
         group.add(box, siren);
       } else if (type === 'plant') {
-        const pot = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.2, 0.45, 14), new THREE.MeshStandardMaterial({ color: '#d35400' }));
+        const pot = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.2, 0.45, 18), new THREE.MeshStandardMaterial({ color: '#b55233', roughness: 0.75 }));
         pot.position.y = 0.225;
-        const leaves = new THREE.Mesh(new THREE.SphereGeometry(0.45, 14, 12), new THREE.MeshStandardMaterial({ color: '#27ae60' }));
+        const leaves = new THREE.Mesh(new THREE.DodecahedronGeometry(0.45, 2), new THREE.MeshStandardMaterial({ color: '#2d6a36', bumpMap: grassPBR.bumpMap, bumpScale: 0.03, roughness: 0.75 }));
         leaves.position.y = 0.75;
         group.add(pot, leaves);
       }
@@ -1702,21 +1698,21 @@
     }
 
     const furnitureActionPresets = {
-      bed: [{ label: '😴 Tidur Pulihkan Stamina (+Stamina)', icon: '😴', offset: [1.4, 0], duration: 4.0, effect: { energy: 85, fun: 10 } }],
-      sofa: [{ label: '📺 Nonton TV Santai (+Hiburan)', icon: '📺', offset: [0.65, 0], face: [-1.1, 1.2], duration: 3.8, effect: { fun: 45, energy: 15 }, tvOn: true }],
-      tv: [{ label: '🎬 Nonton Film Seru (+Hiburan)', icon: '🎬', offset: [-2.4, 0], face: [-1.1, 1.2], duration: 3.8, effect: { fun: 50 }, tvOn: true }],
-      fridge: [{ label: '🍳 Masak & Makan Enak (+Lapar)', icon: '🍳', offset: [0, 1.15], duration: 3.2, cost: 20, effect: { hunger: 75, energy: 10 } }],
+      bed: [{ label: '😴 Tidur Pulihkan Stamina (+Stamina)', icon: '😴', offset: [1.55, 0], duration: 4.0, effect: { energy: 85, fun: 10 } }],
+      sofa: [{ label: '📺 Nonton TV Santai (+Hiburan)', icon: '📺', offset: [0.95, 0], face: [-1.1, 1.2], duration: 3.8, effect: { fun: 45, energy: 15 }, tvOn: true }],
+      tv: [{ label: '🎬 Nonton Film Seru (+Hiburan)', icon: '🎬', offset: [-2.2, 0], face: [-1.1, 1.2], duration: 3.8, effect: { fun: 50 }, tvOn: true }],
+      fridge: [{ label: '🍳 Masak & Makan Enak (+Lapar)', icon: '🍳', offset: [0, 1.1], duration: 3.2, cost: 20, effect: { hunger: 75, energy: 10 } }],
       espresso: [{ label: '☕ Minum Kopi Espresso (+38 Stamina)', icon: '☕', offset: [0, 1.05], duration: 2.0, cost: 12, effect: { energy: 38, bladder: -12 } }],
-      shower: [{ label: '🚿 Mandi Air Hangat (+Kebersihan)', icon: '🚿', offset: [-0.95, 0], duration: 3.2, effect: { hygiene: 90, energy: 12 } }],
-      toilet: [{ label: '🚽 Gunakan Toilet (+Kandung Kemih)', icon: '🚽', offset: [0, 0.75], duration: 2.2, effect: { bladder: 95 } }],
-      keyboard_music: [{ label: '🎹 Latihan Musik Keyboard (+Hobi Musik)', icon: '🎹', offset: [0, 0.75], duration: 3.8, hobby: 'music', xpGain: 45, earn: 45, effect: { fun: 45, energy: -14 } }],
+      shower: [{ label: '🚿 Mandi Air Hangat (+Kebersihan)', icon: '🚿', offset: [-1.1, 0], duration: 3.2, effect: { hygiene: 90, energy: 12 } }],
+      toilet: [{ label: '🚽 Gunakan Toilet (+Kandung Kemih)', icon: '🚽', offset: [0, 0.85], duration: 2.2, effect: { bladder: 95 } }],
+      keyboard_music: [{ label: '🎹 Latihan Musik Keyboard (+Hobi Musik)', icon: '🎹', offset: [0, 0.85], duration: 3.8, hobby: 'music', xpGain: 45, earn: 45, effect: { fun: 45, energy: -14 } }],
       pc_desk: [
-        { label: '💻 Kerja Freelance & Coding (+Hobi Tech, +§)', icon: '💻', offset: [0, 0.75], duration: 4.0, hobby: 'coding', xpGain: 50, earn: 140, effect: { fun: 20, energy: -16 } },
+        { label: '💻 Kerja Freelance & Coding (+Hobi Tech, +§)', icon: '💻', offset: [0, 0.85], duration: 4.0, hobby: 'coding', xpGain: 50, earn: 140, effect: { fun: 20, energy: -16 } },
         { label: '💼 Buka Lowongan Kerja', icon: '💼', openCareer: true }
       ],
       easel: [{ label: '🎨 Melukis & Jual Karya (+Hobi Lukis, +§)', icon: '🎨', offset: [0, 0.85], duration: 3.8, hobby: 'painting', xpGain: 48, earn: 115, effect: { fun: 40, energy: -14 } }],
       alarm: [{ label: '🚨 Tes Bunyi Alarm Keamanan', icon: '🚨', testAlarm: true }],
-      plant: [{ label: '🌿 Siram Tanaman Hias (+Hiburan)', icon: '🌿', offset: [0, 0.8], duration: 2.2, effect: { fun: 18 } }]
+      plant: [{ label: '🌿 Siram Tanaman Hias (+Hiburan)', icon: '🌿', offset: [0, 0.85], duration: 2.2, effect: { fun: 18 } }]
     };
 
     const placedFurniture = [];
@@ -1725,8 +1721,14 @@
       const mesh = createFurnitureMesh(type);
       mesh.position.set(x, y, z);
       mesh.rotation.y = rotY;
+      mesh.updateMatrixWorld(true);
+
+      // Daftarkan Bounding Box Furnitur ke Collider Fisik agar Karakter Tidak Tembus Furnitur!
+      const box = new THREE.Box3().setFromObject(mesh);
+      const col = registerBoxCollider(box.min.x - 0.05, box.max.x + 0.05, box.min.z - 0.05, box.max.z + 0.05, floorLevel, mesh);
+
       mesh.userData = {
-        isFurniture: true, type, interactiveName: name, removable, floorLevel,
+        isFurniture: true, type, interactiveName: name, removable, floorLevel, colliderRef: col,
         actions: furnitureActionPresets[type] || []
       };
       mesh.traverse(c => { if (c.isMesh) c.userData.parentInteractive = mesh; });
@@ -1739,8 +1741,8 @@
     }
 
     spawnFurniture('sofa', 'Sofa Ruang Tamu', -4.2, 0.16, 1.2, 0, true, 1);
-    spawnFurniture('tv', 'Smart TV HD', -1.1, 0.16, 1.2, 0, false, 1);
-    spawnFurniture('fridge', 'Kulkas Dua Pintu', 1.3, 0.16, -6.0, 0, true, 1);
+    spawnFurniture('tv', 'Smart TV OLED', -1.1, 0.16, 1.2, 0, false, 1);
+    spawnFurniture('fridge', 'Kulkas Stainless', 1.3, 0.16, -6.0, 0, true, 1);
     spawnFurniture('espresso', 'Mesin Kopi Espresso', -0.2, 0.16, -6.0, 0, true, 1);
     spawnFurniture('shower', 'Shower Kaca', 6.6, 0.16, -5.6, 0, false, 1);
     spawnFurniture('toilet', 'Toilet Keramik', 4.4, 0.16, -6.0, 0, false, 1);
@@ -1763,7 +1765,7 @@
     ];
 
     const destMarker = new THREE.Mesh(
-      new THREE.RingGeometry(0.24, 0.4, 28),
+      new THREE.RingGeometry(0.22, 0.36, 32),
       new THREE.MeshBasicMaterial({ color: '#5eff57', side: THREE.DoubleSide })
     );
     destMarker.rotation.x = -Math.PI / 2;
@@ -1771,9 +1773,10 @@
     scene.add(destMarker);
 
     // ==========================================
-    // 7. LOADER MODEL KARAKTER 3D SCULPTED (.GLB)
+    // 7. MODEL KARAKTER MANUSIA 3D REALISTIS (.GLB + SKELETONUTILS)
     // ==========================================
     const gltfLoader = new THREE.GLTFLoader();
+    let cachedBaseGLTF = null;
 
     class Rigged3DCharacter {
       constructor(targetHeight = 1.78) {
@@ -1784,78 +1787,79 @@
         this.actions = {};
         this.currentAnim = null;
         this.targetHeight = targetHeight;
-        this.loaded = false;
+      }
+
+      applyGLTFScene(gltf, tintHex = '#ffffff', onDone = null) {
+        while (this.modelContainer.children.length > 0) {
+          this.modelContainer.remove(this.modelContainer.children[0]);
+        }
+
+        const clonedScene = THREE.SkeletonUtils.clone(gltf.scene);
+        const box = new THREE.Box3().setFromObject(clonedScene);
+        const size = new THREE.Vector3();
+        box.getSize(size);
+        const scaleFactor = size.y > 0.01 ? (this.targetHeight / size.y) : 1;
+        clonedScene.scale.setScalar(scaleFactor);
+
+        const scaledBox = new THREE.Box3().setFromObject(clonedScene);
+        const center = new THREE.Vector3();
+        scaledBox.getCenter(center);
+        clonedScene.position.set(-center.x, -scaledBox.min.y, -center.z);
+
+        // Soldier.glb menghadap -Z secara default, putar PI agar menghadap +Z sesuai arah jalan
+        clonedScene.rotation.y = Math.PI;
+
+        clonedScene.traverse(child => {
+          if (child.isMesh) {
+            child.castShadow = true;
+            child.receiveShadow = true;
+            if (child.material) {
+              child.material = child.material.clone();
+              child.material.roughness = 0.65;
+              if (tintHex && tintHex !== '#ffffff') {
+                child.material.color.lerp(new THREE.Color(tintHex), 0.32);
+              }
+            }
+          }
+        });
+
+        this.modelContainer.add(clonedScene);
+
+        if (gltf.animations && gltf.animations.length > 0) {
+          this.mixer = new THREE.AnimationMixer(clonedScene);
+          this.actions = {};
+          gltf.animations.forEach(clip => {
+            const n = clip.name.toLowerCase();
+            const act = this.mixer.clipAction(clip);
+            if (n.includes('idle')) this.actions.idle = act;
+            else if (n.includes('walk')) this.actions.walk = act;
+            else if (n.includes('run')) this.actions.run = act;
+          });
+          if (!this.actions.idle) this.actions.idle = this.mixer.clipAction(gltf.animations[0]);
+          if (!this.actions.walk) this.actions.walk = this.actions.idle;
+          this.playAnim('idle');
+        }
+        if (onDone) onDone(this);
       }
 
       loadFromURL(url, tintHex = '#ffffff', onDone = null) {
-        gltfLoader.load(
-          url,
-          gltf => {
-            while (this.modelContainer.children.length > 0) {
-              this.modelContainer.remove(this.modelContainer.children[0]);
-            }
-
-            const model = gltf.scene;
-
-            // Normalisasi Tinggi Karakter agar Presisi dengan Pintu & Tangga Rumah
-            const box = new THREE.Box3().setFromObject(model);
-            const size = new THREE.Vector3();
-            box.getSize(size);
-            const scaleFactor = size.y > 0.01 ? (this.targetHeight / size.y) : 1;
-            model.scale.setScalar(scaleFactor);
-
-            // Posisikan Telapak Kaki Tepat di Lantai (y = 0)
-            const scaledBox = new THREE.Box3().setFromObject(model);
-            const center = new THREE.Vector3();
-            scaledBox.getCenter(center);
-            model.position.set(-center.x, -scaledBox.min.y, -center.z);
-
-            model.traverse(child => {
-              if (child.isMesh) {
-                child.castShadow = true;
-                child.receiveShadow = true;
-                if (child.material && tintHex && tintHex !== '#ffffff') {
-                  child.material = child.material.clone();
-                  child.material.color.lerp(new THREE.Color(tintHex), 0.35);
-                }
-              }
-            });
-
-            this.modelContainer.add(model);
-
-            // Setup Skeletal Animation Mixer
-            if (gltf.animations && gltf.animations.length > 0) {
-              this.mixer = new THREE.AnimationMixer(model);
-              this.actions = {};
-              gltf.animations.forEach(clip => {
-                const nameLower = clip.name.toLowerCase();
-                const action = this.mixer.clipAction(clip);
-                if (nameLower.includes('idle')) this.actions.idle = action;
-                else if (nameLower.includes('walk')) this.actions.walk = action;
-                else if (nameLower.includes('run')) this.actions.run = action;
-              });
-              if (!this.actions.idle) this.actions.idle = this.mixer.clipAction(gltf.animations[0]);
-              if (!this.actions.walk) this.actions.walk = this.actions.idle;
-              this.playAnim('idle');
-            }
-
-            this.loaded = true;
-            if (onDone) onDone(this);
-          },
-          undefined,
-          err => {
-            console.warn('Gagal memuat GLB:', err);
-          }
-        );
+        if (url === REALISTIC_HUMAN_GLB && cachedBaseGLTF) {
+          this.applyGLTFScene(cachedBaseGLTF, tintHex, onDone);
+          return;
+        }
+        gltfLoader.load(url, gltf => {
+          if (url === REALISTIC_HUMAN_GLB) cachedBaseGLTF = gltf;
+          this.applyGLTFScene(gltf, tintHex, onDone);
+        });
       }
 
       playAnim(name) {
         if (!this.mixer || !this.actions[name]) return;
         if (this.currentAnim === name) return;
-        const nextAction = this.actions[name];
-        const prevAction = this.currentAnim ? this.actions[this.currentAnim] : null;
-        if (prevAction && prevAction !== nextAction) prevAction.fadeOut(0.2);
-        nextAction.reset().fadeIn(0.2).play();
+        const nextAct = this.actions[name];
+        const prevAct = this.currentAnim ? this.actions[this.currentAnim] : null;
+        if (prevAct && prevAct !== nextAct) prevAct.fadeOut(0.18);
+        nextAct.reset().fadeIn(0.18).play();
         this.currentAnim = name;
       }
 
@@ -1867,75 +1871,57 @@
       }
     }
 
-    // Karakter Utama Pemain
     const playerCharacter = new Rigged3DCharacter(1.78);
+    playerCharacter.root.position.copy(simState.position);
     scene.add(playerCharacter.root);
 
-    // Plumbob Ikonik di Atas Kepala
     const plumbobGroup = new THREE.Group();
-    plumbobGroup.position.set(0, 2.15, 0);
+    plumbobGroup.position.set(0, 2.12, 0);
     playerCharacter.root.add(plumbobGroup);
 
     const plumbobMat = new THREE.MeshStandardMaterial({ color: '#4dff47', emissive: '#1fa81b', emissiveIntensity: 0.65, roughness: 0.15 });
-    const topCone = new THREE.Mesh(new THREE.ConeGeometry(0.13, 0.23, 6), plumbobMat);
-    topCone.position.y = 0.115;
-    const botCone = new THREE.Mesh(new THREE.ConeGeometry(0.13, 0.23, 6), plumbobMat);
+    const topCone = new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.22, 6), plumbobMat);
+    topCone.position.y = 0.11;
+    const botCone = new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.22, 6), plumbobMat);
     botCone.rotation.x = Math.PI;
-    botCone.position.y = -0.115;
+    botCone.position.y = -0.11;
     plumbobGroup.add(topCone, botCone);
 
     function reloadPlayerModel(customUrl = null) {
-      const targetUrl = customUrl || MODEL_URLS[simState.modelType] || MODEL_URLS.female;
-      playerCharacter.loadFromURL(targetUrl, simState.tintColor, () => {
-        playerCharacter.root.traverse(c => {
-          if (c.isMesh) {
-            c.castShadow = true;
-            c.receiveShadow = true;
-          }
-        });
-      });
+      const tint = simState.modelType === 'realistic_urban' && simState.tintColor === '#ffffff' ? '#4a607a' : simState.tintColor;
+      playerCharacter.loadFromURL(customUrl || REALISTIC_HUMAN_GLB, tint);
       document.getElementById('hud-sim-name').textContent = simState.name || 'Sim';
     }
     reloadPlayerModel();
 
     // ==========================================
-    // 8. HEWAN PELIHARAAN 3D (BELI & EDIT PET)
+    // 8. HEWAN PELIHARAAN 3D
     // ==========================================
     const petState = {
-      active: false,
-      species: 'dog',
-      name: 'Mochi',
-      furColor: '#f5e6d3',
-      collarColor: '#e74c3c',
-      size: 0.85,
-      position: new THREE.Vector3(1.2, 0.16, 3.2),
-      rotationY: 0
+      active: false, species: 'dog', name: 'Mochi', furColor: '#e8cfa8', collarColor: '#e74c3c', size: 0.85,
+      position: new THREE.Vector3(1.2, 0.16, 3.2), rotationY: 0
     };
-
     const petGroup = new THREE.Group();
     petGroup.visible = false;
     scene.add(petGroup);
 
-    const petFurMat = new THREE.MeshStandardMaterial({ color: petState.furColor, roughness: 0.7 });
-    const petCollarMat = new THREE.MeshStandardMaterial({ color: petState.collarColor, roughness: 0.4 });
-    const petNoseMat = new THREE.MeshBasicMaterial({ color: '#1c1c1c' });
+    const petFurMat = new THREE.MeshStandardMaterial({ color: petState.furColor, bumpMap: sofaFabricPBR.bumpMap, bumpScale: 0.02, roughness: 0.78 });
+    const petCollarMat = new THREE.MeshStandardMaterial({ color: petState.collarColor, roughness: 0.35 });
+    const petNoseMat = new THREE.MeshStandardMaterial({ color: '#1a1a1a', roughness: 0.2 });
 
     function rebuildPetMesh() {
       while (petGroup.children.length > 0) petGroup.remove(petGroup.children[0]);
       petFurMat.color.set(petState.furColor);
       petCollarMat.color.set(petState.collarColor);
 
-      const body = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.16, 0.46, 14), petFurMat);
+      const body = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.16, 0.46, 16), petFurMat);
       body.rotation.x = Math.PI / 2;
       body.position.set(0, 0.26, 0);
-
-      const head = new THREE.Mesh(new THREE.SphereGeometry(0.16, 16, 14), petFurMat);
+      const head = new THREE.Mesh(new THREE.SphereGeometry(0.16, 18, 16), petFurMat);
       head.position.set(0, 0.38, 0.24);
-
-      const snout = new THREE.Mesh(new THREE.SphereGeometry(0.08, 12, 10), petFurMat);
+      const snout = new THREE.Mesh(new THREE.SphereGeometry(0.08, 14, 12), petFurMat);
       snout.position.set(0, 0.34, 0.37);
-
-      const nose = new THREE.Mesh(new THREE.SphereGeometry(0.028, 10, 8), petNoseMat);
+      const nose = new THREE.Mesh(new THREE.SphereGeometry(0.028, 12, 10), petNoseMat);
       nose.position.set(0, 0.36, 0.44);
 
       if (petState.species === 'dog') {
@@ -1954,19 +1940,18 @@
         petGroup.add(earL, earR);
       }
 
-      const collar = new THREE.Mesh(new THREE.TorusGeometry(0.135, 0.022, 8, 16), petCollarMat);
+      const collar = new THREE.Mesh(new THREE.TorusGeometry(0.135, 0.022, 10, 18), petCollarMat);
       collar.rotation.x = Math.PI / 3;
       collar.position.set(0, 0.32, 0.16);
 
       [[-0.09, 0.15], [0.09, 0.15], [-0.09, -0.15], [0.09, -0.15]].forEach(([lx, lz]) => {
-        const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.038, 0.032, 0.22, 10), petFurMat);
+        const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.038, 0.032, 0.22, 12), petFurMat);
         leg.position.set(lx, 0.11, lz);
         petGroup.add(leg);
       });
 
       petGroup.add(body, head, snout, nose, collar);
       petGroup.scale.setScalar(petState.size);
-
       petGroup.userData = {
         interactiveName: `${petState.name} (${petState.species === 'dog' ? 'Anjing' : 'Kucing'})`,
         actions: [
@@ -1979,14 +1964,12 @@
 
     function adoptPet(species, cost) {
       soundFX.init();
-      if (simState.money < cost) {
-        showToast('❌ Simoleons (§) tidak cukup untuk mengadopsi hewan!');
-        return;
-      }
+      if (simState.money < cost) { showToast('❌ Simoleons (§) tidak cukup!'); return; }
       simState.money -= cost;
       petState.active = true;
       petState.species = species;
       petState.position.copy(simState.position).add(new THREE.Vector3(1.1, 0, 0.6));
+      resolveWallCollisions(petState.position, simState.floorLevel, 0.3);
       petGroup.visible = true;
       rebuildPetMesh();
       if (!interactiveObjects.includes(petGroup)) interactiveObjects.push(petGroup);
@@ -2012,41 +1995,28 @@
     document.getElementById('btn-call-pet').addEventListener('click', () => {
       if (!petState.active) return;
       petState.position.copy(simState.position).add(new THREE.Vector3(0.9, 0, 0.8));
+      resolveWallCollisions(petState.position, simState.floorLevel, 0.3);
       soundFX.playPetSound(petState.species);
       showToast(`📣 ${petState.name} berlari menghampirimu!`);
     });
 
     // ==========================================
-    // 9. TAMU BERKUNJUNG & PULANG KE RUMAHNYA (3D RIGGED)
+    // 9. TAMU BERKUNJUNG (3D RIGGED)
     // ==========================================
     const npcConfigs = [
       {
-        id: 'nadia',
-        name: 'Nadia (Tetangga)',
-        modelUrl: MODEL_URLS.female,
-        tint: '#ffd6e7',
+        id: 'nadia', name: 'Nadia (Tetangga)', tint: '#e8b4bc',
         homeSpawn: new THREE.Vector3(18, 0.0, 17.5),
-        visitSpots: [new THREE.Vector3(2.4, 0.16, 2.5), new THREE.Vector3(1.5, 0.16, 3.4)],
-        relationship: 30,
-        talkedCount: 0,
-        greetings: [
-          'Hai! Aku Nadia, tetangga sebelahmu. Rumah 2 lantaimu megah sekali!',
-          'Senang main ke rumahmu. Kalau sudah sore aku pamit pulang lewat pintu depan ya!'
-        ]
+        visitSpots: [new THREE.Vector3(2.3, 0.16, 2.5), new THREE.Vector3(1.5, 0.16, 3.3)],
+        relationship: 30, talkedCount: 0,
+        greetings: ['Hai! Aku Nadia, tetangga sebelahmu. Rumah 2 lantai dan kolam renangmu keren sekali!', 'Senang main ke rumahmu. Kalau sudah sore aku pamit pulang lewat pintu depan ya!']
       },
       {
-        id: 'praja',
-        name: 'Praja (Rekan Kerja)',
-        modelUrl: MODEL_URLS.male,
-        tint: '#d6eaf8',
+        id: 'praja', name: 'Praja (Rekan Kerja)', tint: '#9ec5e6',
         homeSpawn: new THREE.Vector3(-18, 0.0, 17.5),
-        visitSpots: [new THREE.Vector3(-2.5, 0.16, 2.8), new THREE.Vector3(-1.4, 0.16, 3.6)],
-        relationship: 25,
-        talkedCount: 0,
-        greetings: [
-          'Halo! Aku Praja. Tadi aku masuk lewat pintu depanmu, ruang tamunya nyaman banget!',
-          'Hati-hati kalau malam hari, kadang ada copet menyelinap dari jalan raya!'
-        ]
+        visitSpots: [new THREE.Vector3(-2.3, 0.16, 2.8), new THREE.Vector3(-1.4, 0.16, 3.5)],
+        relationship: 25, talkedCount: 0,
+        greetings: ['Halo! Aku Praja. Tadi aku masuk lewat pintu depanmu, ruang tamunya nyaman banget!', 'Hati-hati kalau malam hari, kadang ada copet menyelinap dari jalan raya!']
       }
     ];
 
@@ -2055,22 +2025,10 @@
       char3D.root.position.copy(cfg.visitSpots[0]);
       scene.add(char3D.root);
 
-      const npcObj = {
-        ...cfg,
-        char3D,
-        state: 'visiting',
-        visitTimer: 60 + idx * 30,
-        awayTimer: 0,
-        spotIdx: 0,
-        waitTimer: 3,
-        isTalking: false
-      };
-
-      char3D.loadFromURL(cfg.modelUrl, cfg.tint, () => {
+      const npcObj = { ...cfg, char3D, state: 'visiting', visitTimer: 65 + idx * 30, awayTimer: 0, spotIdx: 0, waitTimer: 3, isTalking: false };
+      char3D.loadFromURL(REALISTIC_HUMAN_GLB, cfg.tint, () => {
         char3D.root.userData = {
-          isNPC: true,
-          npcRef: npcObj,
-          interactiveName: cfg.name,
+          isNPC: true, npcRef: npcObj, interactiveName: cfg.name,
           actions: [
             { label: '👋 Samperin & Ngobrol (+Sosial)', icon: '💬', talkToNPC: npcObj },
             { label: '😄 Ajak Bercanda (+Sosial, +Hiburan)', icon: '😄', talkToNPC: npcObj, jokeMode: true },
@@ -2080,7 +2038,6 @@
         char3D.root.traverse(c => { if (c.isMesh) c.userData.parentInteractive = char3D.root; });
         interactiveObjects.push(char3D.root);
       });
-
       return npcObj;
     });
 
@@ -2113,7 +2070,6 @@
 
       const choicesBox = document.getElementById('dlg-choices');
       choicesBox.innerHTML = '';
-
       [
         { text: '😊 Puji Penampilan & Gaya Bajunya (+12)', reply: `"Makasih ${simState.name}! Karaktermu juga keren banget."`, rel: 12, social: 18 },
         { text: '💼 Ceritakan Tentang Karier & Hobi (+10)', reply: '"Mantap! Semangat terus kerja dan kembangkan hobimu ya!"', rel: 10, social: 15 },
@@ -2134,7 +2090,6 @@
         });
         choicesBox.appendChild(btn);
       });
-
       modal.style.display = 'block';
       checkStoryProgress();
     }
@@ -2146,14 +2101,9 @@
     burglarChar.root.visible = false;
     scene.add(burglarChar.root);
 
-    const burglarState = {
-      active: false,
-      phase: 'sneak_in',
-      stealTimer: 0,
-      nextSpawnCooldown: 28
-    };
+    const burglarState = { active: false, phase: 'sneak_in', stealTimer: 0, nextSpawnCooldown: 30 };
 
-    burglarChar.loadFromURL(MODEL_URLS.male, '#3b1c1c', () => {
+    burglarChar.loadFromURL(REALISTIC_HUMAN_GLB, '#2c1515', () => {
       burglarChar.root.userData = {
         interactiveName: '🦹 Copet / Pencuri Menyelinap!',
         actions: [{ label: '🚨 Tangkap & Usir Copet! (+§ 350 Hadiah)', icon: '🚨', catchBurglar: true }]
@@ -2163,4 +2113,894 @@
     });
 
     function spawnBurglar() {
-      if (burgl
+      if (burglarState.active) return;
+      burglarState.active = true;
+      burglarState.phase = 'sneak_in';
+      burglarState.stealTimer = 0;
+      burglarChar.root.position.set(16, 0.0, 17.5);
+      burglarChar.root.visible = true;
+      document.getElementById('burglar-alert').style.display = 'block';
+      soundFX.playBurglarAlarm();
+      showToast('🚨 WASPADA! Copet menyelinap ke rumahmu! Klik Copet untuk menangkapnya!');
+    }
+
+    function catchBurglar() {
+      if (!burglarState.active) return;
+      burglarState.active = false;
+      burglarChar.root.visible = false;
+      burglarState.nextSpawnCooldown = 48;
+      document.getElementById('burglar-alert').style.display = 'none';
+      simState.money += 350;
+      burglarsCaught += 1;
+      soundFX.playCoin();
+      showToast('👮 Mantap! Copet berhasil ditangkap & diusir! Hadiah +§ 350!');
+      checkStoryProgress();
+    }
+
+    function updateBurglar(dt) {
+      if (simState.inMenu || simState.inCAS || worldState.gameSpeed === 0) return;
+      if (!burglarState.active) {
+        burglarState.nextSpawnCooldown -= dt;
+        if (burglarState.nextSpawnCooldown <= 0) spawnBurglar();
+        return;
+      }
+
+      const pos = burglarChar.root.position;
+      if (burglarState.phase === 'sneak_in') {
+        const target = pos.z > 4.9 ? new THREE.Vector3(0, 0.08, 4.9) : new THREE.Vector3(-0.8, 0.16, 1.5);
+        const dir = target.clone().sub(pos);
+        dir.y = 0;
+        if (dir.length() > 0.25) {
+          dir.normalize();
+          pos.addScaledVector(dir, 2.3 * dt);
+          resolveWallCollisions(pos, 1, 0.4);
+          burglarChar.root.rotation.y = Math.atan2(dir.x, dir.z);
+          burglarChar.update(dt, true);
+        } else if (pos.z <= 2.0) {
+          if (worldState.hasSecurityAlarm) {
+            soundFX.playBurglarAlarm();
+            showToast('🚨 ALARM RUMAH BERBUNYI! Copet panik kabur keluar!');
+            burglarState.phase = 'escape';
+          } else {
+            burglarState.phase = 'stealing';
+          }
+        }
+      } else if (burglarState.phase === 'stealing') {
+        burglarChar.update(dt, false);
+        burglarState.stealTimer += dt;
+        if (burglarState.stealTimer >= 7.0) {
+          const stolen = Math.min(simState.money, 250);
+          simState.money -= stolen;
+          showToast(`😱 Copet berhasil mencuri § ${stolen} dan kabur!`);
+          burglarState.phase = 'escape';
+        }
+      } else if (burglarState.phase === 'escape') {
+        const exitTarget = pos.z < 4.9 ? new THREE.Vector3(0, 0.08, 5.2) : new THREE.Vector3(18, 0.0, 17.5);
+        const dir = exitTarget.clone().sub(pos);
+        dir.y = 0;
+        if (dir.length() > 0.35) {
+          dir.normalize();
+          pos.addScaledVector(dir, 3.2 * dt);
+          resolveWallCollisions(pos, 1, 0.4);
+          burglarChar.root.rotation.y = Math.atan2(dir.x, dir.z);
+          burglarChar.update(dt, true);
+        } else if (pos.x > 15) {
+          burglarState.active = false;
+          burglarChar.root.visible = false;
+          burglarState.nextSpawnCooldown = 48;
+          document.getElementById('burglar-alert').style.display = 'none';
+        }
+      }
+    }
+
+    // ==========================================
+    // 11. NAVIGATION, STORY CHECK & DRAWERS
+    // ==========================================
+    function checkStoryProgress() {
+      if (worldState.gameMode !== 'story') return;
+      if (currentStoryIdx >= storyChapters.length) return;
+      const q = storyChapters[currentStoryIdx];
+      if (q.check()) {
+        simState.money += q.reward;
+        soundFX.playCoin();
+        showToast(`🎉 ${q.chapter} Selesai! Hadiah +§ ${q.reward}`);
+        currentStoryIdx++;
+        refreshModeTrackerUI();
+      }
+    }
+
+    function refreshModeTrackerUI() {
+      const badge = document.getElementById('story-chapter-badge');
+      const title = document.getElementById('story-title');
+      const desc = document.getElementById('story-desc');
+      const reward = document.getElementById('story-reward');
+
+      if (worldState.gameMode === 'freeplay') {
+        badge.textContent = 'Mode Freeplay • Sandbox Bebas';
+        badge.style.background = 'linear-gradient(90deg, #27ae60, #16a085)';
+        title.textContent = 'Kehidupan Bebas Mansion 2 Lantai';
+        desc.textContent = 'Main bebas tanpa target misi. Karakter & kamera siap menjelajah seluruh mansion.';
+        reward.textContent = 'Status: Mode Bebas Aktif';
+      } else {
+        badge.style.background = 'linear-gradient(90deg, #f39c12, #e67e22)';
+        if (currentStoryIdx < storyChapters.length) {
+          const q = storyChapters[currentStoryIdx];
+          badge.textContent = q.chapter;
+          title.textContent = q.title;
+          desc.textContent = q.desc;
+          reward.textContent = `Hadiah: § ${q.reward}`;
+        } else {
+          badge.textContent = 'Story Tamat • Mode Bebas';
+          title.textContent = 'Legenda Sunset Valley!';
+          desc.textContent = 'Semua bab cerita selesai! Terus kembangkan karier, hewan peliharaan, dan mansion 2 lantaimu.';
+          reward.textContent = 'Status: Master Sim';
+        }
+      }
+    }
+
+    function enterGameWithMode(mode) {
+      soundFX.init();
+      soundFX.playClick();
+      worldState.gameMode = mode;
+      simState.inMenu = false;
+      simState.inCAS = true;
+      simState.money = mode === 'freeplay' ? 30000 : 3000;
+      if (mode === 'story') {
+        currentStoryIdx = 0;
+        renovationDone = false;
+        careerShiftsDone = 0;
+        burglarsCaught = 0;
+      }
+      refreshModeTrackerUI();
+
+      const startScreen = document.getElementById('start-screen');
+      startScreen.style.opacity = '0';
+      setTimeout(() => { startScreen.style.display = 'none'; }, 350);
+
+      document.getElementById('cas-modal').style.display = 'block';
+      document.getElementById('top-right-panel').style.display = 'flex';
+      document.getElementById('sims3-hud').style.display = 'grid';
+      document.getElementById('top-left-stack').style.display = 'flex';
+    }
+
+    document.getElementById('btn-mode-story').addEventListener('click', () => enterGameWithMode('story'));
+    document.getElementById('btn-mode-freeplay').addEventListener('click', () => enterGameWithMode('freeplay'));
+
+    document.getElementById('toggle-sound-btn').addEventListener('click', e => {
+      soundFX.init();
+      soundFX.muted = !soundFX.muted;
+      e.target.textContent = soundFX.muted ? '🔇 Musik: OFF' : '🔊 Musik: ON';
+    });
+
+    function closeAllDrawers() {
+      document.getElementById('hobby-panel').style.display = 'none';
+      document.getElementById('career-panel').style.display = 'none';
+      document.getElementById('pet-panel').style.display = 'none';
+      document.getElementById('dialogue-modal').style.display = 'none';
+    }
+
+    document.getElementById('back-menu-btn').addEventListener('click', () => {
+      soundFX.playClick();
+      if (worldState.buildMode) toggleBuildMode();
+      cancelCurrentAction();
+      closeAllDrawers();
+      document.getElementById('cas-modal').style.display = 'none';
+      document.getElementById('top-right-panel').style.display = 'none';
+      document.getElementById('sims3-hud').style.display = 'none';
+      document.getElementById('top-left-stack').style.display = 'none';
+      simState.inCAS = false;
+      simState.inMenu = true;
+      const startScreen = document.getElementById('start-screen');
+      startScreen.style.display = 'flex';
+      requestAnimationFrame(() => { startScreen.style.opacity = '1'; });
+    });
+
+    function toggleDrawer(id) {
+      soundFX.playClick();
+      const el = document.getElementById(id);
+      const isOpen = el.style.display === 'block';
+      closeAllDrawers();
+      el.style.display = isOpen ? 'none' : 'block';
+    }
+    document.getElementById('toggle-hobby-btn').addEventListener('click', () => toggleDrawer('hobby-panel'));
+    document.getElementById('toggle-career-btn').addEventListener('click', () => { renderCareerDrawer(); toggleDrawer('career-panel'); });
+    document.getElementById('toggle-pet-btn').addEventListener('click', () => toggleDrawer('pet-panel'));
+
+    // CAS Listeners
+    document.getElementById('open-cas-btn').addEventListener('click', () => {
+      soundFX.playClick();
+      simState.inCAS = true;
+      document.getElementById('cas-modal').style.display = 'block';
+    });
+    document.querySelectorAll('#model-presets .style-pill').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#model-presets .style-pill').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        simState.modelType = btn.dataset.model;
+        reloadPlayerModel();
+      });
+    });
+    document.getElementById('tint-custom-color').addEventListener('input', e => {
+      simState.tintColor = e.target.value;
+      reloadPlayerModel();
+    });
+    document.getElementById('glb-file-input').addEventListener('change', e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const blobUrl = URL.createObjectURL(file);
+      reloadPlayerModel(blobUrl);
+      showToast(`✅ Berhasil memuat model 3D: ${file.name}`);
+    });
+    document.getElementById('confirm-cas-btn').addEventListener('click', () => {
+      soundFX.playClick();
+      simState.name = document.getElementById('sim-name-input').value.trim() || 'William Samadara';
+      document.getElementById('hud-sim-name').textContent = simState.name;
+      simState.inCAS = false;
+      document.getElementById('cas-modal').style.display = 'none';
+      showToast(`✨ Selamat datang di rumah barumu, ${simState.name}!`);
+    });
+
+    // Career System
+    function renderCareerDrawer() {
+      const statusBox = document.getElementById('current-job-status');
+      if (simState.career) {
+        statusBox.style.display = 'block';
+        document.getElementById('active-job-title').textContent = `${simState.career.title} (Lv. ${simState.career.level})`;
+        document.getElementById('active-job-meta').textContent = `Gaji: § ${simState.career.salary} / shift • Kinerja: ${simState.career.perf}%`;
+      } else {
+        statusBox.style.display = 'none';
+      }
+      const list = document.getElementById('job-listings');
+      list.innerHTML = '';
+      jobCatalog.forEach(job => {
+        const card = document.createElement('div');
+        card.className = 'job-card';
+        card.innerHTML = `<div class="job-title">${job.title}</div><div class="job-meta">${job.desc} • Gaji Awal: § ${job.baseSalary}</div>`;
+        const btn = document.createElement('button');
+        btn.className = 'action-mini-btn secondary';
+        btn.textContent = simState.career && simState.career.id === job.id ? '✔ Profesi Aktif' : 'Lamar Pekerjaan Ini';
+        btn.addEventListener('click', () => {
+          soundFX.playClick();
+          simState.career = { id: job.id, title: job.title, level: 1, salary: job.baseSalary, perf: 0 };
+          document.getElementById('hud-job').textContent = `Pekerjaan: ${job.title}`;
+          renderCareerDrawer();
+          showToast(`💼 Selamat! Kamu diterima sebagai ${job.title}!`);
+        });
+        card.appendChild(btn);
+        list.appendChild(card);
+      });
+    }
+
+    document.getElementById('btn-go-work').addEventListener('click', () => {
+      if (!simState.career || simState.atWork) return;
+      soundFX.playClick();
+      closeAllDrawers();
+      simState.atWork = true;
+      simState.workTimer = 5.0;
+      playerCharacter.root.visible = false;
+      showToast(`🚗 ${simState.name} berangkat bekerja (${simState.career.title})...`);
+    });
+
+    // ==========================================
+    // 12. BUILD & BUY / RENOVASI RUMAH
+    // ==========================================
+    let ghostMesh = null;
+
+    function renderBuildCatalog() {
+      const box = document.getElementById('build-catalog');
+      box.innerHTML = '';
+      buildCatalogList.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'catalog-card' + (worldState.selectedCatalogItem && worldState.selectedCatalogItem.type === item.type ? ' selected' : '');
+        card.innerHTML = `<div class="catalog-icon">${item.icon}</div><div class="catalog-name">${item.name}</div><div class="catalog-price">§ ${item.price}</div>`;
+        card.addEventListener('click', () => {
+          soundFX.playClick();
+          worldState.selectedCatalogItem = item;
+          if (ghostMesh) scene.remove(ghostMesh);
+          ghostMesh = createFurnitureMesh(item.type);
+          ghostMesh.traverse(c => {
+            if (c.isMesh) {
+              c.material = c.material.clone();
+              c.material.transparent = true;
+              c.material.opacity = 0.55;
+            }
+          });
+          scene.add(ghostMesh);
+          renderBuildCatalog();
+        });
+        box.appendChild(card);
+      });
+    }
+    renderBuildCatalog();
+
+    function toggleBuildMode() {
+      soundFX.playClick();
+      worldState.buildMode = !worldState.buildMode;
+      const btn = document.getElementById('toggle-build-btn');
+      const panel = document.getElementById('build-panel');
+      const hud = document.getElementById('sims3-hud');
+      if (worldState.buildMode) {
+        closeAllDrawers();
+        btn.classList.add('active-mode');
+        panel.style.display = 'block';
+        hud.style.display = 'none';
+        document.getElementById('build-money').textContent = `§ ${simState.money.toLocaleString()}`;
+      } else {
+        btn.classList.remove('active-mode');
+        panel.style.display = 'none';
+        hud.style.display = 'grid';
+        worldState.selectedCatalogItem = null;
+        if (ghostMesh) { scene.remove(ghostMesh); ghostMesh = null; }
+      }
+    }
+    document.getElementById('toggle-build-btn').addEventListener('click', toggleBuildMode);
+
+    document.querySelectorAll('[data-floor]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const set = floorPBRSets[btn.dataset.floor];
+        if (!set) return;
+        houseFloorMat.map = set.map;
+        houseFloorMat.bumpMap = set.bumpMap;
+        houseFloorMat.needsUpdate = true;
+        renovationDone = true;
+        soundFX.playClick();
+        checkStoryProgress();
+      });
+    });
+
+    document.querySelectorAll('[data-wall]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        wallMat.color.set(btn.dataset.wall);
+        renovationDone = true;
+        soundFX.playClick();
+        checkStoryProgress();
+      });
+    });
+
+    window.addEventListener('keydown', e => {
+      keysPressed[e.key.toLowerCase()] = true;
+      if (e.key.toLowerCase() === 'r' && worldState.buildMode && ghostMesh) {
+        worldState.ghostRotation += Math.PI / 2;
+        ghostMesh.rotation.y = worldState.ghostRotation;
+      }
+    });
+    const keysPressed = {};
+    window.addEventListener('keyup', e => { keysPressed[e.key.toLowerCase()] = false; });
+
+    // ==========================================
+    // 13. ACTION QUEUE & INTERAKSI OBJEK
+    // ==========================================
+    function cancelCurrentAction() {
+      simState.currentAction = null;
+      simState.actionProgress = 0;
+      if (tvScreenMat) tvScreenMat.emissive.set('#081826');
+      document.getElementById('action-queue-box').style.display = 'none';
+    }
+
+    function startActionOnObject(targetObj, act) {
+      soundFX.playClick();
+      document.getElementById('pie-menu').style.display = 'none';
+
+      if (act.openCareer) { renderCareerDrawer(); toggleDrawer('career-panel'); return; }
+      if (act.catchBurglar) { catchBurglar(); return; }
+      if (act.sendHomeNPC) { sendNPCHome(act.sendHomeNPC); return; }
+      if (act.testAlarm) { soundFX.playBurglarAlarm(); showToast('🚨 Alarm keamanan berfungsi normal!'); return; }
+      if (act.changeFloor) {
+        if (act.changeFloor === 2) {
+          simState.floorLevel = 2;
+          simState.position.set(-5.8, 3.04, -0.6);
+          setHouseViewMode('floor2');
+        } else {
+          simState.floorLevel = 1;
+          simState.position.set(-5.8, 0.16, -0.6);
+          setHouseViewMode('floor1');
+        }
+        simState.waypoints = [];
+        destMarker.visible = false;
+        resolveWallCollisions(simState.position, simState.floorLevel);
+        return;
+      }
+
+      if (act.cost && simState.money < act.cost) {
+        showToast('❌ Simoleons (§) tidak cukup!');
+        return;
+      }
+
+      let dest = targetObj.position.clone();
+      if (act.offset) {
+        const off = new THREE.Vector3(act.offset[0], 0, act.offset[1]).applyAxisAngle(new THREE.Vector3(0, 1, 0), targetObj.rotation.y || 0);
+        dest.add(off);
+      } else {
+        dest.add(new THREE.Vector3(0, 0, 1.0));
+      }
+
+      simState.waypoints = computePathWaypoints(simState.position, dest, simState.floorLevel);
+      simState.currentAction = { targetObj, act, arrived: false };
+      simState.actionProgress = 0;
+
+      const qBox = document.getElementById('action-queue-box');
+      qBox.style.display = 'block';
+      qBox.innerHTML = `
+        <div class="action-card">
+          <div class="action-icon">${act.icon || '⚡'}</div>
+          <div class="action-info">
+            <div class="action-title">${act.label}</div>
+            <div class="action-sub" id="action-sub-text">Berjalan menuju lokasi...</div>
+          </div>
+          <button class="cancel-btn" id="btn-cancel-act">✕</button>
+        </div>
+      `;
+      document.getElementById('btn-cancel-act').addEventListener('click', cancelCurrentAction);
+    }
+
+    function completeScheduledAction() {
+      const entry = simState.currentAction;
+      if (!entry) return;
+      const { act } = entry;
+
+      if (act.cost) simState.money -= act.cost;
+      if (act.earn) {
+        simState.money += act.earn;
+        soundFX.playCoin();
+        showToast(`💰 Kamu mendapatkan +§ ${act.earn}!`);
+      }
+      if (act.effect) {
+        Object.entries(act.effect).forEach(([k, v]) => {
+          simState.needs[k] = Math.max(0, Math.min(100, simState.needs[k] + v));
+        });
+      }
+      if (act.hobby && simState.hobbies[act.hobby]) {
+        const h = simState.hobbies[act.hobby];
+        h.xp += act.xpGain || 35;
+        if (h.xp >= 100) {
+          h.level += 1;
+          h.xp -= 100;
+          showToast(`⭐ Skill ${act.hobby.toUpperCase()} naik ke Level ${h.level}!`);
+        }
+      }
+      if (act.petInteract) {
+        soundFX.playPetSound(petState.species);
+        if (act.petInteract === 'feed') simState.money = Math.max(0, simState.money - 10);
+        simState.needs.fun = Math.min(100, simState.needs.fun + 25);
+        simState.needs.social = Math.min(100, simState.needs.social + 22);
+      }
+
+      cancelCurrentAction();
+      if (act.talkToNPC) openNPCDialogue(act.talkToNPC, act.jokeMode);
+      checkStoryProgress();
+    }
+
+    // ==========================================
+    // 14. MOUSE RAYCASTING, PIE MENU & CAMERA ORBIT
+    // ==========================================
+    const raycaster = new THREE.Raycaster();
+    const pointer = new THREE.Vector2();
+    const walkPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -0.16);
+
+    let isDraggingCam = false;
+    let dragStart = { x: 0, y: 0 };
+
+    canvas.addEventListener('contextmenu', e => e.preventDefault());
+
+    canvas.addEventListener('pointerdown', e => {
+      if (simState.inMenu || simState.inCAS) return;
+      if (e.button === 2 || e.button === 1) {
+        isDraggingCam = true;
+        dragStart = { x: e.clientX, y: e.clientY };
+        return;
+      }
+
+      pointer.x = (e.clientX / window.innerWidth) * 2 - 1;
+      pointer.y = -(e.clientY / window.innerHeight) * 2 + 1;
+      raycaster.setFromCamera(pointer, camera);
+
+      // Mode Renovasi: Tempatkan Furnitur Baru
+      if (worldState.buildMode && worldState.selectedCatalogItem) {
+        const floorY = worldState.viewMode === 'floor2' ? 3.04 : 0.16;
+        walkPlane.constant = -floorY;
+        const hitPt = new THREE.Vector3();
+        if (raycaster.ray.intersectPlane(walkPlane, hitPt)) {
+          const item = worldState.selectedCatalogItem;
+          if (simState.money < item.price) {
+            showToast('❌ Dana tidak cukup untuk membeli item ini!');
+            return;
+          }
+          simState.money -= item.price;
+          document.getElementById('build-money').textContent = `§ ${simState.money.toLocaleString()}`;
+          const fLvl = worldState.viewMode === 'floor2' ? 2 : 1;
+          spawnFurniture(item.type, item.name, hitPt.x, floorY, hitPt.z, worldState.ghostRotation, true, fLvl);
+          renovationDone = true;
+          soundFX.playCoin();
+          showToast(`🔨 ${item.name} berhasil dipasang!`);
+          checkStoryProgress();
+        }
+        return;
+      }
+
+      // Cek Klik Objek Interaktif
+      const hits = raycaster.intersectObjects(interactiveObjects, true);
+      if (hits.length > 0) {
+        let obj = hits[0].object;
+        while (obj && !obj.userData.parentInteractive && !obj.userData.actions) obj = obj.parent;
+        const target = obj && obj.userData.parentInteractive ? obj.userData.parentInteractive : obj;
+
+        if (target && target.userData && target.userData.actions && target.userData.actions.length > 0) {
+          const pie = document.getElementById('pie-menu');
+          document.getElementById('pie-menu-header').textContent = target.userData.interactiveName || 'Aksi';
+          const optBox = document.getElementById('pie-menu-options');
+          optBox.innerHTML = '';
+          target.userData.actions.forEach(act => {
+            const b = document.createElement('button');
+            b.className = 'pie-option';
+            b.textContent = act.label;
+            b.addEventListener('click', () => startActionOnObject(target, act));
+            optBox.appendChild(b);
+          });
+          pie.style.left = Math.min(window.innerWidth - 250, e.clientX) + 'px';
+          pie.style.top = Math.min(window.innerHeight - 180, e.clientY) + 'px';
+          pie.style.display = 'block';
+          return;
+        }
+      }
+
+      // Klik Lantai untuk Berjalan (Otomatis Hindari Tembok & Furnitur)
+      document.getElementById('pie-menu').style.display = 'none';
+      const activeY = simState.floorLevel === 2 ? 3.04 : 0.16;
+      walkPlane.constant = -activeY;
+      const groundHit = new THREE.Vector3();
+      if (raycaster.ray.intersectPlane(walkPlane, groundHit)) {
+        cancelCurrentAction();
+        const safeWaypoints = computePathWaypoints(simState.position, groundHit, simState.floorLevel);
+        simState.waypoints = safeWaypoints;
+        const finalPt = safeWaypoints[safeWaypoints.length - 1];
+        destMarker.position.set(finalPt.x, activeY + 0.02, finalPt.z);
+        destMarker.visible = true;
+      }
+    });
+
+    window.addEventListener('pointermove', e => {
+      if (isDraggingCam) {
+        const dx = e.clientX - dragStart.x;
+        const dy = e.clientY - dragStart.y;
+        dragStart = { x: e.clientX, y: e.clientY };
+        worldState.cameraYaw -= dx * 0.0065;
+        worldState.cameraPitch = Math.max(0.22, Math.min(1.28, worldState.cameraPitch + dy * 0.0055));
+        return;
+      }
+
+      if (simState.inMenu || simState.inCAS) return;
+      pointer.x = (e.clientX / window.innerWidth) * 2 - 1;
+      pointer.y = -(e.clientY / window.innerHeight) * 2 + 1;
+      raycaster.setFromCamera(pointer, camera);
+
+      if (worldState.buildMode && ghostMesh) {
+        const floorY = worldState.viewMode === 'floor2' ? 3.04 : 0.16;
+        walkPlane.constant = -floorY;
+        const pt = new THREE.Vector3();
+        if (raycaster.ray.intersectPlane(walkPlane, pt)) {
+          ghostMesh.position.set(pt.x, floorY, pt.z);
+        }
+        return;
+      }
+
+      const tooltip = document.getElementById('hover-tooltip');
+      const hits = raycaster.intersectObjects(interactiveObjects, true);
+      if (hits.length > 0) {
+        let obj = hits[0].object;
+        while (obj && !obj.userData.parentInteractive && !obj.userData.interactiveName) obj = obj.parent;
+        const target = obj && obj.userData.parentInteractive ? obj.userData.parentInteractive : obj;
+        if (target && target.userData && target.userData.interactiveName) {
+          tooltip.textContent = target.userData.interactiveName;
+          tooltip.style.left = e.clientX + 'px';
+          tooltip.style.top = e.clientY + 'px';
+          tooltip.style.display = 'block';
+          document.body.style.cursor = 'pointer';
+          return;
+        }
+      }
+      tooltip.style.display = 'none';
+      document.body.style.cursor = 'default';
+    });
+
+    window.addEventListener('pointerup', () => { isDraggingCam = false; });
+
+    canvas.addEventListener('wheel', e => {
+      worldState.cameraDistance = Math.max(6.5, Math.min(34, worldState.cameraDistance + e.deltaY * 0.012));
+    }, { passive: true });
+
+    document.querySelectorAll('.speed-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        soundFX.playClick();
+        document.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        worldState.gameSpeed = Number(btn.dataset.speed);
+      });
+    });
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // ==========================================
+    // 15. MAIN GAME LOOP (MOVEMENT + COLLISIONS + HUD)
+    // ==========================================
+    function updatePlayerMovement(dt) {
+      if (simState.inMenu || simState.inCAS || worldState.gameSpeed === 0) {
+        playerCharacter.update(dt, false);
+        return;
+      }
+
+      if (simState.atWork) {
+        simState.workTimer -= dt;
+        if (simState.workTimer <= 0) {
+          simState.atWork = false;
+          playerCharacter.root.visible = true;
+          const earn = simState.career.salary;
+          simState.money += earn;
+          simState.career.perf = Math.min(100, simState.career.perf + 35);
+          if (simState.career.perf >= 100) {
+            simState.career.level += 1;
+            simState.career.perf = 0;
+            simState.career.salary = Math.round(simState.career.salary * 1.25);
+            showToast(`🎊 PROMOSI JABATAN! Naik ke Level ${simState.career.level}!`);
+          } else {
+            showToast(`💼 Selesai bekerja! Gaji +§ ${earn} masuk rekening.`);
+          }
+          careerShiftsDone += 1;
+          soundFX.playCoin();
+          checkStoryProgress();
+        }
+        return;
+      }
+
+      let isMoving = false;
+      const moveSpeed = 3.6;
+
+      // Kontrol Keyboard WASD / Arrow Langsung dengan Sub-Step Collision
+      let kx = 0, kz = 0;
+      if (keysPressed['w'] || keysPressed['arrowup']) kz -= 1;
+      if (keysPressed['s'] || keysPressed['arrowdown']) kz += 1;
+      if (keysPressed['a'] || keysPressed['arrowleft']) kx -= 1;
+      if (keysPressed['d'] || keysPressed['arrowright']) kx += 1;
+
+      if (kx !== 0 || kz !== 0) {
+        simState.waypoints = [];
+        destMarker.visible = false;
+        const forward = new THREE.Vector3(-Math.sin(worldState.cameraYaw), 0, -Math.cos(worldState.cameraYaw));
+        const right = new THREE.Vector3(Math.cos(worldState.cameraYaw), 0, -Math.sin(worldState.cameraYaw));
+        const moveDir = new THREE.Vector3().addScaledVector(forward, -kz).addScaledVector(right, kx).normalize();
+
+        const steps = 4;
+        for (let i = 0; i < steps; i++) {
+          simState.position.addScaledVector(moveDir, (moveSpeed * dt) / steps);
+          resolveWallCollisions(simState.position, simState.floorLevel, 0.42);
+        }
+        simState.rotationY = Math.atan2(moveDir.x, moveDir.z);
+        isMoving = true;
+      } else if (simState.waypoints.length > 0) {
+        const wp = simState.waypoints[0];
+        const diff = wp.clone().sub(simState.position);
+        diff.y = 0;
+        const dist = diff.length();
+
+        if (dist > 0.16) {
+          diff.normalize();
+          const steps = 4;
+          for (let i = 0; i < steps; i++) {
+            simState.position.addScaledVector(diff, (moveSpeed * dt) / steps);
+            resolveWallCollisions(simState.position, simState.floorLevel, 0.42);
+          }
+          simState.rotationY = Math.atan2(diff.x, diff.z);
+          isMoving = true;
+        } else {
+          simState.waypoints.shift();
+          if (simState.waypoints.length === 0) destMarker.visible = false;
+        }
+      }
+
+      // Eksekusi Aksi saat Sudah Sampai di Dekat Objek
+      if (!isMoving && simState.currentAction) {
+        const { targetObj, act } = simState.currentAction;
+        if (!simState.currentAction.arrived) {
+          simState.currentAction.arrived = true;
+          const facePt = act.face ? new THREE.Vector3(act.face[0], simState.position.y, act.face[1]) : targetObj.position;
+          const fDir = facePt.clone().sub(simState.position);
+          if (fDir.lengthSq() > 0.001) simState.rotationY = Math.atan2(fDir.x, fDir.z);
+          if (act.tvOn && tvScreenMat) tvScreenMat.emissive.set('#2b86de');
+        }
+        const dur = act.duration || 2.5;
+        simState.actionProgress += dt;
+        const pct = Math.min(100, Math.round((simState.actionProgress / dur) * 100));
+        const subEl = document.getElementById('action-sub-text');
+        if (subEl) subEl.textContent = `Sedang berlangsung... ${pct}%`;
+        if (simState.actionProgress >= dur) completeScheduledAction();
+      }
+
+      const groundY = simState.floorLevel === 2 ? 3.04 : (simState.position.z > 6.55 ? 0.02 : 0.16);
+      simState.position.y = groundY;
+      playerCharacter.root.position.copy(simState.position);
+      playerCharacter.root.rotation.y = simState.rotationY;
+      playerCharacter.update(dt, isMoving);
+    }
+
+    function updateNPCs(dt) {
+      if (simState.inMenu || simState.inCAS || worldState.gameSpeed === 0) return;
+      npcs.forEach(npc => {
+        const pos = npc.char3D.root.position;
+        if (npc.isTalking) { npc.char3D.update(dt, false); return; }
+
+        if (npc.state === 'visiting') {
+          npc.visitTimer -= dt;
+          if (npc.visitTimer <= 0) { sendNPCHome(npc); return; }
+          const spot = npc.visitSpots[npc.spotIdx];
+          const dir = spot.clone().sub(pos);
+          dir.y = 0;
+          if (dir.length() > 0.25) {
+            dir.normalize();
+            pos.addScaledVector(dir, 1.8 * dt);
+            resolveWallCollisions(pos, 1, 0.4);
+            npc.char3D.root.rotation.y = Math.atan2(dir.x, dir.z);
+            npc.char3D.update(dt, true);
+          } else {
+            npc.char3D.update(dt, false);
+            npc.waitTimer -= dt;
+            if (npc.waitTimer <= 0) {
+              npc.spotIdx = (npc.spotIdx + 1) % npc.visitSpots.length;
+              npc.waitTimer = 5 + Math.random() * 4;
+            }
+          }
+        } else if (npc.state === 'leaving') {
+          const exitTarget = pos.z < 4.9 ? new THREE.Vector3(0, 0.08, 5.2) : npc.homeSpawn;
+          const dir = exitTarget.clone().sub(pos);
+          dir.y = 0;
+          if (dir.length() > 0.35) {
+            dir.normalize();
+            pos.addScaledVector(dir, 2.2 * dt);
+            resolveWallCollisions(pos, 1, 0.4);
+            npc.char3D.root.rotation.y = Math.atan2(dir.x, dir.z);
+            npc.char3D.update(dt, true);
+          } else if (pos.distanceTo(npc.homeSpawn) < 1.0) {
+            npc.state = 'away';
+            npc.awayTimer = 28;
+            npc.char3D.root.visible = false;
+          }
+        } else if (npc.state === 'away') {
+          npc.awayTimer -= dt;
+          if (npc.awayTimer <= 0) {
+            npc.state = 'entering';
+            npc.char3D.root.visible = true;
+            pos.copy(npc.homeSpawn);
+          }
+        } else if (npc.state === 'entering') {
+          const enterTarget = pos.z > 4.9 ? new THREE.Vector3(0, 0.08, 4.9) : npc.visitSpots[0];
+          const dir = enterTarget.clone().sub(pos);
+          dir.y = 0;
+          if (dir.length() > 0.3) {
+            dir.normalize();
+            pos.addScaledVector(dir, 2.1 * dt);
+            resolveWallCollisions(pos, 1, 0.4);
+            npc.char3D.root.rotation.y = Math.atan2(dir.x, dir.z);
+            npc.char3D.update(dt, true);
+          } else if (pos.z <= 3.6) {
+            npc.state = 'visiting';
+            npc.visitTimer = 75;
+          }
+        }
+      });
+    }
+
+    function updatePet(dt) {
+      if (!petState.active || simState.inMenu || simState.inCAS || worldState.gameSpeed === 0) return;
+      const followTarget = simState.position.clone().add(new THREE.Vector3(1.15, 0, 0.85));
+      const dir = followTarget.sub(petState.position);
+      dir.y = 0;
+      if (dir.length() > 0.65) {
+        dir.normalize();
+        petState.position.addScaledVector(dir, 2.7 * dt);
+        resolveWallCollisions(petState.position, simState.floorLevel, 0.28);
+        petState.rotationY = Math.atan2(dir.x, dir.z);
+      }
+      petState.position.y = simState.floorLevel === 2 ? 3.04 : (petState.position.z > 6.55 ? 0.02 : 0.16);
+      petGroup.position.copy(petState.position);
+      petGroup.rotation.y = petState.rotationY;
+    }
+
+    function updateHUDAndNeeds(dt) {
+      if (simState.inMenu || simState.inCAS) return;
+      const speedMult = worldState.gameSpeed;
+      if (speedMult > 0) {
+        worldState.minutes += dt * 4.5 * speedMult;
+        if (worldState.minutes >= 24 * 60) {
+          worldState.minutes -= 24 * 60;
+          worldState.day += 1;
+        }
+        const decay = 0.28 * dt * speedMult;
+        simState.needs.energy = Math.max(0, simState.needs.energy - decay);
+        simState.needs.hunger = Math.max(0, simState.needs.hunger - decay * 1.1);
+        simState.needs.hygiene = Math.max(0, simState.needs.hygiene - decay * 0.7);
+        simState.needs.bladder = Math.max(0, simState.needs.bladder - decay * 0.9);
+        simState.needs.fun = Math.max(0, simState.needs.fun - decay * 0.8);
+        simState.needs.social = Math.max(0, simState.needs.social - decay * 0.6);
+      }
+
+      const hh = String(Math.floor(worldState.minutes / 60)).padStart(2, '0');
+      const mm = String(Math.floor(worldState.minutes % 60)).padStart(2, '0');
+      document.getElementById('hud-clock').textContent = `Hari ${worldState.day} • ${hh}:${mm}`;
+      document.getElementById('hud-money').textContent = `§ ${simState.money.toLocaleString()}`;
+
+      let totalNeed = 0;
+      Object.entries(simState.needs).forEach(([k, val]) => {
+        const pct = Math.round(val);
+        totalNeed += pct;
+        document.getElementById(`val-${k}`).textContent = `${pct}%`;
+        const bar = document.getElementById(`bar-${k}`);
+        bar.style.width = `${pct}%`;
+        bar.style.background = pct < 25 ? 'linear-gradient(90deg, #c0392b, #e74c3c)' : pct < 50 ? 'linear-gradient(90deg, #d35400, #f39c12)' : 'linear-gradient(90deg, #27ae60, #5eff6c)';
+      });
+
+      const avg = totalNeed / 6;
+      const moodEl = document.getElementById('hud-mood');
+      const plumbobHud = document.getElementById('hud-plumbob');
+      if (avg >= 65) {
+        moodEl.textContent = 'Suasana Hati: Sangat Bahagia';
+        moodEl.style.color = '#88ff82';
+        plumbobHud.style.background = 'linear-gradient(135deg, #7dff6b, #1ca628)';
+        plumbobMat.color.set('#4dff47');
+      } else if (avg >= 38) {
+        moodEl.textContent = 'Suasana Hati: Biasa Saja';
+        moodEl.style.color = '#ffe066';
+        plumbobHud.style.background = 'linear-gradient(135deg, #ffe066, #d4ac0d)';
+        plumbobMat.color.set('#f1c40f');
+      } else {
+        moodEl.textContent = 'Suasana Hati: Butuh Istirahat / Makan';
+        moodEl.style.color = '#ff8a80';
+        plumbobHud.style.background = 'linear-gradient(135deg, #ff7675, #c0392b)';
+        plumbobMat.color.set('#e74c3c');
+      }
+
+      Object.entries(simState.hobbies).forEach(([hk, hv]) => {
+        document.getElementById(`lvl-${hk}`).textContent = `Lv. ${hv.level}`;
+        document.getElementById(`xp-${hk}`).style.width = `${hv.xp}%`;
+      });
+    }
+
+    const clock = new THREE.Clock();
+
+    function animate() {
+      requestAnimationFrame(animate);
+      const rawDt = Math.min(clock.getDelta(), 0.1);
+      const simDt = rawDt * (worldState.gameSpeed || 1);
+
+      plumbobGroup.rotation.y += rawDt * 1.8;
+      plumbobGroup.position.y = 2.12 + Math.sin(clock.elapsedTime * 3) * 0.05;
+
+      updatePlayerMovement(simDt);
+      updateNPCs(simDt);
+      updatePet(simDt);
+      updateBurglar(simDt);
+      updateHUDAndNeeds(rawDt);
+
+      // Update Kamera Mengikuti Karakter dengan Smooth Damping
+      const desiredTarget = simState.inMenu
+        ? new THREE.Vector3(0, 2.2, 1.5)
+        : new THREE.Vector3(simState.position.x, simState.position.y + 1.25, simState.position.z);
+
+      worldState.cameraTarget.lerp(desiredTarget, 0.1);
+      if (simState.inMenu) worldState.cameraYaw += rawDt * 0.12;
+
+      const cx = worldState.cameraTarget.x + worldState.cameraDistance * Math.sin(worldState.cameraYaw) * Math.cos(worldState.cameraPitch);
+      const cy = worldState.cameraTarget.y + worldState.cameraDistance * Math.sin(worldState.cameraPitch);
+      const cz = worldState.cameraTarget.z + worldState.cameraDistance * Math.cos(worldState.cameraYaw) * Math.cos(worldState.cameraPitch);
+
+      camera.position.set(cx, Math.max(0.8, cy), cz);
+      camera.lookAt(worldState.cameraTarget);
+
+      renderer.render(scene, camera);
+    }
+
+    animate();
+  </script>
+</body>
+</html>
