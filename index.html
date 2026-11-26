@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WILLIAM GAME - The Sims 3D Edition</title>
+  <title>WILLIAM GAME - Realistic 3D Life Sim</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
   <style>
     * {
       box-sizing: border-box;
@@ -34,7 +35,7 @@
       position: fixed;
       inset: 0;
       z-index: 100;
-      background: radial-gradient(circle at center, rgba(14, 42, 78, 0.48) 0%, rgba(7, 20, 40, 0.88) 100%);
+      background: radial-gradient(circle at center, rgba(14, 42, 78, 0.45) 0%, rgba(7, 20, 40, 0.88) 100%);
       backdrop-filter: blur(4px);
       display: flex;
       align-items: center;
@@ -44,7 +45,7 @@
     }
 
     .menu-container {
-      width: min(700px, 95vw);
+      width: min(710px, 95vw);
       background: linear-gradient(180deg, rgba(24, 72, 132, 0.94), rgba(10, 31, 62, 0.97));
       border: 2px solid #84ceff;
       border-radius: 30px;
@@ -280,7 +281,6 @@
       color: #82ff80;
     }
 
-    /* Burglar Alert Box */
     #burglar-alert {
       background: linear-gradient(90deg, rgba(192, 57, 43, 0.96), rgba(120, 20, 15, 0.98));
       border: 2px solid #ff9a8f;
@@ -343,7 +343,6 @@
       border-color: #fff2a6;
     }
 
-    /* Drawer Modals (Hobby, Career, Pet) */
     .side-drawer {
       position: fixed;
       top: 92px;
@@ -361,37 +360,12 @@
       margin-bottom: 8px;
       border-bottom: 1px solid rgba(130, 202, 255, 0.3);
       padding-bottom: 5px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
     }
 
-    .hobby-row {
-      margin-bottom: 8px;
-    }
-
-    .hobby-head {
-      display: flex;
-      justify-content: space-between;
-      font-size: 11.5px;
-      font-weight: 600;
-      margin-bottom: 3px;
-    }
-
-    .hobby-bar {
-      height: 7px;
-      background: #0a1b33;
-      border-radius: 5px;
-      overflow: hidden;
-      border: 1px solid rgba(130, 202, 255, 0.3);
-    }
-
-    .hobby-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #3498db, #5eff82);
-      width: 15%;
-      transition: width 0.3s;
-    }
+    .hobby-row { margin-bottom: 8px; }
+    .hobby-head { display: flex; justify-content: space-between; font-size: 11.5px; font-weight: 600; margin-bottom: 3px; }
+    .hobby-bar { height: 7px; background: #0a1b33; border-radius: 5px; overflow: hidden; border: 1px solid rgba(130, 202, 255, 0.3); }
+    .hobby-fill { height: 100%; background: linear-gradient(90deg, #3498db, #5eff82); width: 15%; transition: width 0.3s; }
 
     .job-card, .pet-card {
       background: rgba(8, 25, 50, 0.65);
@@ -406,17 +380,8 @@
       background: rgba(39, 174, 96, 0.22);
     }
 
-    .job-title {
-      font-size: 12.5px;
-      font-weight: 700;
-      color: #fff;
-    }
-
-    .job-meta {
-      font-size: 11px;
-      color: #bce4ff;
-      margin: 3px 0 6px;
-    }
+    .job-title { font-size: 12.5px; font-weight: 700; color: #fff; }
+    .job-meta { font-size: 11px; color: #bce4ff; margin: 3px 0 6px; }
 
     .action-mini-btn {
       width: 100%;
@@ -435,7 +400,6 @@
       border-color: #82caff;
     }
 
-    /* Hover Tooltip */
     #hover-tooltip {
       position: fixed;
       pointer-events: none;
@@ -452,7 +416,6 @@
       transform: translate(14px, 14px);
     }
 
-    /* Pie / Context Action Menu */
     #pie-menu {
       position: fixed;
       display: none;
@@ -492,17 +455,13 @@
       transition: all 0.12s;
     }
 
-    .pie-option:last-child {
-      margin-bottom: 0;
-    }
-
+    .pie-option:last-child { margin-bottom: 0; }
     .pie-option:hover {
       background: linear-gradient(90deg, #2e8be6, #24b354);
       border-color: #ffffff;
       transform: scale(1.02);
     }
 
-    /* Classic The Sims 3 Bottom HUD */
     #sims3-hud {
       position: fixed;
       bottom: 0;
@@ -522,468 +481,118 @@
       z-index: 25;
     }
 
-    .hud-profile {
-      display: flex;
-      align-items: center;
-      gap: 11px;
-    }
-
+    .hud-profile { display: flex; align-items: center; gap: 11px; }
     .plumbob-badge {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
+      width: 50px; height: 50px; border-radius: 50%;
       background: radial-gradient(circle at 30% 30%, #2a6db5, #0e2c54);
       border: 2px solid #8fd2ff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
     }
-
     .plumbob-diamond {
-      width: 18px;
-      height: 29px;
+      width: 18px; height: 29px;
       background: linear-gradient(135deg, #7dff6b, #1ca628);
       clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
       filter: drop-shadow(0 0 6px #57ff47);
     }
-
-    .sim-identity h2 {
-      color: #ffffff;
-      font-size: 15px;
-      font-weight: 700;
-      max-width: 180px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .sim-mood-text {
-      font-size: 11px;
-      font-weight: 600;
-      color: #88ff82;
-      margin-top: 1px;
-    }
-
-    .sim-job-badge {
-      font-size: 11px;
-      font-weight: 600;
-      color: #b8e3ff;
-      margin-top: 1px;
-    }
-
-    .sim-money {
-      font-size: 12.5px;
-      color: #ffe47a;
-      font-weight: 800;
-      margin-top: 1px;
-    }
+    .sim-identity h2 { color: #ffffff; font-size: 15px; font-weight: 700; max-width: 180px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .sim-mood-text { font-size: 11px; font-weight: 600; color: #88ff82; margin-top: 1px; }
+    .sim-job-badge { font-size: 11px; font-weight: 600; color: #b8e3ff; margin-top: 1px; }
+    .sim-money { font-size: 12.5px; color: #ffe47a; font-weight: 800; margin-top: 1px; }
 
     .hud-needs {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 6px 14px;
-      background: rgba(8, 25, 50, 0.55);
-      padding: 8px 13px;
-      border-radius: 16px;
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px 14px;
+      background: rgba(8, 25, 50, 0.55); padding: 8px 13px; border-radius: 16px;
       border: 1px solid rgba(132, 204, 255, 0.3);
     }
-
-    .need-item {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .need-label-row {
-      display: flex;
-      justify-content: space-between;
-      font-size: 11px;
-      font-weight: 700;
-      color: #d6eeff;
-    }
-
-    .need-bar-bg {
-      width: 100%;
-      height: 8px;
-      background: #0a192e;
-      border-radius: 5px;
-      border: 1px solid rgba(145, 209, 255, 0.35);
-      overflow: hidden;
-    }
-
-    .need-bar-fill {
-      height: 100%;
-      width: 85%;
-      background: linear-gradient(90deg, #27ae60, #5eff6c);
-      border-radius: 4px;
-      transition: width 0.2s ease, background 0.3s ease;
-    }
+    .need-item { display: flex; flex-direction: column; gap: 2px; }
+    .need-label-row { display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; color: #d6eeff; }
+    .need-bar-bg { width: 100%; height: 8px; background: #0a192e; border-radius: 5px; border: 1px solid rgba(145, 209, 255, 0.35); overflow: hidden; }
+    .need-bar-fill { height: 100%; width: 85%; background: linear-gradient(90deg, #27ae60, #5eff6c); border-radius: 4px; transition: width 0.2s ease, background 0.3s ease; }
 
     .hud-time-panel {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-      background: rgba(8, 25, 50, 0.55);
-      padding: 8px 12px;
-      border-radius: 16px;
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+      background: rgba(8, 25, 50, 0.55); padding: 8px 12px; border-radius: 16px;
       border: 1px solid rgba(132, 204, 255, 0.3);
     }
+    .clock-display { color: #ffffff; font-size: 12.5px; font-weight: 700; }
+    .speed-controls { display: flex; gap: 5px; }
+    .speed-btn { background: linear-gradient(180deg, #2863a8, #143866); border: 1.5px solid #79c4ff; color: #d9f0ff; padding: 4px 10px; border-radius: 10px; font-size: 11px; font-weight: 700; cursor: pointer; }
+    .speed-btn.active { background: linear-gradient(180deg, #43d158, #1e872e); border-color: #b8ffc2; color: #fff; }
 
-    .clock-display {
-      color: #ffffff;
-      font-size: 12.5px;
-      font-weight: 700;
-    }
-
-    .speed-controls {
-      display: flex;
-      gap: 5px;
-    }
-
-    .speed-btn {
-      background: linear-gradient(180deg, #2863a8, #143866);
-      border: 1.5px solid #79c4ff;
-      color: #d9f0ff;
-      padding: 4px 10px;
-      border-radius: 10px;
-      font-size: 11px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .speed-btn.active {
-      background: linear-gradient(180deg, #43d158, #1e872e);
-      border-color: #b8ffc2;
-      color: #fff;
-    }
-
-    /* Renovasi Rumah (Build & Buy Mode Panel) */
+    /* Renovasi Rumah */
     #build-panel {
       position: fixed;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
+      bottom: 0; left: 50%; transform: translateX(-50%);
       width: min(1060px, 98vw);
       background: linear-gradient(180deg, rgba(168, 92, 20, 0.96), rgba(84, 42, 8, 0.99));
-      border: 2px solid #ffd28a;
-      border-bottom: none;
-      border-radius: 26px 26px 0 0;
-      padding: 12px 20px 14px;
-      color: #fff;
+      border: 2px solid #ffd28a; border-bottom: none; border-radius: 26px 26px 0 0;
+      padding: 12px 20px 14px; color: #fff;
       box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.65);
-      z-index: 35;
-      display: none;
+      z-index: 35; display: none;
     }
-
-    .build-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
-      padding-bottom: 6px;
-      border-bottom: 1px solid rgba(255, 210, 138, 0.3);
-    }
-
-    .build-header h3 {
-      font-size: 14px;
-      color: #ffe89e;
-    }
-
-    .build-tips {
-      font-size: 11.5px;
-      color: #ffdfba;
-    }
-
-    .build-grid {
-      display: grid;
-      grid-template-columns: 1.75fr 1fr;
-      gap: 14px;
-    }
-
-    .catalog-items {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      padding-bottom: 4px;
-    }
-
-    .catalog-card {
-      background: rgba(35, 16, 4, 0.65);
-      border: 1.5px solid rgba(255, 210, 138, 0.45);
-      border-radius: 12px;
-      padding: 8px 10px;
-      min-width: 110px;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.15s;
-      flex-shrink: 0;
-    }
-
-    .catalog-card:hover, .catalog-card.selected {
-      background: rgba(230, 126, 34, 0.45);
-      border-color: #fff;
-      transform: translateY(-2px);
-    }
-
-    .catalog-icon {
-      font-size: 21px;
-      margin-bottom: 3px;
-    }
-
-    .catalog-name {
-      font-size: 11px;
-      font-weight: 700;
-      color: #fff;
-    }
-
-    .catalog-price {
-      font-size: 11px;
-      font-weight: 800;
-      color: #ffe680;
-      margin-top: 2px;
-    }
-
-    .surface-controls {
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
-      background: rgba(35, 16, 4, 0.55);
-      padding: 8px 12px;
-      border-radius: 12px;
-      border: 1px solid rgba(255, 210, 138, 0.3);
-    }
-
-    .surface-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 6px;
-      font-size: 11.5px;
-      font-weight: 700;
-    }
-
-    .mini-pill {
-      background: rgba(255, 255, 255, 0.14);
-      border: 1px solid #ffd28a;
-      color: #fff;
-      padding: 3px 8px;
-      border-radius: 8px;
-      font-size: 10.5px;
-      cursor: pointer;
-    }
-
-    .mini-pill:hover {
-      background: #e67e22;
-    }
+    .build-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid rgba(255, 210, 138, 0.3); }
+    .build-header h3 { font-size: 14px; color: #ffe89e; }
+    .build-tips { font-size: 11.5px; color: #ffdfba; }
+    .build-grid { display: grid; grid-template-columns: 1.75fr 1fr; gap: 14px; }
+    .catalog-items { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
+    .catalog-card { background: rgba(35, 16, 4, 0.65); border: 1.5px solid rgba(255, 210, 138, 0.45); border-radius: 12px; padding: 8px 10px; min-width: 110px; text-align: center; cursor: pointer; flex-shrink: 0; }
+    .catalog-card:hover, .catalog-card.selected { background: rgba(230, 126, 34, 0.45); border-color: #fff; transform: translateY(-2px); }
+    .catalog-icon { font-size: 21px; margin-bottom: 3px; }
+    .catalog-name { font-size: 11px; font-weight: 700; color: #fff; }
+    .catalog-price { font-size: 11px; font-weight: 800; color: #ffe680; margin-top: 2px; }
+    .surface-controls { display: flex; flex-direction: column; gap: 7px; background: rgba(35, 16, 4, 0.55); padding: 8px 12px; border-radius: 12px; border: 1px solid rgba(255, 210, 138, 0.3); }
+    .surface-row { display: flex; align-items: center; justify-content: space-between; gap: 6px; font-size: 11.5px; font-weight: 700; }
+    .mini-pill { background: rgba(255, 255, 255, 0.14); border: 1px solid #ffd28a; color: #fff; padding: 3px 8px; border-radius: 8px; font-size: 10.5px; cursor: pointer; }
+    .mini-pill:hover { background: #e67e22; }
 
     /* Create-A-Sim (CAS) Panel */
     #cas-modal {
       position: fixed;
-      top: 14px;
-      left: 14px;
-      width: 350px;
-      max-height: calc(100vh - 28px);
+      top: 14px; left: 14px; width: 355px; max-height: calc(100vh - 28px);
       overflow-y: auto;
       background: linear-gradient(180deg, rgba(26, 78, 140, 0.97), rgba(12, 37, 74, 0.99));
-      border: 2px solid #84ceff;
-      border-radius: 22px;
-      padding: 16px;
-      color: #fff;
+      border: 2px solid #84ceff; border-radius: 22px; padding: 16px; color: #fff;
       box-shadow: 0 12px 38px rgba(0, 0, 0, 0.7);
-      z-index: 60;
-      display: none;
+      z-index: 60; display: none;
     }
-
-    #cas-modal h1 {
-      font-size: 18px;
-      color: #9eff9c;
-      margin-bottom: 3px;
-    }
-
-    #cas-modal p.subtitle {
-      font-size: 11.5px;
-      color: #b8e2ff;
-      margin-bottom: 10px;
-    }
-
-    .cas-group {
-      margin-bottom: 9px;
-      background: rgba(7, 23, 46, 0.55);
-      padding: 8px 10px;
-      border-radius: 12px;
-      border: 1px solid rgba(132, 206, 255, 0.25);
-    }
-
-    .cas-group label {
-      display: block;
-      font-size: 11px;
-      font-weight: 700;
-      color: #9cd6ff;
-      margin-bottom: 5px;
-    }
-
-    .cas-input {
-      width: 100%;
-      padding: 7px 10px;
-      border-radius: 9px;
-      border: 1.5px solid #6ec0ff;
-      background: #0d2647;
-      color: #fff;
-      font-size: 13px;
-      font-weight: 600;
-      outline: none;
-    }
-
-    .swatch-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      align-items: center;
-    }
-
-    .swatch {
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      border: 2px solid rgba(255, 255, 255, 0.65);
-      cursor: pointer;
-    }
-
-    .swatch.selected {
-      transform: scale(1.16);
-      border-color: #7dff6b;
-      box-shadow: 0 0 8px #7dff6b;
-    }
-
-    .style-pills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 5px;
-      margin-bottom: 6px;
-    }
-
-    .style-pill {
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid #6ebeff;
-      color: #e4f4ff;
-      padding: 4px 8px;
-      border-radius: 10px;
-      font-size: 10.5px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .style-pill.active {
-      background: #2bb848;
-      border-color: #b8ffc2;
-      color: #fff;
-    }
-
-    .cas-confirm-btn {
-      width: 100%;
-      padding: 11px;
-      border-radius: 14px;
-      border: 2px solid #adffae;
-      background: linear-gradient(180deg, #43d158, #1d872d);
-      color: #fff;
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-      margin-top: 4px;
-    }
+    #cas-modal h1 { font-size: 18px; color: #9eff9c; margin-bottom: 3px; }
+    #cas-modal p.subtitle { font-size: 11.5px; color: #b8e2ff; margin-bottom: 10px; }
+    .cas-group { margin-bottom: 9px; background: rgba(7, 23, 46, 0.55); padding: 9px 10px; border-radius: 12px; border: 1px solid rgba(132, 206, 255, 0.25); }
+    .cas-group label { display: block; font-size: 11px; font-weight: 700; color: #9cd6ff; margin-bottom: 5px; }
+    .cas-input { width: 100%; padding: 7px 10px; border-radius: 9px; border: 1.5px solid #6ec0ff; background: #0d2647; color: #fff; font-size: 13px; font-weight: 600; outline: none; }
+    .style-pills { display: flex; flex-wrap: wrap; gap: 5px; }
+    .style-pill { background: rgba(255, 255, 255, 0.1); border: 1px solid #6ebeff; color: #e4f4ff; padding: 5px 9px; border-radius: 10px; font-size: 11px; font-weight: 600; cursor: pointer; }
+    .style-pill.active { background: #2bb848; border-color: #b8ffc2; color: #fff; }
+    .swatch-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+    .swatch { width: 22px; height: 22px; border-radius: 50%; border: 2px solid rgba(255, 255, 255, 0.65); cursor: pointer; }
+    .swatch.selected { transform: scale(1.16); border-color: #7dff6b; box-shadow: 0 0 8px #7dff6b; }
+    .cas-confirm-btn { width: 100%; padding: 11px; border-radius: 14px; border: 2px solid #adffae; background: linear-gradient(180deg, #43d158, #1d872d); color: #fff; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 4px; }
 
     /* NPC Dialogue Modal */
     #dialogue-modal {
       position: fixed;
-      bottom: 120px;
-      left: 50%;
-      transform: translateX(-50%);
+      bottom: 120px; left: 50%; transform: translateX(-50%);
       width: min(560px, 94vw);
       background: linear-gradient(180deg, rgba(24, 72, 132, 0.97), rgba(11, 34, 68, 0.99));
-      border: 2px solid #8ad0ff;
-      border-radius: 22px;
-      padding: 16px 20px;
-      color: #fff;
+      border: 2px solid #8ad0ff; border-radius: 22px; padding: 16px 20px; color: #fff;
       box-shadow: 0 14px 40px rgba(0, 0, 0, 0.7);
-      z-index: 55;
-      display: none;
+      z-index: 55; display: none;
     }
-
-    .dlg-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 8px;
-    }
-
-    .dlg-npc-name {
-      font-size: 16px;
-      font-weight: 800;
-      color: #9eff9c;
-    }
-
-    .dlg-rel-badge {
-      background: rgba(255, 255, 255, 0.12);
-      border: 1px solid #8ad0ff;
-      padding: 3px 10px;
-      border-radius: 12px;
-      font-size: 11.5px;
-      font-weight: 700;
-      color: #ffe680;
-    }
-
-    .dlg-speech {
-      background: rgba(7, 22, 44, 0.65);
-      border-left: 3px solid #5eff6c;
-      padding: 10px 13px;
-      border-radius: 10px;
-      font-size: 13px;
-      line-height: 1.45;
-      color: #eaf6ff;
-      margin-bottom: 11px;
-    }
-
-    .dlg-choices {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
-
-    .dlg-choice-btn {
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid #79c4ff;
-      color: #fff;
-      padding: 8px 11px;
-      border-radius: 11px;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      text-align: left;
-      transition: all 0.14s;
-    }
-
-    .dlg-choice-btn:hover {
-      background: linear-gradient(90deg, #2b86de, #24b354);
-      border-color: #fff;
-    }
+    .dlg-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .dlg-npc-name { font-size: 16px; font-weight: 800; color: #9eff9c; }
+    .dlg-rel-badge { background: rgba(255, 255, 255, 0.12); border: 1px solid #8ad0ff; padding: 3px 10px; border-radius: 12px; font-size: 11.5px; font-weight: 700; color: #ffe680; }
+    .dlg-speech { background: rgba(7, 22, 44, 0.65); border-left: 3px solid #5eff6c; padding: 10px 13px; border-radius: 10px; font-size: 13px; line-height: 1.45; color: #eaf6ff; margin-bottom: 11px; }
+    .dlg-choices { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .dlg-choice-btn { background: rgba(255, 255, 255, 0.1); border: 1px solid #79c4ff; color: #fff; padding: 8px 11px; border-radius: 11px; font-size: 12px; font-weight: 600; cursor: pointer; text-align: left; }
+    .dlg-choice-btn:hover { background: linear-gradient(90deg, #2b86de, #24b354); border-color: #fff; }
 
     #toast-banner {
       position: fixed;
-      top: 68px;
-      left: 50%;
-      transform: translateX(-50%);
+      top: 68px; left: 50%; transform: translateX(-50%);
       background: linear-gradient(90deg, #1f7a32, #27ae60);
-      border: 2px solid #b8ffc2;
-      color: #fff;
-      padding: 9px 18px;
-      border-radius: 20px;
-      font-size: 13px;
-      font-weight: 700;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-      z-index: 70;
-      display: none;
+      border: 2px solid #b8ffc2; color: #fff; padding: 9px 18px; border-radius: 20px;
+      font-size: 13px; font-weight: 700; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+      z-index: 70; display: none;
     }
 
     @media (max-width: 820px) {
@@ -1005,27 +614,27 @@
       <div class="menu-plumbob-wrap">
         <div class="menu-plumbob"></div>
       </div>
-      <div class="studio-tag">✦ OFFICIAL INTERACTIVE EDITION ✦</div>
+      <div class="studio-tag">✦ HIGH-POLY 3D EDITION ✦</div>
       <h1 class="game-main-title">WILLIAM GAME</h1>
-      <p class="game-sub-title">Simulasi Kehidupan 3D • Mansion 2 Lantai, Karier, Hewan Peliharaan & Musik</p>
+      <p class="game-sub-title">Simulasi Kehidupan 3D • Karakter Rigged Asli, Mansion 2 Lantai & Anti-Tembus Dinding</p>
 
       <div class="mode-grid">
         <button class="mode-card story" id="btn-mode-story">
           <span class="mode-icon">📖</span>
           <div class="mode-title">Mode Story</div>
-          <div class="mode-desc">Jalani 6 bab cerita: sambut tamu, lamar karier kerja, adopsi hewan peliharaan, renovasi rumah 2 lantai, dan tangkap copet!</div>
+          <div class="mode-desc">Jalani 5 bab cerita: sambut tamu, lamar karier kerja, adopsi hewan peliharaan, renovasi mansion, dan tangkap copet!</div>
           <span class="mode-pill">Modal Awal: § 3,000 • Misi Aktif</span>
         </button>
 
         <button class="mode-card freeplay" id="btn-mode-freeplay">
           <span class="mode-icon">🌍</span>
           <div class="mode-title">Mode Freeplay</div>
-          <div class="mode-desc">Bermain bebas tanpa batas misi! Renovasi mansion 2 lantai sesukamu, beli hewan peliharaan, dan jelajahi semua fitur.</div>
+          <div class="mode-desc">Bermain bebas tanpa target misi! Renovasi mansion 2 lantai sesukamu, beli hewan peliharaan, dan jelajahi semua fitur.</div>
           <span class="mode-pill">Modal Awal: § 30,000 • Bebas Misi</span>
         </button>
       </div>
 
-      <div class="menu-footer-note">🔊 Klik salah satu mode untuk menyalakan musik latar & masuk ke Create-A-Sim</div>
+      <div class="menu-footer-note">🔊 Klik salah satu mode untuk menyalakan musik latar & masuk ke Create-A-Sim 3D</div>
     </div>
   </div>
 
@@ -1039,7 +648,7 @@
         <div class="action-icon">🚨</div>
         <div class="action-info">
           <div class="action-title" style="color:#ffe680;">AWAS ADA COPET MASUK!</div>
-          <div class="action-sub" style="color:#fff;">Klik si Copet bertopeng untuk menangkapnya sebelum uangmu dicuri!</div>
+          <div class="action-sub" style="color:#fff;">Klik si Copet untuk menangkapnya sebelum uangmu dicuri!</div>
         </div>
       </div>
     </div>
@@ -1056,7 +665,7 @@
 
   <!-- Top-Right Controls -->
   <div id="top-right-panel">
-    <button class="top-btn green" id="open-cas-btn">👕 Karakter & Baju</button>
+    <button class="top-btn green" id="open-cas-btn">👕 Model 3D & Karakter</button>
     <button class="top-btn purple" id="toggle-pet-btn">🐾 Hewan Peliharaan</button>
     <button class="top-btn" id="toggle-career-btn">💼 Cari Kerja</button>
     <button class="top-btn orange" id="toggle-build-btn">🔨 Renovasi Rumah</button>
@@ -1092,13 +701,13 @@
     <h3>💼 Pusat Karier & Lowongan Kerja</h3>
     <div id="current-job-status" class="job-card current" style="display:none;">
       <div class="job-title" id="active-job-title">IT & Web Developer (Lv. 1)</div>
-      <div class="job-meta" id="active-job-meta">Gaji: § 350 / shift • Kinerja: 0%</div>
+      <div class="job-meta" id="active-job-meta">Gaji: § 360 / shift • Kinerja: 0%</div>
       <button class="action-mini-btn" id="btn-go-work">🚗 Berangkat Kerja Sekarang</button>
     </div>
     <div id="job-listings"></div>
   </div>
 
-  <!-- Drawer 3: Hewan Peliharaan (Beli & Edit Pet) -->
+  <!-- Drawer 3: Hewan Peliharaan -->
   <div id="pet-panel" class="glass-panel side-drawer">
     <h3>🐾 Toko & Editor Hewan Peliharaan</h3>
     <div id="pet-editor-box" class="pet-card" style="display:none;">
@@ -1145,17 +754,17 @@
   <!-- NPC Dialogue Modal -->
   <div id="dialogue-modal">
     <div class="dlg-top">
-      <div class="dlg-npc-name" id="dlg-npc-name">Praja</div>
+      <div class="dlg-npc-name" id="dlg-npc-name">Nadia</div>
       <div class="dlg-rel-badge" id="dlg-rel-badge">Kenalan (25/100)</div>
     </div>
     <div class="dlg-speech" id="dlg-speech">"Halo! Selamat datang di rumah barumu!"</div>
     <div class="dlg-choices" id="dlg-choices"></div>
   </div>
 
-  <!-- Create-A-Sim (CAS) Panel -->
+  <!-- Create-A-Sim (CAS) 3D Sculpted Model Panel -->
   <div id="cas-modal">
-    <h1>♦ Create-A-Sim 3D</h1>
-    <p class="subtitle">Kustomisasi nama bebas, gaya rambut, aksesori, dan pakaian.</p>
+    <h1>♦ Create-A-Sim 3D Realistis</h1>
+    <p class="subtitle">Pilih model 3D sculpted asli atau unggah file <b>.glb</b> milikmu sendiri.</p>
 
     <div class="cas-group">
       <label for="sim-name-input">Nama Karakter (Bebas)</label>
@@ -1163,52 +772,22 @@
     </div>
 
     <div class="cas-group">
-      <label>Warna Kulit</label>
-      <div class="swatch-row" id="skin-swatches"></div>
-    </div>
-
-    <div class="cas-group">
-      <label>Gaya & Warna Rambut</label>
-      <div class="style-pills" id="hair-styles">
-        <button class="style-pill active" data-style="layered">Layered Medium</button>
-        <button class="style-pill" data-style="bun">Top Bun + Bandana</button>
-        <button class="style-pill" data-style="wavy">Panjang Bergelombang</button>
-        <button class="style-pill" data-style="spiky">Modern Spiky</button>
-      </div>
-      <div class="swatch-row" id="hair-swatches"></div>
-    </div>
-
-    <div class="cas-group">
-      <label>Aksesori Kepala & Wajah</label>
-      <div class="style-pills" id="acc-styles">
-        <button class="style-pill active" data-style="none">Tanpa Aksesori</button>
-        <button class="style-pill" data-style="cap">Topi Baseball</button>
-        <button class="style-pill" data-style="glasses">Kacamata Gaya</button>
-        <button class="style-pill" data-style="both">Topi + Kacamata</button>
+      <label>Pilih Model 3D Sculpted (GLB Rigged)</label>
+      <div class="style-pills" id="model-presets">
+        <button class="style-pill active" data-model="female">👩 Model 3D Wanita (Stylized)</button>
+        <button class="style-pill" data-model="male">👨 Model 3D Pria (Realistis)</button>
       </div>
     </div>
 
     <div class="cas-group">
-      <label>Pakaian Atas</label>
-      <div class="style-pills" id="top-styles">
-        <button class="style-pill active" data-style="leather_hoodie">Jaket Kulit + Hoodie</button>
-        <button class="style-pill" data-style="varsity">Jaket Varsity</button>
-        <button class="style-pill" data-style="shirt">Kemeja Berkerah</button>
-        <button class="style-pill" data-style="tshirt">Kaos Kasual</button>
-      </div>
-      <div class="swatch-row" id="top-swatches">
-        <input type="color" id="top-custom-color" value="#7b241c" style="width:24px;height:24px;border:none;background:transparent;cursor:pointer;" title="Warna Baju Bebas" />
-      </div>
+      <label>Import File 3D Sendiri (.glb)</label>
+      <input type="file" id="glb-file-input" accept=".glb,.gltf" style="font-size:11px;color:#cde8ff;width:100%;" />
     </div>
 
     <div class="cas-group">
-      <label>Pakaian Bawah</label>
-      <div class="style-pills" id="bottom-styles">
-        <button class="style-pill active" data-style="pants">Celana Panjang</button>
-        <button class="style-pill" data-style="shorts">Celana Pendek</button>
-      </div>
-      <div class="swatch-row" id="bottom-swatches">
-        <input type="color" id="bottom-custom-color" value="#2c3e50" style="width:24px;height:24px;border:none;background:transparent;cursor:pointer;" title="Warna Celana Bebas" />
+      <label>Nuansa Warna Pakaian / Pencahayaan Model</label>
+      <div class="swatch-row" id="tint-swatches">
+        <input type="color" id="tint-custom-color" value="#ffffff" style="width:24px;height:24px;border:none;background:transparent;cursor:pointer;" title="Warna Custom" />
       </div>
     </div>
 
@@ -1307,23 +886,18 @@
         this.muted = false;
         this.bgmTimer = null;
         this.noteIdx = 0;
-        // Melodi ceria bergaya Build/Live Mode The Sims
         this.melody = [
           523.25, 659.25, 783.99, 659.25, 587.33, 698.46, 880.00, 698.46,
           659.25, 783.99, 987.77, 783.99, 523.25, 659.25, 587.33, 493.88
         ];
-        this.bass = [
-          261.63, 261.63, 293.66, 293.66, 329.63, 329.63, 196.00, 196.00
-        ];
+        this.bass = [261.63, 261.63, 293.66, 293.66, 329.63, 329.63, 196.00, 196.00];
       }
 
       init() {
         if (!this.ctx) {
           this.ctx = new (window.AudioContext || window.webkitAudioContext)();
         }
-        if (this.ctx.state === 'suspended') {
-          this.ctx.resume();
-        }
+        if (this.ctx.state === 'suspended') this.ctx.resume();
         this.startBGM();
       }
 
@@ -1334,7 +908,6 @@
           const now = this.ctx.currentTime;
           const freq = this.melody[this.noteIdx % this.melody.length];
           this.playTone(freq, 'triangle', 0.24, 0.045, now);
-
           if (this.noteIdx % 2 === 0) {
             const bFreq = this.bass[(this.noteIdx / 2) % this.bass.length];
             this.playTone(bFreq, 'sine', 0.42, 0.055, now);
@@ -1358,9 +931,7 @@
         osc.stop(t + duration);
       }
 
-      playClick() {
-        this.playTone(680, 'sine', 0.08, 0.08);
-      }
+      playClick() { this.playTone(680, 'sine', 0.08, 0.08); }
 
       playCoin() {
         if (this.muted || !this.ctx) return;
@@ -1372,8 +943,7 @@
       playSimlish() {
         if (this.muted || !this.ctx) return;
         const now = this.ctx.currentTime;
-        const pitches = [340, 440, 390, 510, 420];
-        pitches.forEach((p, i) => {
+        [340, 440, 390, 510, 420].forEach((p, i) => {
           this.playTone(p + Math.random() * 60, 'triangle', 0.11, 0.07, now + i * 0.11);
         });
       }
@@ -1389,10 +959,6 @@
           osc.frequency.exponentialRampToValueAtTime(140, now + 0.14);
           gain.gain.setValueAtTime(0.11, now);
           gain.gain.exponentialRampToValueAtTime(0.001, now + 0.16);
-          osc.connect(gain);
-          gain.connect(this.ctx.destination);
-          osc.start(now);
-          osc.stop(now + 0.16);
         } else {
           osc.type = 'sine';
           osc.frequency.setValueAtTime(520, now);
@@ -1400,11 +966,11 @@
           osc.frequency.exponentialRampToValueAtTime(420, now + 0.42);
           gain.gain.setValueAtTime(0.09, now);
           gain.gain.exponentialRampToValueAtTime(0.001, now + 0.44);
-          osc.connect(gain);
-          gain.connect(this.ctx.destination);
-          osc.start(now);
-          osc.stop(now + 0.44);
         }
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.44);
       }
 
       playBurglarAlarm() {
@@ -1421,37 +987,29 @@
     // ==========================================
     // 2. STATE UTAMA GAME, KARIER, PET & STORY
     // ==========================================
+    const MODEL_URLS = {
+      female: 'https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/models/gltf/Michelle.glb',
+      male: 'https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/models/gltf/Soldier.glb'
+    };
+
     const simState = {
       name: 'William Samadara',
-      skinColor: '#e0ac84',
-      hairStyle: 'layered',
-      hairColor: '#3b2416',
-      accessory: 'none',
-      topStyle: 'leather_hoodie',
-      topColor: '#7b241c',
-      bottomStyle: 'pants',
-      bottomColor: '#2c3e50',
+      modelType: 'female',
+      tintColor: '#ffffff',
       money: 3000,
-      floorLevel: 1, // 1 atau 2
-      needs: {
-        energy: 88,
-        hunger: 86,
-        hygiene: 85,
-        bladder: 90,
-        fun: 80,
-        social: 75
-      },
+      floorLevel: 1,
+      needs: { energy: 88, hunger: 86, hygiene: 85, bladder: 90, fun: 80, social: 75 },
       hobbies: {
         music: { level: 1, xp: 20 },
         coding: { level: 1, xp: 30 },
         painting: { level: 1, xp: 10 },
         fitness: { level: 1, xp: 25 }
       },
-      career: null, // { id, title, level, salary, xp }
+      career: null,
       atWork: false,
       workTimer: 0,
       position: new THREE.Vector3(0, 0.16, 2.5),
-      targetPos: null,
+      waypoints: [],
       rotationY: 0,
       currentAction: null,
       actionProgress: 0,
@@ -1466,7 +1024,7 @@
       day: 1,
       minutes: 8 * 60 + 30,
       followSim: true,
-      viewMode: 'floor1', // 'floor1' | 'floor2' | 'exterior'
+      viewMode: 'floor1',
       cameraYaw: 0.68,
       cameraPitch: 0.62,
       cameraDistance: 17.5,
@@ -1488,7 +1046,7 @@
       {
         chapter: 'Bab 1 • Tetangga Ramah',
         title: 'Sambut Tamu Berkunjung',
-        desc: 'Klik tamu yang berjalan masuk ke rumahmu, lalu pilih "Samperin & Ngobrol".',
+        desc: 'Klik tamu yang berkunjung ke rumahmu, lalu pilih "Samperin & Ngobrol".',
         reward: 450,
         check: () => npcs.some(n => n.talkedCount >= 1)
       },
@@ -1547,7 +1105,7 @@
         badge.textContent = 'Mode Freeplay • Sandbox Bebas';
         badge.style.background = 'linear-gradient(90deg, #27ae60, #16a085)';
         title.textContent = 'Kehidupan Bebas Mansion 2 Lantai';
-        desc.textContent = 'Main bebas tanpa target misi. Kerja, pelihara hewan, renovasi rumah 2 lantai, dan jaga rumah dari copet.';
+        desc.textContent = 'Main bebas tanpa target misi. Karakter kini berjalan lewat pintu & tidak tembus dinding.';
         reward.textContent = 'Status: Mode Bebas Aktif';
       } else {
         badge.style.background = 'linear-gradient(90deg, #f39c12, #e67e22)';
@@ -1626,7 +1184,7 @@
     }
 
     // ==========================================
-    // 4. THREE.JS SCENE & TEKSTUR PROSEDURAL
+    // 4. THREE.JS SCENE & PBR TEXTURES
     // ==========================================
     const canvas = document.getElementById('game-canvas');
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
@@ -1639,14 +1197,14 @@
 
     const scene = new THREE.Scene();
     scene.background = new THREE.Color('#78c5ff');
-    scene.fog = new THREE.FogExp2('#88ceff', 0.009);
+    scene.fog = new THREE.FogExp2('#88ceff', 0.0085);
 
     const camera = new THREE.PerspectiveCamera(44, window.innerWidth / window.innerHeight, 0.1, 200);
 
-    const hemiLight = new THREE.HemisphereLight('#ffffff', '#4a7c44', 0.75);
+    const hemiLight = new THREE.HemisphereLight('#ffffff', '#4a7c44', 0.85);
     scene.add(hemiLight);
 
-    const sunLight = new THREE.DirectionalLight('#fff2db', 1.15);
+    const sunLight = new THREE.DirectionalLight('#fff2db', 1.25);
     sunLight.position.set(20, 32, 18);
     sunLight.castShadow = true;
     sunLight.shadow.mapSize.width = 2048;
@@ -1661,9 +1219,9 @@
     sunLight.shadow.bias = -0.0004;
     scene.add(sunLight);
 
-    const indoorLight1 = new THREE.PointLight('#ffe0b2', 0.65, 18);
+    const indoorLight1 = new THREE.PointLight('#ffe0b2', 0.7, 18);
     indoorLight1.position.set(-3.5, 2.5, -1.5);
-    const indoorLight2 = new THREE.PointLight('#ffe0b2', 0.65, 18);
+    const indoorLight2 = new THREE.PointLight('#ffe0b2', 0.7, 18);
     indoorLight2.position.set(3.5, 5.2, -1.5);
     scene.add(indoorLight1, indoorLight2);
 
@@ -1683,14 +1241,6 @@
           ctx.moveTo(0, y);
           ctx.lineTo(256, y);
           ctx.stroke();
-          for (let i = 0; i < 16; i++) {
-            ctx.globalAlpha = 0.14;
-            ctx.beginPath();
-            ctx.moveTo(0, y + Math.random() * 30);
-            ctx.lineTo(256, y + Math.random() * 30);
-            ctx.stroke();
-          }
-          ctx.globalAlpha = 1;
         }
       } else if (type === 'marble') {
         ctx.strokeStyle = accentColor;
@@ -1737,14 +1287,16 @@
     sidingTex.repeat.set(4, 3);
 
     // ==========================================
-    // 5. RUMAH 2 LANTAI KLASIK ALA SIMS 3 / SIMS 4
+    // 5. RUMAH 2 LANTAI + SOLID WALL COLLIDERS
     // ==========================================
     const interactiveObjects = [];
     const secondFloorGroup = new THREE.Group();
     const roofGroup = new THREE.Group();
     scene.add(secondFloorGroup, roofGroup);
 
-    // Halaman Rumput & Jalan Raya Depan
+    // Daftar Collider Dinding Fisik (Mencegah Karakter Tembus Rumah!)
+    const wallColliders = [];
+
     const lawnMesh = new THREE.Mesh(
       new THREE.BoxGeometry(86, 0.4, 86),
       new THREE.MeshStandardMaterial({ map: grassTex, roughness: 0.85 })
@@ -1753,7 +1305,6 @@
     lawnMesh.receiveShadow = true;
     scene.add(lawnMesh);
 
-    // Jalan Raya Aspal Depan Rumah (Tempat Tamu Datang/Pulang & Mobil Kerja)
     const streetRoad = new THREE.Mesh(
       new THREE.BoxGeometry(86, 0.06, 4.4),
       new THREE.MeshStandardMaterial({ color: '#3b4048', roughness: 0.85 })
@@ -1762,14 +1313,12 @@
     streetRoad.receiveShadow = true;
     scene.add(streetRoad);
 
-    // Garis Marka Jalan
     for (let rx = -36; rx <= 36; rx += 5) {
       const dash = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.07, 0.16), new THREE.MeshBasicMaterial({ color: '#f1c40f' }));
       dash.position.set(rx, 0.015, 18.2);
       scene.add(dash);
     }
 
-    // Trotoar & Jalan Setapak Batu Melengkung ke Teras Depan (Seperti Gambar Referensi!)
     const sidewalk = new THREE.Mesh(
       new THREE.BoxGeometry(86, 0.07, 1.4),
       new THREE.MeshStandardMaterial({ color: '#d5d8dc', roughness: 0.7 })
@@ -1779,21 +1328,19 @@
     scene.add(sidewalk);
 
     const pathMesh = new THREE.Mesh(
-      new THREE.BoxGeometry(2.6, 0.06, 9.2),
+      new THREE.BoxGeometry(2.8, 0.06, 9.2),
       new THREE.MeshStandardMaterial({ map: floorTextures.marble, roughness: 0.6 })
     );
     pathMesh.position.set(0, 0.025, 10.6);
     pathMesh.receiveShadow = true;
     scene.add(pathMesh);
 
-    // Lantai 1 Rumah Utama + Teras Depan Berpagar Putih
     const houseFloorMat = new THREE.MeshStandardMaterial({ map: floorTextures.oak, roughness: 0.45 });
     const houseFloorMesh = new THREE.Mesh(new THREE.BoxGeometry(15.6, 0.16, 11.4), houseFloorMat);
     houseFloorMesh.position.set(0, 0.08, -1.2);
     houseFloorMesh.receiveShadow = true;
     scene.add(houseFloorMesh);
 
-    // Teras Depan (Front Porch) Lantai 1
     const porchFloor = new THREE.Mesh(
       new THREE.BoxGeometry(15.6, 0.16, 2.2),
       new THREE.MeshStandardMaterial({ color: '#eceff1', roughness: 0.5 })
@@ -1802,11 +1349,10 @@
     porchFloor.receiveShadow = true;
     scene.add(porchFloor);
 
-    // Pilar & Pagar Putih Klasik Teras Depan (Seperti Gambar Referensi Sims 3/4)
     const whiteTrimMat = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.45 });
     const wallMat = new THREE.MeshStandardMaterial({ color: '#f7f3eb', map: sidingTex, roughness: 0.65 });
 
-    function buildPorchRailingsAndColumns(parentGroup, baseY, zPos, width) {
+    function buildPorchRailingsAndColumns(parentGroup, baseY, zPos, addColliders = false) {
       const colPositions = [-7.5, -4.5, -1.6, 1.6, 4.5, 7.5];
       colPositions.forEach(cx => {
         const col = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.13, 2.65, 12), whiteTrimMat);
@@ -1815,13 +1361,20 @@
         parentGroup.add(col);
       });
 
-      // Pagar Railing Kiri & Kanan (Tengah terbuka untuk jalan masuk)
       [-4.55, 4.55].forEach(rx => {
         const topRail = new THREE.Mesh(new THREE.BoxGeometry(5.8, 0.08, 0.1), whiteTrimMat);
         topRail.position.set(rx, baseY + 0.85, zPos);
         const botRail = topRail.clone();
         botRail.position.y = baseY + 0.15;
         parentGroup.add(topRail, botRail);
+
+        if (addColliders) {
+          wallColliders.push({
+            minX: rx - 2.9, maxX: rx + 2.9,
+            minZ: zPos - 0.18, maxZ: zPos + 0.18,
+            floor: 1
+          });
+        }
 
         for (let bx = rx - 2.6; bx <= rx + 2.6; bx += 0.45) {
           const baluster = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.7, 0.05), whiteTrimMat);
@@ -1830,26 +1383,99 @@
         }
       });
     }
-    buildPorchRailingsAndColumns(scene, 0.16, 6.45, 15.6);
+    buildPorchRailingsAndColumns(scene, 0.16, 6.45, true);
 
-    // Dinding Lantai 1
-    function addWall(targetGroup, w, h, d, x, y, z) {
+    function addSolidWall(targetGroup, w, h, d, x, y, z, floorNum) {
       const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), wallMat);
       m.position.set(x, y, z);
       m.castShadow = true;
       m.receiveShadow = true;
       targetGroup.add(m);
+
+      wallColliders.push({
+        minX: x - w / 2,
+        maxX: x + w / 2,
+        minZ: z - d / 2,
+        maxZ: z + d / 2,
+        floor: floorNum
+      });
       return m;
     }
 
-    addWall(scene, 15.8, 2.75, 0.25, 0, 1.5, -6.9); // Belakang
-    addWall(scene, 0.25, 2.75, 11.6, -7.8, 1.5, -1.2); // Kiri
-    addWall(scene, 0.25, 2.75, 11.6, 7.8, 1.5, -1.2); // Kanan
-    addWall(scene, 6.2, 2.75, 0.25, -4.7, 1.5, 4.4); // Depan Kiri
-    addWall(scene, 6.2, 2.75, 0.25, 4.7, 1.5, 4.4); // Depan Kanan
-    addWall(scene, 4.8, 2.4, 0.2, 5.3, 1.35, -2.2); // Sekat Kamar Mandi Lantai 1
+    // Dinding Lantai 1 (Dengan Pintu Masuk Utama Lebar 3.2m di Tengah x = -1.6 .. 1.6)
+    addSolidWall(scene, 15.8, 2.75, 0.28, 0, 1.5, -6.9, 1);      // Belakang
+    addSolidWall(scene, 0.28, 2.75, 11.6, -7.8, 1.5, -1.2, 1);  // Kiri
+    addSolidWall(scene, 0.28, 2.75, 11.6, 7.8, 1.5, -1.2, 1);   // Kanan
+    addSolidWall(scene, 6.2, 2.75, 0.28, -4.7, 1.5, 4.4, 1);    // Depan Kiri
+    addSolidWall(scene, 6.2, 2.75, 0.28, 4.7, 1.5, 4.4, 1);     // Depan Kanan
+    addSolidWall(scene, 4.2, 2.4, 0.24, 5.6, 1.35, -2.2, 1);    // Sekat Kamar Mandi (Pintu di x = 2.4..3.5)
 
-    // Tangga Kayu Menuju Lantai 2 (Klik Tangga untuk Naik/Turun Lantai!)
+    // Kusen Pintu Depan Putih Klasik
+    const doorHeader = new THREE.Mesh(new THREE.BoxGeometry(3.2, 0.45, 0.34), whiteTrimMat);
+    doorHeader.position.set(0, 2.65, 4.4);
+    scene.add(doorHeader);
+
+    // Fungsi Resolusi Tabrakan Dinding (Anti-Tembus!)
+    function resolveWallCollisions(pos, floorLevel, radius = 0.38) {
+      for (const w of wallColliders) {
+        if (w.floor !== floorLevel) continue;
+        const closestX = Math.max(w.minX, Math.min(pos.x, w.maxX));
+        const closestZ = Math.max(w.minZ, Math.min(pos.z, w.maxZ));
+        const dx = pos.x - closestX;
+        const dz = pos.z - closestZ;
+        const distSq = dx * dx + dz * dz;
+
+        if (distSq < radius * radius) {
+          const dist = Math.sqrt(distSq);
+          if (dist > 0.0001) {
+            const overlap = radius - dist;
+            pos.x += (dx / dist) * overlap;
+            pos.z += (dz / dist) * overlap;
+          } else {
+            pos.z += radius;
+          }
+        }
+      }
+    }
+
+    // Penghitung Jalur Pintar Lewat Pintu (Doorway Pathfinding)
+    function computePathWaypoints(startPos, endPos, floorLevel) {
+      const points = [];
+      if (floorLevel === 1) {
+        const startOutside = startPos.z > 4.4;
+        const endOutside = endPos.z > 4.4;
+
+        // Jika menyeberangi pintu depan rumah (z = 4.4)
+        if (startOutside !== endOutside) {
+          if (startOutside) {
+            points.push(new THREE.Vector3(0, 0.08, 6.8));
+            points.push(new THREE.Vector3(0, 0.16, 4.9));
+            points.push(new THREE.Vector3(0, 0.16, 3.6));
+          } else {
+            points.push(new THREE.Vector3(0, 0.16, 3.6));
+            points.push(new THREE.Vector3(0, 0.16, 4.9));
+            points.push(new THREE.Vector3(0, 0.08, 6.8));
+          }
+        }
+
+        // Jika masuk atau keluar kamar mandi (x > 3.5 && z < -2.2)
+        const startBath = startPos.x > 3.5 && startPos.z < -2.2;
+        const endBath = endPos.x > 3.5 && endPos.z < -2.2;
+        if (startBath !== endBath) {
+          if (startBath) {
+            points.push(new THREE.Vector3(2.8, 0.16, -3.1));
+            points.push(new THREE.Vector3(2.8, 0.16, -1.4));
+          } else {
+            points.push(new THREE.Vector3(2.8, 0.16, -1.4));
+            points.push(new THREE.Vector3(2.8, 0.16, -3.1));
+          }
+        }
+      }
+      points.push(endPos.clone());
+      return points;
+    }
+
+    // Tangga Kayu Lantai 1 <-> Lantai 2
     const stairsGroup = new THREE.Group();
     stairsGroup.position.set(-5.8, 0.16, -4.6);
     for (let s = 0; s < 10; s++) {
@@ -1877,17 +1503,14 @@
     floor2Slab.receiveShadow = true;
     secondFloorGroup.add(floor2Slab);
 
-    // Dinding Lantai 2
-    addWall(secondFloorGroup, 15.8, 2.65, 0.25, 0, 4.35, -6.9);
-    addWall(secondFloorGroup, 0.25, 2.65, 11.6, -7.8, 4.35, -1.2);
-    addWall(secondFloorGroup, 0.25, 2.65, 11.6, 7.8, 4.35, -1.2);
-    addWall(secondFloorGroup, 6.2, 2.65, 0.25, -4.7, 4.35, 4.4);
-    addWall(secondFloorGroup, 6.2, 2.65, 0.25, 4.7, 4.35, 4.4);
+    addSolidWall(secondFloorGroup, 15.8, 2.65, 0.28, 0, 4.35, -6.9, 2);
+    addSolidWall(secondFloorGroup, 0.28, 2.65, 11.6, -7.8, 4.35, -1.2, 2);
+    addSolidWall(secondFloorGroup, 0.28, 2.65, 11.6, 7.8, 4.35, -1.2, 2);
+    addSolidWall(secondFloorGroup, 6.2, 2.65, 0.28, -4.7, 4.35, 4.4, 2);
+    addSolidWall(secondFloorGroup, 6.2, 2.65, 0.28, 4.7, 4.35, 4.4, 2);
 
-    // Balkon Lantai 2 Berpagar Putih
-    buildPorchRailingsAndColumns(secondFloorGroup, 3.04, 6.45, 15.6);
+    buildPorchRailingsAndColumns(secondFloorGroup, 3.04, 6.45, false);
 
-    // Jendela Klasik Lantai 1 & Lantai 2
     function addClassicWindow(targetGroup, x, y, z) {
       const frame = new THREE.Mesh(new THREE.BoxGeometry(1.5, 1.45, 0.34), whiteTrimMat);
       frame.position.set(x, y, z);
@@ -1903,7 +1526,6 @@
       addClassicWindow(secondFloorGroup, wx, 4.4, 4.4);
     });
 
-    // Atap Mansion Klasik dengan Mahkota Cornice Putih (Seperti Gambar Referensi!)
     const cornice = new THREE.Mesh(new THREE.BoxGeometry(16.4, 0.35, 14.4), whiteTrimMat);
     cornice.position.set(0, 5.82, -0.1);
     const roofCap = new THREE.Mesh(
@@ -1914,7 +1536,6 @@
     roofCap.position.set(0, 7.1, -0.1);
     roofGroup.add(cornice, roofCap);
 
-    // Mode Tampilan Lantai & Atap
     function setHouseViewMode(mode) {
       worldState.viewMode = mode;
       const btn = document.getElementById('toggle-view-btn');
@@ -1931,24 +1552,19 @@
         roofGroup.visible = true;
         btn.textContent = '🏠 Tampilan: Atap Utuh';
       }
-      // Tampilkan hanya furnitur di lantai yang aktif
       placedFurniture.forEach(f => {
         const fLevel = f.userData.floorLevel || 1;
-        if (mode === 'floor1') f.visible = (fLevel === 1);
-        else f.visible = true;
+        f.visible = (mode === 'floor1') ? (fLevel === 1) : true;
       });
     }
 
     document.getElementById('toggle-view-btn').addEventListener('click', () => {
       soundFX.playClick();
       const order = ['floor1', 'floor2', 'exterior'];
-      const next = order[(order.indexOf(worldState.viewMode) + 1) % order.length];
-      setHouseViewMode(next);
+      setHouseViewMode(order[(order.indexOf(worldState.viewMode) + 1) % order.length]);
     });
 
-    // ==========================================
-    // KOTAK SURAT (MAILBOX), TONG SAMPAH & PEPOHONAN
-    // ==========================================
+    // Kotak Surat & Pepohonan
     const mailboxGroup = new THREE.Group();
     mailboxGroup.position.set(-2.1, 0, 14.3);
     const mbPost = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 1.15, 10), whiteTrimMat);
@@ -1962,14 +1578,13 @@
       interactiveName: 'Kotak Surat (Mailbox)',
       actions: [
         { label: '💼 Buka Lowongan Kerja', icon: '💼', openCareer: true },
-        { label: '📬 Cek Surat & Tagihan (+Hiburan)', icon: '📬', pose: 'idle', offset: [0.8, 0], duration: 2.2, effect: { fun: 15 } }
+        { label: '📬 Cek Surat & Tagihan (+Hiburan)', icon: '📬', offset: [0.8, 0], duration: 2.2, effect: { fun: 15 } }
       ]
     };
     mailboxGroup.traverse(c => { if (c.isMesh) c.userData.parentInteractive = mailboxGroup; });
     interactiveObjects.push(mailboxGroup);
     scene.add(mailboxGroup);
 
-    // Pohon Rindang Halaman
     function addTree(x, z, scale = 1) {
       const g = new THREE.Group();
       g.position.set(x, 0, z);
@@ -1990,13 +1605,12 @@
     addTree(12.5, -8, 1.15);
 
     // ==========================================
-    // 6. PABRIK FURNITUR LANTAI 1 & LANTAI 2
+    // 6. FURNITUR LANTAI 1 & LANTAI 2
     // ==========================================
     let tvScreenMat = null;
 
     function createFurnitureMesh(type) {
       const group = new THREE.Group();
-
       if (type === 'bed') {
         const frame = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.42, 3.3), new THREE.MeshStandardMaterial({ color: '#5c3a21' }));
         frame.position.y = 0.21;
@@ -2006,9 +1620,7 @@
         mattress.position.y = 0.52;
         const duvet = new THREE.Mesh(new THREE.BoxGeometry(2.26, 0.31, 2.0), new THREE.MeshStandardMaterial({ color: '#2980b9' }));
         duvet.position.set(0, 0.53, 0.52);
-        const pillow = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.16, 0.5), new THREE.MeshStandardMaterial({ color: '#ffffff' }));
-        pillow.position.set(0, 0.7, -1.1);
-        group.add(frame, headboard, mattress, duvet, pillow);
+        group.add(frame, headboard, mattress, duvet);
       } else if (type === 'sofa') {
         const base = new THREE.Mesh(new THREE.BoxGeometry(1.25, 0.44, 2.9), new THREE.MeshStandardMaterial({ color: '#d35400' }));
         base.position.y = 0.22;
@@ -2065,9 +1677,7 @@
         desk.position.y = 0.78;
         const monitor = new THREE.Mesh(new THREE.BoxGeometry(0.95, 0.55, 0.06), new THREE.MeshStandardMaterial({ color: '#111', emissive: '#1b4f72', emissiveIntensity: 0.6 }));
         monitor.position.set(0, 1.18, -0.15);
-        const chair = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.28, 0.45, 14), new THREE.MeshStandardMaterial({ color: '#2980b9' }));
-        chair.position.set(0, 0.225, 0.55);
-        group.add(desk, monitor, chair);
+        group.add(desk, monitor);
       } else if (type === 'easel') {
         const stand = new THREE.Mesh(new THREE.BoxGeometry(0.12, 1.65, 0.12), new THREE.MeshStandardMaterial({ color: '#8e5b32' }));
         stand.position.y = 0.82;
@@ -2087,54 +1697,26 @@
         leaves.position.y = 0.75;
         group.add(pot, leaves);
       }
-
-      group.traverse(c => {
-        if (c.isMesh) {
-          c.castShadow = true;
-          c.receiveShadow = true;
-        }
-      });
+      group.traverse(c => { if (c.isMesh) { c.castShadow = true; c.receiveShadow = true; } });
       return group;
     }
 
     const furnitureActionPresets = {
-      bed: [
-        { label: '😴 Tidur Pulihkan Stamina (+Stamina)', icon: '😴', pose: 'sleep', offset: [1.4, 0], duration: 4.0, effect: { energy: 85, fun: 10 } }
-      ],
-      sofa: [
-        { label: '📺 Nonton TV Santai (+Hiburan)', icon: '📺', pose: 'sit', offset: [0.45, 0], face: [-1.1, 1.2], duration: 3.8, effect: { fun: 45, energy: 15 }, tvOn: true }
-      ],
-      tv: [
-        { label: '🎬 Nonton Film Seru (+Hiburan)', icon: '🎬', pose: 'sit', offset: [-2.8, 0], face: [-1.1, 1.2], duration: 3.8, effect: { fun: 50 }, tvOn: true }
-      ],
-      fridge: [
-        { label: '🍳 Masak & Makan Enak (+Lapar)', icon: '🍳', pose: 'idle', offset: [0, 1.15], duration: 3.2, cost: 20, effect: { hunger: 75, energy: 10 } }
-      ],
-      espresso: [
-        { label: '☕ Minum Kopi Espresso (+38 Stamina)', icon: '☕', pose: 'idle', offset: [0, 1.05], duration: 2.0, cost: 12, effect: { energy: 38, bladder: -12 } }
-      ],
-      shower: [
-        { label: '🚿 Mandi Air Hangat (+Kebersihan)', icon: '🚿', pose: 'shower', offset: [0, 0], duration: 3.2, effect: { hygiene: 90, energy: 12 } }
-      ],
-      toilet: [
-        { label: '🚽 Gunakan Toilet (+Kandung Kemih)', icon: '🚽', pose: 'sit', offset: [0, 0.3], duration: 2.2, effect: { bladder: 95 } }
-      ],
-      keyboard_music: [
-        { label: '🎹 Latihan Musik Keyboard (+Hobi Musik)', icon: '🎹', pose: 'play_music', offset: [0, 0.72], duration: 3.8, hobby: 'music', xpGain: 45, earn: 45, effect: { fun: 45, energy: -14 } }
-      ],
+      bed: [{ label: '😴 Tidur Pulihkan Stamina (+Stamina)', icon: '😴', offset: [1.4, 0], duration: 4.0, effect: { energy: 85, fun: 10 } }],
+      sofa: [{ label: '📺 Nonton TV Santai (+Hiburan)', icon: '📺', offset: [0.65, 0], face: [-1.1, 1.2], duration: 3.8, effect: { fun: 45, energy: 15 }, tvOn: true }],
+      tv: [{ label: '🎬 Nonton Film Seru (+Hiburan)', icon: '🎬', offset: [-2.4, 0], face: [-1.1, 1.2], duration: 3.8, effect: { fun: 50 }, tvOn: true }],
+      fridge: [{ label: '🍳 Masak & Makan Enak (+Lapar)', icon: '🍳', offset: [0, 1.15], duration: 3.2, cost: 20, effect: { hunger: 75, energy: 10 } }],
+      espresso: [{ label: '☕ Minum Kopi Espresso (+38 Stamina)', icon: '☕', offset: [0, 1.05], duration: 2.0, cost: 12, effect: { energy: 38, bladder: -12 } }],
+      shower: [{ label: '🚿 Mandi Air Hangat (+Kebersihan)', icon: '🚿', offset: [-0.95, 0], duration: 3.2, effect: { hygiene: 90, energy: 12 } }],
+      toilet: [{ label: '🚽 Gunakan Toilet (+Kandung Kemih)', icon: '🚽', offset: [0, 0.75], duration: 2.2, effect: { bladder: 95 } }],
+      keyboard_music: [{ label: '🎹 Latihan Musik Keyboard (+Hobi Musik)', icon: '🎹', offset: [0, 0.75], duration: 3.8, hobby: 'music', xpGain: 45, earn: 45, effect: { fun: 45, energy: -14 } }],
       pc_desk: [
-        { label: '💻 Kerja Freelance & Coding (+Hobi Tech, +§)', icon: '💻', pose: 'sit', offset: [0, 0.62], duration: 4.0, hobby: 'coding', xpGain: 50, earn: 140, effect: { fun: 20, energy: -16 } },
+        { label: '💻 Kerja Freelance & Coding (+Hobi Tech, +§)', icon: '💻', offset: [0, 0.75], duration: 4.0, hobby: 'coding', xpGain: 50, earn: 140, effect: { fun: 20, energy: -16 } },
         { label: '💼 Buka Lowongan Kerja', icon: '💼', openCareer: true }
       ],
-      easel: [
-        { label: '🎨 Melukis & Jual Karya (+Hobi Lukis, +§)', icon: '🎨', pose: 'idle', offset: [0, 0.85], duration: 3.8, hobby: 'painting', xpGain: 48, earn: 115, effect: { fun: 40, energy: -14 } }
-      ],
-      alarm: [
-        { label: '🚨 Tes Bunyi Alarm Keamanan', icon: '🚨', testAlarm: true }
-      ],
-      plant: [
-        { label: '🌿 Siram Tanaman Hias (+Hiburan)', icon: '🌿', pose: 'idle', offset: [0, 0.8], duration: 2.2, effect: { fun: 18 } }
-      ]
+      easel: [{ label: '🎨 Melukis & Jual Karya (+Hobi Lukis, +§)', icon: '🎨', offset: [0, 0.85], duration: 3.8, hobby: 'painting', xpGain: 48, earn: 115, effect: { fun: 40, energy: -14 } }],
+      alarm: [{ label: '🚨 Tes Bunyi Alarm Keamanan', icon: '🚨', testAlarm: true }],
+      plant: [{ label: '🌿 Siram Tanaman Hias (+Hiburan)', icon: '🌿', offset: [0, 0.8], duration: 2.2, effect: { fun: 18 } }]
     };
 
     const placedFurniture = [];
@@ -2144,37 +1726,26 @@
       mesh.position.set(x, y, z);
       mesh.rotation.y = rotY;
       mesh.userData = {
-        isFurniture: true,
-        type,
-        interactiveName: name,
-        removable,
-        floorLevel,
+        isFurniture: true, type, interactiveName: name, removable, floorLevel,
         actions: furnitureActionPresets[type] || []
       };
-      mesh.traverse(c => {
-        if (c.isMesh) c.userData.parentInteractive = mesh;
-      });
-      if (floorLevel === 2) {
-        secondFloorGroup.add(mesh);
-      } else {
-        scene.add(mesh);
-      }
+      mesh.traverse(c => { if (c.isMesh) c.userData.parentInteractive = mesh; });
+      if (floorLevel === 2) secondFloorGroup.add(mesh);
+      else scene.add(mesh);
       interactiveObjects.push(mesh);
       placedFurniture.push(mesh);
       if (type === 'alarm') worldState.hasSecurityAlarm = true;
       return mesh;
     }
 
-    // Furnitur Lantai 1 (y = 0.16)
     spawnFurniture('sofa', 'Sofa Ruang Tamu', -4.2, 0.16, 1.2, 0, true, 1);
     spawnFurniture('tv', 'Smart TV HD', -1.1, 0.16, 1.2, 0, false, 1);
     spawnFurniture('fridge', 'Kulkas Dua Pintu', 1.3, 0.16, -6.0, 0, true, 1);
     spawnFurniture('espresso', 'Mesin Kopi Espresso', -0.2, 0.16, -6.0, 0, true, 1);
     spawnFurniture('shower', 'Shower Kaca', 6.6, 0.16, -5.6, 0, false, 1);
-    spawnFurniture('toilet', 'Toilet Keramik', 4.1, 0.16, -6.0, 0, false, 1);
+    spawnFurniture('toilet', 'Toilet Keramik', 4.4, 0.16, -6.0, 0, false, 1);
     spawnFurniture('easel', 'Kanvas Lukis (Hobi)', 4.5, 0.16, 1.2, -Math.PI / 2, true, 1);
 
-    // Furnitur Lantai 2 (y = 3.04)
     spawnFurniture('bed', 'Tempat Tidur Utama (Lt. 2)', -5.2, 3.04, -4.5, 0, true, 2);
     spawnFurniture('keyboard_music', 'Keyboard Musik (Lt. 2)', 4.8, 3.04, 1.2, -Math.PI / 2, true, 2);
     spawnFurniture('pc_desk', 'Meja PC & Karier (Lt. 2)', 4.8, 3.04, -1.2, -Math.PI / 2, true, 2);
@@ -2200,276 +1771,139 @@
     scene.add(destMarker);
 
     // ==========================================
-    // 7. KARAKTER 3D STYLIZED (SESUAI GAMBAR REFERENSI)
+    // 7. LOADER MODEL KARAKTER 3D SCULPTED (.GLB)
     // ==========================================
-    function buildStylizedCharacter(opts) {
-      const root = new THREE.Group();
-      const body = new THREE.Group();
-      root.add(body);
+    const gltfLoader = new THREE.GLTFLoader();
 
-      const skinMat = new THREE.MeshStandardMaterial({ color: opts.skinColor, roughness: 0.45 });
-      const hairMat = new THREE.MeshStandardMaterial({ color: opts.hairColor, roughness: 0.58 });
-      const topMat = new THREE.MeshStandardMaterial({ color: opts.topColor, roughness: 0.52 });
-      const bottomMat = new THREE.MeshStandardMaterial({ color: opts.bottomColor, roughness: 0.65 });
-      const shoeMat = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.4 });
-
-      // Pinggul & Torso Proporsional
-      const pelvis = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.19, 0.22, 20), bottomMat);
-      pelvis.position.y = 0.86;
-      body.add(pelvis);
-
-      const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.225, 0.175, 0.56, 22), topMat);
-      torso.position.y = 1.24;
-      torso.scale.set(1.06, 1, 0.72);
-      body.add(torso);
-
-      const chestCap = new THREE.Mesh(new THREE.SphereGeometry(0.225, 20, 14), topMat);
-      chestCap.position.y = 1.49;
-      chestCap.scale.set(1.06, 0.48, 0.72);
-      body.add(chestCap);
-
-      const outfitDetailGroup = new THREE.Group();
-      torso.add(outfitDetailGroup);
-
-      // Leher
-      const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.08, 0.16, 14), skinMat);
-      neck.position.y = 1.62;
-      body.add(neck);
-
-      // Kepala & Wajah Ekspresif Stylized Sims
-      const headGroup = new THREE.Group();
-      headGroup.position.set(0, 1.84, 0);
-      body.add(headGroup);
-
-      const cranium = new THREE.Mesh(new THREE.SphereGeometry(0.21, 26, 22), skinMat);
-      cranium.scale.set(0.9, 1.12, 0.95);
-      headGroup.add(cranium);
-
-      const chin = new THREE.Mesh(new THREE.SphereGeometry(0.13, 18, 14), skinMat);
-      chin.position.set(0, -0.11, 0.04);
-      headGroup.add(chin);
-
-      // Telinga & Hidung
-      const earGeo = new THREE.SphereGeometry(0.04, 12, 10);
-      const earL = new THREE.Mesh(earGeo, skinMat);
-      earL.position.set(-0.185, -0.01, 0);
-      const earR = earL.clone();
-      earR.position.x = 0.185;
-
-      const nose = new THREE.Mesh(new THREE.ConeGeometry(0.025, 0.065, 10), skinMat);
-      nose.rotation.x = Math.PI / 2.2;
-      nose.position.set(0, -0.015, 0.205);
-      headGroup.add(earL, earR, nose);
-
-      // Mata dengan Sclera + Iris + Pupil + Alis Ekspresif
-      const whiteMat = new THREE.MeshBasicMaterial({ color: '#ffffff' });
-      const irisMat = new THREE.MeshBasicMaterial({ color: '#3b6e8c' });
-      const pupilMat = new THREE.MeshBasicMaterial({ color: '#111111' });
-
-      [-0.072, 0.072].forEach(ex => {
-        const ew = new THREE.Mesh(new THREE.SphereGeometry(0.031, 14, 12), whiteMat);
-        ew.scale.set(1.15, 0.85, 0.7);
-        ew.position.set(ex, 0.032, 0.18);
-
-        const ei = new THREE.Mesh(new THREE.SphereGeometry(0.02, 12, 10), irisMat);
-        ei.position.set(ex, 0.032, 0.194);
-
-        const ep = new THREE.Mesh(new THREE.SphereGeometry(0.011, 10, 10), pupilMat);
-        ep.position.set(ex, 0.032, 0.202);
-
-        const brow = new THREE.Mesh(new THREE.BoxGeometry(0.072, 0.016, 0.02), hairMat);
-        brow.position.set(ex, 0.076, 0.185);
-        brow.rotation.z = ex < 0 ? 0.08 : -0.08;
-        headGroup.add(ew, ei, ep, brow);
-      });
-
-      const lips = new THREE.Mesh(new THREE.TorusGeometry(0.038, 0.01, 8, 16, Math.PI), new THREE.MeshBasicMaterial({ color: '#b04a4a' }));
-      lips.rotation.z = Math.PI;
-      lips.position.set(0, -0.08, 0.188);
-      headGroup.add(lips);
-
-      const hairGroup = new THREE.Group();
-      const accGroup = new THREE.Group();
-      headGroup.add(hairGroup, accGroup);
-
-      // Lengan & Kaki Halus
-      function createArm(isLeft) {
-        const pivot = new THREE.Group();
-        pivot.position.set(isLeft ? -0.275 : 0.275, 1.48, 0);
-        const shoulder = new THREE.Mesh(new THREE.SphereGeometry(0.08, 14, 12), topMat);
-        const upperArm = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.06, 0.26, 14), topMat);
-        upperArm.position.y = -0.13;
-        const elbow = new THREE.Mesh(new THREE.SphereGeometry(0.056, 12, 10), skinMat);
-        elbow.position.y = -0.26;
-        const forearm = new THREE.Mesh(new THREE.CylinderGeometry(0.056, 0.046, 0.26, 14), skinMat);
-        forearm.position.y = -0.39;
-        const hand = new THREE.Mesh(new THREE.SphereGeometry(0.05, 12, 10), skinMat);
-        hand.position.y = -0.53;
-        pivot.add(shoulder, upperArm, elbow, forearm, hand);
-        body.add(pivot);
-        return { pivot, upperArm };
+    class Rigged3DCharacter {
+      constructor(targetHeight = 1.78) {
+        this.root = new THREE.Group();
+        this.modelContainer = new THREE.Group();
+        this.root.add(this.modelContainer);
+        this.mixer = null;
+        this.actions = {};
+        this.currentAnim = null;
+        this.targetHeight = targetHeight;
+        this.loaded = false;
       }
-      const leftArm = createArm(true);
-      const rightArm = createArm(false);
 
-      function createLeg(isLeft) {
-        const pivot = new THREE.Group();
-        pivot.position.set(isLeft ? -0.105 : 0.105, 0.78, 0);
-        const thigh = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.076, 0.36, 14), bottomMat);
-        thigh.position.y = -0.18;
-        const knee = new THREE.Mesh(new THREE.SphereGeometry(0.072, 12, 10), bottomMat);
-        knee.position.y = -0.36;
-        const calf = new THREE.Mesh(new THREE.CylinderGeometry(0.072, 0.056, 0.34, 14), bottomMat);
-        calf.position.y = -0.53;
-        const shoe = new THREE.Mesh(new THREE.SphereGeometry(0.084, 14, 12), shoeMat);
-        shoe.scale.set(0.95, 0.65, 1.55);
-        shoe.position.set(0, -0.72, 0.035);
-        pivot.add(thigh, knee, calf, shoe);
-        body.add(pivot);
-        return { pivot, calf };
+      loadFromURL(url, tintHex = '#ffffff', onDone = null) {
+        gltfLoader.load(
+          url,
+          gltf => {
+            while (this.modelContainer.children.length > 0) {
+              this.modelContainer.remove(this.modelContainer.children[0]);
+            }
+
+            const model = gltf.scene;
+
+            // Normalisasi Tinggi Karakter agar Presisi dengan Pintu & Tangga Rumah
+            const box = new THREE.Box3().setFromObject(model);
+            const size = new THREE.Vector3();
+            box.getSize(size);
+            const scaleFactor = size.y > 0.01 ? (this.targetHeight / size.y) : 1;
+            model.scale.setScalar(scaleFactor);
+
+            // Posisikan Telapak Kaki Tepat di Lantai (y = 0)
+            const scaledBox = new THREE.Box3().setFromObject(model);
+            const center = new THREE.Vector3();
+            scaledBox.getCenter(center);
+            model.position.set(-center.x, -scaledBox.min.y, -center.z);
+
+            model.traverse(child => {
+              if (child.isMesh) {
+                child.castShadow = true;
+                child.receiveShadow = true;
+                if (child.material && tintHex && tintHex !== '#ffffff') {
+                  child.material = child.material.clone();
+                  child.material.color.lerp(new THREE.Color(tintHex), 0.35);
+                }
+              }
+            });
+
+            this.modelContainer.add(model);
+
+            // Setup Skeletal Animation Mixer
+            if (gltf.animations && gltf.animations.length > 0) {
+              this.mixer = new THREE.AnimationMixer(model);
+              this.actions = {};
+              gltf.animations.forEach(clip => {
+                const nameLower = clip.name.toLowerCase();
+                const action = this.mixer.clipAction(clip);
+                if (nameLower.includes('idle')) this.actions.idle = action;
+                else if (nameLower.includes('walk')) this.actions.walk = action;
+                else if (nameLower.includes('run')) this.actions.run = action;
+              });
+              if (!this.actions.idle) this.actions.idle = this.mixer.clipAction(gltf.animations[0]);
+              if (!this.actions.walk) this.actions.walk = this.actions.idle;
+              this.playAnim('idle');
+            }
+
+            this.loaded = true;
+            if (onDone) onDone(this);
+          },
+          undefined,
+          err => {
+            console.warn('Gagal memuat GLB:', err);
+          }
+        );
       }
-      const leftLeg = createLeg(true);
-      const rightLeg = createLeg(false);
 
-      root.traverse(c => {
-        if (c.isMesh) {
-          c.castShadow = true;
-          c.receiveShadow = true;
+      playAnim(name) {
+        if (!this.mixer || !this.actions[name]) return;
+        if (this.currentAnim === name) return;
+        const nextAction = this.actions[name];
+        const prevAction = this.currentAnim ? this.actions[this.currentAnim] : null;
+        if (prevAction && prevAction !== nextAction) prevAction.fadeOut(0.2);
+        nextAction.reset().fadeIn(0.2).play();
+        this.currentAnim = name;
+      }
+
+      update(dt, isMoving) {
+        if (this.mixer) {
+          this.mixer.update(dt);
+          this.playAnim(isMoving ? 'walk' : 'idle');
         }
-      });
-
-      return {
-        root, body, headGroup, hairGroup, accGroup, outfitDetailGroup,
-        leftArm, rightArm, leftLeg, rightLeg,
-        mats: { skinMat, hairMat, topMat, bottomMat }
-      };
+      }
     }
 
-    function applyCharacterStyle(rig, cfg) {
-      rig.mats.skinMat.color.set(cfg.skinColor);
-      rig.mats.hairMat.color.set(cfg.hairColor);
-      rig.mats.topMat.color.set(cfg.topColor);
-      rig.mats.bottomMat.color.set(cfg.bottomColor);
+    // Karakter Utama Pemain
+    const playerCharacter = new Rigged3DCharacter(1.78);
+    scene.add(playerCharacter.root);
 
-      // Rambut Stylized (Sesuai Referensi Gambar 1)
-      while (rig.hairGroup.children.length > 0) rig.hairGroup.remove(rig.hairGroup.children[0]);
-      const hMat = rig.mats.hairMat;
-      const cap = new THREE.Mesh(new THREE.SphereGeometry(0.216, 22, 16, 0, Math.PI * 2, 0, Math.PI * 0.58), hMat);
-      cap.scale.set(0.92, 1.12, 0.96);
-      cap.position.y = 0.015;
-      rig.hairGroup.add(cap);
-
-      if (cfg.hairStyle === 'layered') {
-        const backLayers = new THREE.Mesh(new THREE.CylinderGeometry(0.21, 0.24, 0.34, 18), hMat);
-        backLayers.position.set(0, -0.06, -0.05);
-        const sideL = new THREE.Mesh(new THREE.SphereGeometry(0.11, 14, 12), hMat);
-        sideL.scale.set(0.6, 1.6, 0.9);
-        sideL.position.set(-0.18, 0.03, 0.02);
-        const sideR = sideL.clone();
-        sideR.position.x = 0.18;
-        rig.hairGroup.add(backLayers, sideL, sideR);
-      } else if (cfg.hairStyle === 'bun') {
-        const bun = new THREE.Mesh(new THREE.SphereGeometry(0.11, 16, 14), hMat);
-        bun.position.set(0, 0.28, -0.03);
-        const headband = new THREE.Mesh(new THREE.TorusGeometry(0.205, 0.024, 8, 22), new THREE.MeshStandardMaterial({ color: '#f39c12' }));
-        headband.rotation.x = Math.PI / 2.2;
-        headband.position.set(0, 0.12, 0.01);
-        rig.hairGroup.add(bun, headband);
-      } else if (cfg.hairStyle === 'wavy') {
-        const drape = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.25, 0.48, 18), hMat);
-        drape.position.set(0, -0.15, -0.06);
-        rig.hairGroup.add(drape);
-      } else if (cfg.hairStyle === 'spiky') {
-        for (let i = -1; i <= 1; i++) {
-          const spike = new THREE.Mesh(new THREE.ConeGeometry(0.065, 0.16, 10), hMat);
-          spike.position.set(i * 0.08, 0.25, 0.05);
-          rig.hairGroup.add(spike);
-        }
-      }
-
-      // Aksesori (Topi Baseball & Kacamata Gaya seperti Gambar 1)
-      while (rig.accGroup.children.length > 0) rig.accGroup.remove(rig.accGroup.children[0]);
-      if (cfg.accessory === 'cap' || cfg.accessory === 'both') {
-        const capDome = new THREE.Mesh(new THREE.SphereGeometry(0.222, 20, 14, 0, Math.PI * 2, 0, Math.PI * 0.5), new THREE.MeshStandardMaterial({ color: '#ffffff' }));
-        capDome.position.y = 0.04;
-        const visor = new THREE.Mesh(new THREE.CylinderGeometry(0.19, 0.2, 0.02, 16, 1, false, -Math.PI / 2, Math.PI), new THREE.MeshStandardMaterial({ color: '#1abc9c' }));
-        visor.position.set(0, 0.12, 0.15);
-        visor.rotation.x = 0.15;
-        rig.accGroup.add(capDome, visor);
-      }
-      if (cfg.accessory === 'glasses' || cfg.accessory === 'both') {
-        const frameMat = new THREE.MeshStandardMaterial({ color: '#ffffff' });
-        const lensMat = new THREE.MeshStandardMaterial({ color: '#111111', metalness: 0.7, roughness: 0.15 });
-        [-0.072, 0.072].forEach(gx => {
-          const rim = new THREE.Mesh(new THREE.TorusGeometry(0.044, 0.011, 8, 18), frameMat);
-          rim.position.set(gx, 0.032, 0.205);
-          const lens = new THREE.Mesh(new THREE.CircleGeometry(0.038, 16), lensMat);
-          lens.position.set(gx, 0.032, 0.207);
-          rig.accGroup.add(rim, lens);
-        });
-      }
-
-      // Pakaian Berlapis (Jaket Kulit + Hoodie, Jaket Varsity, Kemeja, Kaos)
-      while (rig.outfitDetailGroup.children.length > 0) rig.outfitDetailGroup.remove(rig.outfitDetailGroup.children[0]);
-      if (cfg.topStyle === 'leather_hoodie') {
-        const hoodieInner = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.52, 0.04), new THREE.MeshStandardMaterial({ color: '#f9e79f' }));
-        hoodieInner.position.set(0, 0, 0.18);
-        const hoodCollar = new THREE.Mesh(new THREE.TorusGeometry(0.13, 0.035, 8, 16), new THREE.MeshStandardMaterial({ color: '#f9e79f' }));
-        hoodCollar.rotation.x = Math.PI / 2;
-        hoodCollar.position.y = 0.27;
-        rig.outfitDetailGroup.add(hoodieInner, hoodCollar);
-      } else if (cfg.topStyle === 'varsity') {
-        const whiteFront = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.52, 0.04), new THREE.MeshStandardMaterial({ color: '#ffffff' }));
-        whiteFront.position.set(0, 0, 0.18);
-        rig.outfitDetailGroup.add(whiteFront);
-      } else if (cfg.topStyle === 'shirt') {
-        const collar = new THREE.Mesh(new THREE.TorusGeometry(0.11, 0.022, 8, 16), new THREE.MeshStandardMaterial({ color: '#ffffff' }));
-        collar.rotation.x = Math.PI / 2;
-        collar.position.y = 0.27;
-        rig.outfitDetailGroup.add(collar);
-      } else if (cfg.topStyle === 'burglar_stripe') {
-        // Seragam Garis Hitam-Putih Copet
-        for (let sy = -0.2; sy <= 0.2; sy += 0.1) {
-          const stripe = new THREE.Mesh(new THREE.CylinderGeometry(0.228, 0.185, 0.04, 20), new THREE.MeshStandardMaterial({ color: '#ffffff' }));
-          stripe.position.y = sy;
-          stripe.scale.set(1.07, 1, 0.73);
-          rig.outfitDetailGroup.add(stripe);
-        }
-      }
-
-      const calfMat = cfg.bottomStyle === 'shorts' ? rig.mats.skinMat : rig.mats.bottomMat;
-      rig.leftLeg.calf.material = calfMat;
-      rig.rightLeg.calf.material = calfMat;
-    }
-
-    const playerRig = buildStylizedCharacter(simState);
-    scene.add(playerRig.root);
-
-    // Plumbob Ikonik
+    // Plumbob Ikonik di Atas Kepala
     const plumbobGroup = new THREE.Group();
-    plumbobGroup.position.set(0, 2.42, 0);
-    playerRig.root.add(plumbobGroup);
+    plumbobGroup.position.set(0, 2.15, 0);
+    playerCharacter.root.add(plumbobGroup);
 
     const plumbobMat = new THREE.MeshStandardMaterial({ color: '#4dff47', emissive: '#1fa81b', emissiveIntensity: 0.65, roughness: 0.15 });
-    const topCone = new THREE.Mesh(new THREE.ConeGeometry(0.14, 0.25, 6), plumbobMat);
-    topCone.position.y = 0.125;
-    const botCone = new THREE.Mesh(new THREE.ConeGeometry(0.14, 0.25, 6), plumbobMat);
+    const topCone = new THREE.Mesh(new THREE.ConeGeometry(0.13, 0.23, 6), plumbobMat);
+    topCone.position.y = 0.115;
+    const botCone = new THREE.Mesh(new THREE.ConeGeometry(0.13, 0.23, 6), plumbobMat);
     botCone.rotation.x = Math.PI;
-    botCone.position.y = -0.125;
+    botCone.position.y = -0.115;
     plumbobGroup.add(topCone, botCone);
 
-    function updateSimAppearance() {
-      applyCharacterStyle(playerRig, simState);
+    function reloadPlayerModel(customUrl = null) {
+      const targetUrl = customUrl || MODEL_URLS[simState.modelType] || MODEL_URLS.female;
+      playerCharacter.loadFromURL(targetUrl, simState.tintColor, () => {
+        playerCharacter.root.traverse(c => {
+          if (c.isMesh) {
+            c.castShadow = true;
+            c.receiveShadow = true;
+          }
+        });
+      });
       document.getElementById('hud-sim-name').textContent = simState.name || 'Sim';
     }
-    updateSimAppearance();
+    reloadPlayerModel();
 
     // ==========================================
     // 8. HEWAN PELIHARAAN 3D (BELI & EDIT PET)
     // ==========================================
     const petState = {
       active: false,
-      species: 'dog', // 'dog' | 'cat'
+      species: 'dog',
       name: 'Mochi',
       furColor: '#f5e6d3',
       collarColor: '#e74c3c',
@@ -2504,14 +1938,6 @@
       const nose = new THREE.Mesh(new THREE.SphereGeometry(0.028, 10, 8), petNoseMat);
       nose.position.set(0, 0.36, 0.44);
 
-      // Mata Hewan
-      [-0.06, 0.06].forEach(ex => {
-        const eye = new THREE.Mesh(new THREE.SphereGeometry(0.022, 10, 8), petNoseMat);
-        eye.position.set(ex, 0.42, 0.37);
-        petGroup.add(eye);
-      });
-
-      // Telinga & Ekor berbeda untuk Anjing vs Kucing
       if (petState.species === 'dog') {
         const earL = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.18, 0.08), petFurMat);
         earL.position.set(-0.15, 0.36, 0.22);
@@ -2532,18 +1958,13 @@
       collar.rotation.x = Math.PI / 3;
       collar.position.set(0, 0.32, 0.16);
 
-      const tail = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.04, 0.24, 10), petFurMat);
-      tail.position.set(0, 0.36, -0.26);
-      tail.rotation.x = -0.6;
-
-      // 4 Kaki
       [[-0.09, 0.15], [0.09, 0.15], [-0.09, -0.15], [0.09, -0.15]].forEach(([lx, lz]) => {
         const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.038, 0.032, 0.22, 10), petFurMat);
         leg.position.set(lx, 0.11, lz);
         petGroup.add(leg);
       });
 
-      petGroup.add(body, head, snout, nose, collar, tail);
+      petGroup.add(body, head, snout, nose, collar);
       petGroup.scale.setScalar(petState.size);
 
       petGroup.userData = {
@@ -2553,12 +1974,7 @@
           { label: `🍖 Beri Makan ${petState.name} (-§ 10)`, icon: '🍖', petInteract: 'feed' }
         ]
       };
-      petGroup.traverse(c => {
-        if (c.isMesh) {
-          c.castShadow = true;
-          c.userData.parentInteractive = petGroup;
-        }
-      });
+      petGroup.traverse(c => { if (c.isMesh) { c.castShadow = true; c.userData.parentInteractive = petGroup; } });
     }
 
     function adoptPet(species, cost) {
@@ -2573,11 +1989,7 @@
       petState.position.copy(simState.position).add(new THREE.Vector3(1.1, 0, 0.6));
       petGroup.visible = true;
       rebuildPetMesh();
-
-      if (!interactiveObjects.includes(petGroup)) {
-        interactiveObjects.push(petGroup);
-      }
-
+      if (!interactiveObjects.includes(petGroup)) interactiveObjects.push(petGroup);
       document.getElementById('pet-editor-box').style.display = 'block';
       soundFX.playPetSound(species);
       showToast(`🐾 Selamat! ${petState.name} (${species === 'dog' ? 'Anjing' : 'Kucing'}) sekarang tinggal bersamamu!`);
@@ -2586,19 +1998,9 @@
 
     document.getElementById('btn-buy-dog').addEventListener('click', () => adoptPet('dog', 350));
     document.getElementById('btn-buy-cat').addEventListener('click', () => adoptPet('cat', 300));
-
-    document.getElementById('pet-name-input').addEventListener('input', e => {
-      petState.name = e.target.value.trim() || 'Mochi';
-      rebuildPetMesh();
-    });
-    document.getElementById('pet-fur-color').addEventListener('input', e => {
-      petState.furColor = e.target.value;
-      rebuildPetMesh();
-    });
-    document.getElementById('pet-collar-color').addEventListener('input', e => {
-      petState.collarColor = e.target.value;
-      rebuildPetMesh();
-    });
+    document.getElementById('pet-name-input').addEventListener('input', e => { petState.name = e.target.value.trim() || 'Mochi'; rebuildPetMesh(); });
+    document.getElementById('pet-fur-color').addEventListener('input', e => { petState.furColor = e.target.value; rebuildPetMesh(); });
+    document.getElementById('pet-collar-color').addEventListener('input', e => { petState.collarColor = e.target.value; rebuildPetMesh(); });
     document.querySelectorAll('[data-petsize]').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('[data-petsize]').forEach(b => b.classList.remove('active'));
@@ -2615,100 +2017,70 @@
     });
 
     // ==========================================
-    // 9. TAMU BERKUNJUNG & PULANG KE RUMAHNYA
+    // 9. TAMU BERKUNJUNG & PULANG KE RUMAHNYA (3D RIGGED)
     // ==========================================
     const npcConfigs = [
       {
-        id: 'praja',
-        name: 'Praja (Tetangga)',
-        skinColor: '#d99e73',
-        hairStyle: 'layered',
-        hairColor: '#2c1810',
-        accessory: 'none',
-        topStyle: 'leather_hoodie',
-        topColor: '#7b241c',
-        bottomStyle: 'pants',
-        bottomColor: '#1e272e',
-        homeSpawn: new THREE.Vector3(-18, 0.0, 17.5),
-        visitSpots: [new THREE.Vector3(-2.5, 0.16, 2.8), new THREE.Vector3(-1.2, 0.16, 4.0)],
+        id: 'nadia',
+        name: 'Nadia (Tetangga)',
+        modelUrl: MODEL_URLS.female,
+        tint: '#ffd6e7',
+        homeSpawn: new THREE.Vector3(18, 0.0, 17.5),
+        visitSpots: [new THREE.Vector3(2.4, 0.16, 2.5), new THREE.Vector3(1.5, 0.16, 3.4)],
         relationship: 30,
         talkedCount: 0,
         greetings: [
-          'Halo! Aku Praja, tetangga sebelahmu. Wah, rumah dua lantaimu megah sekali!',
-          'Senang main ke rumahmu. Kapan-kapan kita latihan musik atau jalan bareng ya!'
+          'Hai! Aku Nadia, tetangga sebelahmu. Rumah 2 lantaimu megah sekali!',
+          'Senang main ke rumahmu. Kalau sudah sore aku pamit pulang lewat pintu depan ya!'
         ]
       },
       {
-        id: 'nadia',
-        name: 'Nadia (Desainer)',
-        skinColor: '#a66e46',
-        hairStyle: 'bun',
-        hairColor: '#1c1c1c',
-        accessory: 'glasses',
-        topStyle: 'shirt',
-        topColor: '#16a085',
-        bottomStyle: 'pants',
-        bottomColor: '#2c3e50',
-        homeSpawn: new THREE.Vector3(18, 0.0, 17.5),
-        visitSpots: [new THREE.Vector3(2.4, 0.16, 2.5), new THREE.Vector3(1.5, 0.16, 5.5)],
+        id: 'praja',
+        name: 'Praja (Rekan Kerja)',
+        modelUrl: MODEL_URLS.male,
+        tint: '#d6eaf8',
+        homeSpawn: new THREE.Vector3(-18, 0.0, 17.5),
+        visitSpots: [new THREE.Vector3(-2.5, 0.16, 2.8), new THREE.Vector3(-1.4, 0.16, 3.6)],
         relationship: 25,
         talkedCount: 0,
         greetings: [
-          'Hai! Aku Nadia. Suka banget dengan balkon putih di lantai 2 rumahmu!',
-          'Kalau sudah sore aku pamit pulang ke rumahku di ujung jalan ya!'
-        ]
-      },
-      {
-        id: 'raka',
-        name: 'Raka (Traveler)',
-        skinColor: '#f2c6a0',
-        hairStyle: 'wavy',
-        hairColor: '#d4ac0d',
-        accessory: 'cap',
-        topStyle: 'varsity',
-        topColor: '#e84393',
-        bottomStyle: 'shorts',
-        bottomColor: '#34495e',
-        homeSpawn: new THREE.Vector3(-22, 0.0, 17.5),
-        visitSpots: [new THREE.Vector3(0.4, 0.0, 9.5), new THREE.Vector3(-2.2, 0.0, 11.2)],
-        relationship: 20,
-        talkedCount: 0,
-        greetings: [
-          'Yo! Aku Raka. Tadi aku lewat depan kotak suratmu, mampir sebentar boleh kan?',
-          'Hati-hati kalau malam hari, kadang ada copet berkeliaran di sekitar kompleks!'
+          'Halo! Aku Praja. Tadi aku masuk lewat pintu depanmu, ruang tamunya nyaman banget!',
+          'Hati-hati kalau malam hari, kadang ada copet menyelinap dari jalan raya!'
         ]
       }
     ];
 
     const npcs = npcConfigs.map((cfg, idx) => {
-      const rig = buildStylizedCharacter(cfg);
-      applyCharacterStyle(rig, cfg);
-      rig.root.position.copy(cfg.visitSpots[0]);
-      scene.add(rig.root);
+      const char3D = new Rigged3DCharacter(1.78);
+      char3D.root.position.copy(cfg.visitSpots[0]);
+      scene.add(char3D.root);
 
       const npcObj = {
         ...cfg,
-        rig,
-        state: 'visiting', // 'arriving' | 'visiting' | 'leaving' | 'away'
-        visitTimer: 55 + idx * 25, // Lama bertamu sebelum pulang ke rumahnya
+        char3D,
+        state: 'visiting',
+        visitTimer: 60 + idx * 30,
         awayTimer: 0,
         spotIdx: 0,
         waitTimer: 3,
         isTalking: false
       };
 
-      rig.root.userData = {
-        isNPC: true,
-        npcRef: npcObj,
-        interactiveName: cfg.name,
-        actions: [
-          { label: '👋 Samperin & Ngobrol (+Sosial)', icon: '💬', talkToNPC: npcObj },
-          { label: '😄 Ajak Bercanda (+Sosial, +Hiburan)', icon: '😄', talkToNPC: npcObj, jokeMode: true },
-          { label: '🏠 Pamit / Suruh Pulang ke Rumahnya', icon: '🚪', sendHomeNPC: npcObj }
-        ]
-      };
-      rig.root.traverse(c => { if (c.isMesh) c.userData.parentInteractive = rig.root; });
-      interactiveObjects.push(rig.root);
+      char3D.loadFromURL(cfg.modelUrl, cfg.tint, () => {
+        char3D.root.userData = {
+          isNPC: true,
+          npcRef: npcObj,
+          interactiveName: cfg.name,
+          actions: [
+            { label: '👋 Samperin & Ngobrol (+Sosial)', icon: '💬', talkToNPC: npcObj },
+            { label: '😄 Ajak Bercanda (+Sosial, +Hiburan)', icon: '😄', talkToNPC: npcObj, jokeMode: true },
+            { label: '🏠 Pamit / Suruh Pulang ke Rumahnya', icon: '🚪', sendHomeNPC: npcObj }
+          ]
+        };
+        char3D.root.traverse(c => { if (c.isMesh) c.userData.parentInteractive = char3D.root; });
+        interactiveObjects.push(char3D.root);
+      });
+
       return npcObj;
     });
 
@@ -2718,7 +2090,7 @@
       npc.state = 'leaving';
       document.getElementById('dialogue-modal').style.display = 'none';
       soundFX.playSimlish();
-      showToast(`👋 ${npc.name} pamit berjalan pulang ke rumahnya...`);
+      showToast(`👋 ${npc.name} pamit keluar lewat pintu depan pulang ke rumahnya...`);
     }
 
     function openNPCDialogue(npc, jokeMode = false) {
@@ -2729,9 +2101,9 @@
       simState.needs.social = Math.min(100, simState.needs.social + 28);
       if (jokeMode) simState.needs.fun = Math.min(100, simState.needs.fun + 20);
 
-      const dirToNPC = npc.rig.root.position.clone().sub(simState.position);
+      const dirToNPC = npc.char3D.root.position.clone().sub(simState.position);
       simState.rotationY = Math.atan2(dirToNPC.x, dirToNPC.z);
-      npc.rig.root.rotation.y = Math.atan2(-dirToNPC.x, -dirToNPC.z);
+      npc.char3D.root.rotation.y = Math.atan2(-dirToNPC.x, -dirToNPC.z);
 
       const modal = document.getElementById('dialogue-modal');
       document.getElementById('dlg-npc-name').textContent = npc.name;
@@ -2742,50 +2114,21 @@
       const choicesBox = document.getElementById('dlg-choices');
       choicesBox.innerHTML = '';
 
-      const options = [
-        {
-          text: '😊 Puji Penampilan & Gaya Bajunya (+12)',
-          reply: `"Makasih ${simState.name}! Gaya bajumu juga keren banget hari ini."`,
-          rel: 12,
-          social: 18
-        },
-        {
-          text: '💼 Ceritakan Tentang Karier & Hobi (+10)',
-          reply: '"Hebat! Semangat terus kerja dan kembangkan hobimu ya!"',
-          rel: 10,
-          social: 15
-        },
-        {
-          text: '🏠 Pamit (Tamu Pulang ke Rumahnya)',
-          reply: null,
-          sendHome: true
-        },
-        {
-          text: '👋 Tutup Obrolan',
-          reply: null,
-          close: true
-        }
-      ];
-
-      options.forEach(opt => {
+      [
+        { text: '😊 Puji Penampilan & Gaya Bajunya (+12)', reply: `"Makasih ${simState.name}! Karaktermu juga keren banget."`, rel: 12, social: 18 },
+        { text: '💼 Ceritakan Tentang Karier & Hobi (+10)', reply: '"Mantap! Semangat terus kerja dan kembangkan hobimu ya!"', rel: 10, social: 15 },
+        { text: '🏠 Pamit (Tamu Pulang ke Rumahnya)', sendHome: true },
+        { text: '👋 Tutup Obrolan', close: true }
+      ].forEach(opt => {
         const btn = document.createElement('button');
         btn.className = 'dlg-choice-btn';
         btn.textContent = opt.text;
         btn.addEventListener('click', () => {
-          if (opt.sendHome) {
-            sendNPCHome(npc);
-            return;
-          }
-          if (opt.close) {
-            modal.style.display = 'none';
-            npc.isTalking = false;
-            return;
-          }
+          if (opt.sendHome) { sendNPCHome(npc); return; }
+          if (opt.close) { modal.style.display = 'none'; npc.isTalking = false; return; }
           soundFX.playSimlish();
           npc.relationship = Math.min(100, npc.relationship + opt.rel);
           simState.needs.social = Math.min(100, simState.needs.social + opt.social);
-          const updatedLabel = npc.relationship >= 60 ? 'Sahabat Dekat' : npc.relationship >= 40 ? 'Teman Baik' : 'Kenalan';
-          document.getElementById('dlg-rel-badge').textContent = `${updatedLabel} (${npc.relationship}/100)`;
           document.getElementById('dlg-speech').textContent = opt.reply;
           checkStoryProgress();
         });
@@ -2799,1023 +2142,25 @@
     // ==========================================
     // 10. SISTEM COPET / PENCURI (BURGLAR)
     // ==========================================
-    const burglarCfg = {
-      skinColor: '#d9a782',
-      hairStyle: 'spiky',
-      hairColor: '#111111',
-      accessory: 'glasses',
-      topStyle: 'burglar_stripe',
-      topColor: '#1a1a1a',
-      bottomStyle: 'pants',
-      bottomColor: '#111111'
-    };
-    const burglarRig = buildStylizedCharacter(burglarCfg);
-    applyCharacterStyle(burglarRig, burglarCfg);
-    burglarRig.root.visible = false;
-    scene.add(burglarRig.root);
+    const burglarChar = new Rigged3DCharacter(1.80);
+    burglarChar.root.visible = false;
+    scene.add(burglarChar.root);
 
     const burglarState = {
       active: false,
-      phase: 'sneak_in', // 'sneak_in' | 'stealing' | 'fleeing'
+      phase: 'sneak_in',
       stealTimer: 0,
-      nextSpawnCooldown: 28 // Muncul pertama sekitar 28 detik setelah bermain
+      nextSpawnCooldown: 28
     };
 
-    burglarRig.root.userData = {
-      interactiveName: '🦹 Copet / Pencuri Menyelinap!',
-      actions: [
-        { label: '🚨 Tangkap & Usir Copet! (+§ 350 Hadiah)', icon: '🚨', catchBurglar: true }
-      ]
-    };
-    burglarRig.root.traverse(c => { if (c.isMesh) c.userData.parentInteractive = burglarRig.root; });
-    interactiveObjects.push(burglarRig.root);
+    burglarChar.loadFromURL(MODEL_URLS.male, '#3b1c1c', () => {
+      burglarChar.root.userData = {
+        interactiveName: '🦹 Copet / Pencuri Menyelinap!',
+        actions: [{ label: '🚨 Tangkap & Usir Copet! (+§ 350 Hadiah)', icon: '🚨', catchBurglar: true }]
+      };
+      burglarChar.root.traverse(c => { if (c.isMesh) c.userData.parentInteractive = burglarChar.root; });
+      interactiveObjects.push(burglarChar.root);
+    });
 
     function spawnBurglar() {
-      if (burglarState.active) return;
-      burglarState.active = true;
-      burglarState.phase = 'sneak_in';
-      burglarState.stealTimer = 0;
-      burglarRig.root.position.set(14, 0.0, 17.5);
-      burglarRig.root.visible = true;
-
-      document.getElementById('burglar-alert').style.display = 'block';
-      soundFX.playBurglarAlarm();
-      if (worldState.hasSecurityAlarm) {
-        showToast('🚨 ALARM KEAMANAN BERBUNYI! Copet terdeteksi masuk halaman!');
-      } else {
-        showToast('🦹 Waspada! Ada Copet menyelinap menuju rumahmu!');
-      }
-    }
-
-    function resolveBurglarCaught() {
-      if (!burglarState.active) return;
-      burglarState.phase = 'fleeing';
-      burglarsCaught += 1;
-      simState.money += 350;
-      simState.needs.fun = Math.min(100, simState.needs.fun + 20);
-      soundFX.playCoin();
-      document.getElementById('burglar-alert').style.display = 'none';
-      showToast('👮 Berhasil! Copet kabur ketakutan, kamu dapat hadiah keamanan +§ 350!');
-      checkStoryProgress();
-    }
-
-    // ==========================================
-    // 11. SISTEM CARI KERJA / KARIER
-    // ==========================================
-    function renderCareerPanel() {
-      const box = document.getElementById('job-listings');
-      box.innerHTML = '';
-
-      const activeBox = document.getElementById('current-job-status');
-      if (simState.career) {
-        activeBox.style.display = 'block';
-        document.getElementById('active-job-title').textContent = `${simState.career.title} (Lv. ${simState.career.level})`;
-        document.getElementById('active-job-meta').textContent = `Gaji: § ${simState.career.salary} / shift • Kinerja: ${simState.career.xp}%`;
-        document.getElementById('hud-job').textContent = `Karier: ${simState.career.title} Lv.${simState.career.level}`;
-      } else {
-        activeBox.style.display = 'none';
-        document.getElementById('hud-job').textContent = 'Pekerjaan: Belum Bekerja';
-      }
-
-      jobCatalog.forEach(job => {
-        const card = document.createElement('div');
-        card.className = 'job-card' + (simState.career && simState.career.id === job.id ? ' current' : '');
-        card.innerHTML = `
-          <div class="job-title">${job.title}</div>
-          <div class="job-meta">${job.desc} • Gaji Awal: <b>§ ${job.baseSalary}</b></div>
-          <button class="action-mini-btn secondary">${simState.career && simState.career.id === job.id ? '✔ Pekerjaan Aktif' : '📝 Lamar Pekerjaan Ini'}</button>
-        `;
-        card.querySelector('button').addEventListener('click', () => {
-          soundFX.playClick();
-          simState.career = {
-            id: job.id,
-            title: job.title,
-            level: 1,
-            salary: job.baseSalary,
-            xp: 0
-          };
-          renderCareerPanel();
-          showToast(`🎉 Diterima bekerja sebagai ${job.title}! Klik "Berangkat Kerja Sekarang".`);
-        });
-        box.appendChild(card);
-      });
-    }
-    renderCareerPanel();
-
-    document.getElementById('btn-go-work').addEventListener('click', () => {
-      if (!simState.career || simState.atWork) return;
-      soundFX.playClick();
-      closeAllDrawers();
-      if (simState.floorLevel === 2) switchSimFloor(1);
-
-      startSimAction(mailboxGroup, {
-        label: `🚗 Bekerja (${simState.career.title})`,
-        icon: '💼',
-        goWorkAction: true
-      });
-    });
-
-    // ==========================================
-    // 12. UI KUSTOMISASI CAS, RENOVASI & DRAWERS
-    // ==========================================
-    const skinPalette = ['#ffdfc4', '#f0c097', '#e0ac84', '#a66e46', '#7d4e2d', '#4a2c16'];
-    const hairPalette = ['#1c1c1c', '#3b2416', '#7d4925', '#d4ac0d', '#b83227', '#dce4ec'];
-    const clothPalette = ['#7b241c', '#e84393', '#16a085', '#2e86de', '#f39c12', '#ecf0f1', '#2c3e50', '#8e44ad'];
-
-    function buildSwatches(containerId, colors, onSelect) {
-      const container = document.getElementById(containerId);
-      colors.forEach((hex, idx) => {
-        const btn = document.createElement('div');
-        btn.className = 'swatch' + (idx === 0 ? ' selected' : '');
-        btn.style.backgroundColor = hex;
-        btn.addEventListener('click', () => {
-          soundFX.playClick();
-          container.querySelectorAll('.swatch').forEach(s => s.classList.remove('selected'));
-          btn.classList.add('selected');
-          onSelect(hex);
-        });
-        container.prepend(btn);
-      });
-    }
-
-    buildSwatches('skin-swatches', skinPalette, hex => { simState.skinColor = hex; updateSimAppearance(); });
-    buildSwatches('hair-swatches', hairPalette, hex => { simState.hairColor = hex; updateSimAppearance(); });
-    buildSwatches('top-swatches', clothPalette, hex => {
-      simState.topColor = hex;
-      document.getElementById('top-custom-color').value = hex;
-      updateSimAppearance();
-    });
-    buildSwatches('bottom-swatches', clothPalette, hex => {
-      simState.bottomColor = hex;
-      document.getElementById('bottom-custom-color').value = hex;
-      updateSimAppearance();
-    });
-
-    document.getElementById('top-custom-color').addEventListener('input', e => { simState.topColor = e.target.value; updateSimAppearance(); });
-    document.getElementById('bottom-custom-color').addEventListener('input', e => { simState.bottomColor = e.target.value; updateSimAppearance(); });
-    document.getElementById('sim-name-input').addEventListener('input', e => { simState.name = e.target.value.trim() || 'Sim'; updateSimAppearance(); });
-
-    function setupPills(containerId, cb) {
-      const box = document.getElementById(containerId);
-      box.querySelectorAll('.style-pill').forEach(p => {
-        p.addEventListener('click', () => {
-          soundFX.playClick();
-          box.querySelectorAll('.style-pill').forEach(x => x.classList.remove('active'));
-          p.classList.add('active');
-          cb(p.dataset.style);
-        });
-      });
-    }
-    setupPills('hair-styles', s => { simState.hairStyle = s; updateSimAppearance(); });
-    setupPills('acc-styles', s => { simState.accessory = s; updateSimAppearance(); });
-    setupPills('top-styles', s => { simState.topStyle = s; updateSimAppearance(); });
-    setupPills('bottom-styles', s => { simState.bottomStyle = s; updateSimAppearance(); });
-
-    document.getElementById('confirm-cas-btn').addEventListener('click', () => {
-      soundFX.init();
-      soundFX.playClick();
-      document.getElementById('cas-modal').style.display = 'none';
-      simState.inCAS = false;
-    });
-
-    document.getElementById('open-cas-btn').addEventListener('click', () => {
-      soundFX.playClick();
-      if (worldState.buildMode) toggleBuildMode();
-      closeAllDrawers();
-      document.getElementById('cas-modal').style.display = 'block';
-      simState.inCAS = true;
-      cancelCurrentAction();
-    });
-
-    function toggleDrawer(id) {
-      soundFX.playClick();
-      const target = document.getElementById(id);
-      const isOpen = target.style.display === 'block';
-      closeAllDrawers();
-      if (!isOpen) target.style.display = 'block';
-    }
-
-    document.getElementById('toggle-hobby-btn').addEventListener('click', () => toggleDrawer('hobby-panel'));
-    document.getElementById('toggle-career-btn').addEventListener('click', () => {
-      renderCareerPanel();
-      toggleDrawer('career-panel');
-    });
-    document.getElementById('toggle-pet-btn').addEventListener('click', () => toggleDrawer('pet-panel'));
-
-    // Mode Renovasi Rumah
-    let ghostMesh = null;
-    function buildCatalogUI() {
-      const box = document.getElementById('build-catalog');
-      box.innerHTML = '';
-      buildCatalogList.forEach(item => {
-        const card = document.createElement('div');
-        card.className = 'catalog-card';
-        card.innerHTML = `
-          <div class="catalog-icon">${item.icon}</div>
-          <div class="catalog-name">${item.name}</div>
-          <div class="catalog-price">§ ${item.price}</div>
-        `;
-        card.addEventListener('click', () => {
-          soundFX.playClick();
-          box.querySelectorAll('.catalog-card').forEach(c => c.classList.remove('selected'));
-          card.classList.add('selected');
-          worldState.selectedCatalogItem = item;
-          if (ghostMesh) scene.remove(ghostMesh);
-          ghostMesh = createFurnitureMesh(item.type);
-          ghostMesh.traverse(c => {
-            if (c.isMesh) {
-              c.material = c.material.clone();
-              c.material.transparent = true;
-              c.material.opacity = 0.6;
-            }
-          });
-          scene.add(ghostMesh);
-        });
-        box.appendChild(card);
-      });
-    }
-    buildCatalogUI();
-
-    function toggleBuildMode() {
-      soundFX.playClick();
-      closeAllDrawers();
-      worldState.buildMode = !worldState.buildMode;
-      const btn = document.getElementById('toggle-build-btn');
-      const buildPanel = document.getElementById('build-panel');
-      const liveHud = document.getElementById('sims3-hud');
-
-      if (worldState.buildMode) {
-        btn.classList.add('active-mode');
-        buildPanel.style.display = 'block';
-        liveHud.style.display = 'none';
-        document.getElementById('build-money').textContent = '§ ' + simState.money.toLocaleString('id-ID');
-        showToast('🔨 Mode Renovasi Aktif: Pilih furnitur atau ganti lantai/dinding!');
-      } else {
-        btn.classList.remove('active-mode');
-        buildPanel.style.display = 'none';
-        liveHud.style.display = 'grid';
-        worldState.selectedCatalogItem = null;
-        if (ghostMesh) { scene.remove(ghostMesh); ghostMesh = null; }
-      }
-    }
-
-    document.getElementById('toggle-build-btn').addEventListener('click', toggleBuildMode);
-
-    document.querySelectorAll('[data-floor]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        soundFX.playClick();
-        houseFloorMat.map = floorTextures[btn.dataset.floor];
-        houseFloorMat.needsUpdate = true;
-        renovationDone = true;
-        checkStoryProgress();
-        showToast('🪵 Motif lantai mansion diperbarui!');
-      });
-    });
-
-    document.querySelectorAll('[data-wall]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        soundFX.playClick();
-        wallMat.color.set(btn.dataset.wall);
-        renovationDone = true;
-        checkStoryProgress();
-        showToast('🧱 Warna dinding mansion diperbarui!');
-      });
-    });
-
-    window.addEventListener('keydown', e => {
-      if ((e.key === 'r' || e.key === 'R') && worldState.buildMode && ghostMesh) {
-        worldState.ghostRotation += Math.PI / 2;
-        ghostMesh.rotation.y = worldState.ghostRotation;
-      }
-    });
-
-    // ==========================================
-    // 13. KONTROL KAMERA & INTERAKSI KLIK 3D
-    // ==========================================
-    let isRightDragging = false;
-    let prevMouse = { x: 0, y: 0 };
-    const raycaster = new THREE.Raycaster();
-    const pointer = new THREE.Vector2();
-    const tooltip = document.getElementById('hover-tooltip');
-    const pieMenu = document.getElementById('pie-menu');
-
-    canvas.addEventListener('contextmenu', e => e.preventDefault());
-
-    canvas.addEventListener('mousedown', e => {
-      if (e.target !== canvas || simState.inMenu) return;
-      if (e.button === 2) {
-        isRightDragging = true;
-        prevMouse = { x: e.clientX, y: e.clientY };
-      } else if (e.button === 0) {
-        handleWorldClick(e);
-      }
-    });
-
-    window.addEventListener('mouseup', () => { isRightDragging = false; });
-
-    window.addEventListener('mousemove', e => {
-      if (simState.inMenu) return;
-      if (isRightDragging) {
-        const dx = e.clientX - prevMouse.x;
-        const dy = e.clientY - prevMouse.y;
-        prevMouse = { x: e.clientX, y: e.clientY };
-        worldState.cameraYaw -= dx * 0.007;
-        worldState.cameraPitch = Math.max(0.2, Math.min(1.32, worldState.cameraPitch + dy * 0.006));
-        return;
-      }
-
-      if (worldState.buildMode && ghostMesh) {
-        const hits = getRaycastHits(e);
-        const targetPlane = worldState.viewMode === 'floor2' ? floor2Slab : houseFloorMesh;
-        const floorHit = hits.find(h => h.object === targetPlane || h.object === lawnMesh);
-        if (floorHit) {
-          const sx = Math.round(floorHit.point.x * 2) / 2;
-          const sz = Math.round(floorHit.point.z * 2) / 2;
-          const sy = floorHit.object === floor2Slab ? 3.04 : (floorHit.object === houseFloorMesh ? 0.16 : 0.0);
-          ghostMesh.position.set(sx, sy, sz);
-        }
-        return;
-      }
-
-      if (!simState.inCAS) updateHoverTooltip(e);
-    });
-
-    canvas.addEventListener('wheel', e => {
-      if (simState.inMenu) return;
-      worldState.cameraDistance = Math.max(6.0, Math.min(32, worldState.cameraDistance + e.deltaY * 0.01));
-    }, { passive: true });
-
-    function getRaycastHits(e) {
-      const rect = canvas.getBoundingClientRect();
-      pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-      pointer.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
-      raycaster.setFromCamera(pointer, camera);
-      return raycaster.intersectObjects(scene.children, true);
-    }
-
-    function updateHoverTooltip(e) {
-      const hits = getRaycastHits(e);
-      let found = null;
-      for (const hit of hits) {
-        const p = hit.object.userData && hit.object.userData.parentInteractive;
-        if (p && p.visible) {
-          found = p;
-          break;
-        }
-      }
-      if (found) {
-        tooltip.style.display = 'block';
-        tooltip.style.left = e.clientX + 'px';
-        tooltip.style.top = e.clientY + 'px';
-        tooltip.textContent = '✨ ' + found.userData.interactiveName;
-        document.body.style.cursor = 'pointer';
-      } else {
-        tooltip.style.display = 'none';
-        document.body.style.cursor = 'default';
-      }
-    }
-
-    function handleWorldClick(e) {
-      pieMenu.style.display = 'none';
-      if (simState.inCAS || simState.inMenu || simState.atWork) return;
-
-      const hits = getRaycastHits(e);
-      if (hits.length === 0) return;
-
-      if (worldState.buildMode) {
-        if (worldState.selectedCatalogItem && ghostMesh) {
-          const item = worldState.selectedCatalogItem;
-          if (simState.money < item.price) {
-            showToast('❌ Simoleons (§) tidak cukup!');
-            return;
-          }
-          simState.money -= item.price;
-          soundFX.playCoin();
-          document.getElementById('build-money').textContent = '§ ' + simState.money.toLocaleString('id-ID');
-          const fLvl = ghostMesh.position.y > 2.0 ? 2 : 1;
-          spawnFurniture(item.type, item.name, ghostMesh.position.x, ghostMesh.position.y, ghostMesh.position.z, worldState.ghostRotation, true, fLvl);
-          renovationDone = true;
-          checkStoryProgress();
-          showToast(`✅ ${item.name} berhasil dipasang!`);
-          return;
-        }
-        return;
-      }
-
-      for (const hit of hits) {
-        const obj = hit.object.userData && hit.object.userData.parentInteractive;
-        if (obj && obj.visible) {
-          soundFX.playClick();
-          openPieMenu(e.clientX, e.clientY, obj.userData.interactiveName, obj.userData.actions, obj);
-          return;
-        }
-      }
-
-      // Klik Lantai untuk Jalan
-      for (const hit of hits) {
-        if (hit.object === floor2Slab && worldState.viewMode !== 'floor1') {
-          if (simState.floorLevel !== 2) switchSimFloor(2);
-          moveSimTo(hit.point.x, 3.04, hit.point.z);
-          return;
-        }
-        if (hit.object === houseFloorMesh || hit.object === porchFloor || hit.object === lawnMesh || hit.object === sidewalk) {
-          if (simState.floorLevel !== 1) switchSimFloor(1);
-          const yVal = (hit.object === houseFloorMesh || hit.object === porchFloor) ? 0.16 : 0.0;
-          moveSimTo(hit.point.x, yVal, hit.point.z);
-          return;
-        }
-      }
-    }
-
-    function switchSimFloor(targetFloor) {
-      simState.floorLevel = targetFloor;
-      if (targetFloor === 2) {
-        simState.position.set(-4.5, 3.04, -1.5);
-        setHouseViewMode('floor2');
-        showToast('⬆️ Naik ke Lantai 2 Mansion');
-      } else {
-        simState.position.set(-4.5, 0.16, -1.5);
-        setHouseViewMode('floor1');
-        showToast('⬇️ Turun ke Lantai 1 Mansion');
-      }
-    }
-
-    function moveSimTo(x, y, z) {
-      cancelCurrentAction();
-      const dest = new THREE.Vector3(Math.max(-22, Math.min(22, x)), y, Math.max(-22, Math.min(18, z)));
-      simState.targetPos = dest;
-      destMarker.position.set(dest.x, dest.y + 0.03, dest.z);
-      destMarker.visible = true;
-    }
-
-    function openPieMenu(x, y, title, actions, targetObj = null) {
-      const header = document.getElementById('pie-menu-header');
-      const box = document.getElementById('pie-menu-options');
-      header.textContent = title;
-      box.innerHTML = '';
-
-      actions.forEach(act => {
-        const btn = document.createElement('button');
-        btn.className = 'pie-option';
-        btn.textContent = act.label;
-        btn.addEventListener('click', () => {
-          pieMenu.style.display = 'none';
-          soundFX.playClick();
-          if (act.changeFloor) {
-            switchSimFloor(act.changeFloor);
-          } else if (act.openCareer) {
-            renderCareerPanel();
-            toggleDrawer('career-panel');
-          } else if (act.testAlarm) {
-            soundFX.playBurglarAlarm();
-            showToast('🚨 Tes Alarm Keamanan: Sirene berfungsi normal!');
-          } else if (act.sendHomeNPC) {
-            sendNPCHome(act.sendHomeNPC);
-          } else {
-            startSimAction(targetObj, act);
-          }
-        });
-        box.appendChild(btn);
-      });
-
-      pieMenu.style.left = Math.min(window.innerWidth - 240, x + 10) + 'px';
-      pieMenu.style.top = Math.min(window.innerHeight - 170, y + 10) + 'px';
-      pieMenu.style.display = 'block';
-    }
-
-    // ==========================================
-    // 14. EKSEKUSI AKSI, KERJA, PET & STORY
-    // ==========================================
-    function cancelCurrentAction() {
-      simState.currentAction = null;
-      simState.actionProgress = 0;
-      simState.pose = 'idle';
-      if (tvScreenMat) tvScreenMat.emissive.set('#000000');
-      renderActionQueue();
-    }
-
-    function startSimAction(obj, act) {
-      if (act.cost && simState.money < act.cost) {
-        showToast('❌ Simoleons (§) tidak cukup!');
-        return;
-      }
-
-      // Pindah lantai otomatis jika furnitur ada di lantai berbeda
-      if (obj.userData && obj.userData.floorLevel && obj.userData.floorLevel !== simState.floorLevel) {
-        switchSimFloor(obj.userData.floorLevel);
-      }
-
-      let dest;
-      if (act.talkToNPC) {
-        const npcPos = act.talkToNPC.rig.root.position;
-        const approach = simState.position.clone().sub(npcPos).normalize();
-        if (approach.lengthSq() < 0.01) approach.set(0, 0, 1);
-        dest = npcPos.clone().add(approach.multiplyScalar(1.25));
-      } else if (act.catchBurglar) {
-        dest = burglarRig.root.position.clone().add(new THREE.Vector3(0, 0, 1.0));
-      } else if (act.petInteract) {
-        dest = petGroup.position.clone().add(new THREE.Vector3(0.7, 0, 0.7));
-      } else if (act.goWorkAction) {
-        dest = new THREE.Vector3(0, 0.0, 17.5);
-      } else {
-        const localOffset = new THREE.Vector3(act.offset ? act.offset[0] : 0, 0, act.offset ? act.offset[1] : 1);
-        localOffset.applyAxisAngle(new THREE.Vector3(0, 1, 0), obj.rotation.y);
-        dest = obj.position.clone().add(localOffset);
-      }
-
-      simState.targetPos = dest;
-      simState.currentAction = { obj, act, started: false };
-      simState.actionProgress = 0;
-      destMarker.position.set(dest.x, dest.y + 0.03, dest.z);
-      destMarker.visible = true;
-      renderActionQueue();
-    }
-
-    function renderActionQueue() {
-      const box = document.getElementById('action-queue-box');
-      if (!simState.currentAction) {
-        box.style.display = 'none';
-        return;
-      }
-      box.style.display = 'block';
-      const { obj, act, started } = simState.currentAction;
-      const pct = started && act.duration ? Math.min(100, Math.round((simState.actionProgress / act.duration) * 100)) : 0;
-
-      box.innerHTML = `
-        <div class="action-card">
-          <div class="action-icon">${act.icon}</div>
-          <div class="action-info">
-            <div class="action-title">${act.label || obj.userData.interactiveName}</div>
-            <div class="action-sub">${started ? `Berlangsung... (${pct}%)` : 'Menuju lokasi...'}</div>
-          </div>
-          <button class="cancel-btn" title="Batalkan">✕</button>
-        </div>
-      `;
-      box.querySelector('.cancel-btn').addEventListener('click', cancelCurrentAction);
-    }
-
-    function addHobbyXP(hobbyKey, amount) {
-      const h = simState.hobbies[hobbyKey];
-      if (!h) return;
-      h.xp += amount;
-      while (h.xp >= 100 && h.level < 10) {
-        h.xp -= 100;
-        h.level += 1;
-        soundFX.playCoin();
-        showToast(`🎉 Naik Level! Hobi ${hobbyKey.toUpperCase()} mencapai Level ${h.level}!`);
-      }
-      ['music', 'coding', 'painting', 'fitness'].forEach(k => {
-        document.getElementById('lvl-' + k).textContent = 'Lv. ' + simState.hobbies[k].level;
-        document.getElementById('xp-' + k).style.width = Math.min(100, simState.hobbies[k].xp) + '%';
-      });
-    }
-
-    function checkStoryProgress() {
-      if (worldState.gameMode !== 'story' || currentStoryIdx >= storyChapters.length) return;
-      const q = storyChapters[currentStoryIdx];
-      if (q.check()) {
-        simState.money += q.reward;
-        soundFX.playCoin();
-        showToast(`🏆 Misi Selesai: "${q.title}" (+§ ${q.reward})`);
-        currentStoryIdx += 1;
-        refreshModeTrackerUI();
-      }
-    }
-
-    document.querySelectorAll('.speed-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        soundFX.playClick();
-        document.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        worldState.gameSpeed = Number(btn.dataset.speed);
-      });
-    });
-
-    function updateHUD() {
-      const n = simState.needs;
-      const keys = ['energy', 'hunger', 'hygiene', 'bladder', 'fun', 'social'];
-      let sum = 0;
-
-      keys.forEach(k => {
-        const v = Math.max(0, Math.min(100, n[k]));
-        sum += v;
-        document.getElementById('val-' + k).textContent = Math.round(v) + '%';
-        const bar = document.getElementById('bar-' + k);
-        bar.style.width = v + '%';
-        bar.style.background = v > 55
-          ? 'linear-gradient(90deg, #27ae60, #5eff6c)'
-          : v > 25
-            ? 'linear-gradient(90deg, #f39c12, #ffe047)'
-            : 'linear-gradient(90deg, #c0392b, #ff5e4d)';
-      });
-
-      const avg = sum / keys.length;
-      const moodEl = document.getElementById('hud-mood');
-      const hudPlumbob = document.getElementById('hud-plumbob');
-
-      if (simState.atWork) {
-        moodEl.textContent = 'Status: Sedang Bekerja di Kantor...';
-        moodEl.style.color = '#7ec8ff';
-      } else if (avg > 62) {
-        moodEl.textContent = 'Suasana Hati: Sangat Bahagia';
-        moodEl.style.color = '#88ff82';
-        hudPlumbob.style.background = 'linear-gradient(135deg, #7dff6b, #1ca628)';
-        plumbobMat.color.set('#4dff47');
-      } else if (avg > 34) {
-        moodEl.textContent = 'Suasana Hati: Cukup Baik';
-        moodEl.style.color = '#ffe56b';
-        hudPlumbob.style.background = 'linear-gradient(135deg, #fff06b, #d4a017)';
-        plumbobMat.color.set('#ffdf38');
-      } else {
-        moodEl.textContent = 'Suasana Hati: Lelah / Butuh Istirahat';
-        moodEl.style.color = '#ff7b6b';
-        hudPlumbob.style.background = 'linear-gradient(135deg, #ff796b, #b82518)';
-        plumbobMat.color.set('#ff4738');
-      }
-
-      document.getElementById('hud-money').textContent = '§ ' + simState.money.toLocaleString('id-ID');
-      const hrs = Math.floor(worldState.minutes / 60) % 24;
-      const mins = Math.floor(worldState.minutes % 60);
-      document.getElementById('hud-clock').textContent = `Hari ${worldState.day} • ${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}`;
-    }
-
-    // ==========================================
-    // 15. ANIMASI & GAME LOOP UTAMA
-    // ==========================================
-    function animateRig(rig, pose, t, activeSpeed) {
-      rig.body.position.set(0, 0, 0);
-      rig.body.rotation.set(0, 0, 0);
-      rig.leftArm.pivot.rotation.set(0, 0, 0);
-      rig.rightArm.pivot.rotation.set(0, 0, 0);
-      rig.leftLeg.pivot.rotation.set(0, 0, 0);
-      rig.rightLeg.pivot.rotation.set(0, 0, 0);
-
-      if (pose === 'walk' && activeSpeed > 0) {
-        const s = Math.sin(t * 10) * 0.6;
-        rig.leftLeg.pivot.rotation.x = s;
-        rig.rightLeg.pivot.rotation.x = -s;
-        rig.leftArm.pivot.rotation.x = -s * 0.65;
-        rig.rightArm.pivot.rotation.x = s * 0.65;
-        rig.body.position.y = Math.abs(Math.sin(t * 10)) * 0.05;
-      } else if (pose === 'sit') {
-        rig.body.position.y = -0.34;
-        rig.leftLeg.pivot.rotation.x = -Math.PI / 2;
-        rig.rightLeg.pivot.rotation.x = -Math.PI / 2;
-        rig.leftArm.pivot.rotation.x = -0.45 + Math.sin(t * 9) * 0.08;
-        rig.rightArm.pivot.rotation.x = -0.45 - Math.sin(t * 9) * 0.08;
-      } else if (pose === 'play_music' && activeSpeed > 0) {
-        rig.leftArm.pivot.rotation.x = -0.75 + Math.sin(t * 12) * 0.16;
-        rig.rightArm.pivot.rotation.x = -0.75 - Math.cos(t * 12) * 0.16;
-      } else if (pose === 'sleep') {
-        rig.body.position.set(-1.3, 0.78, 0);
-        rig.body.rotation.z = Math.PI / 2;
-      } else if (pose === 'shower' && activeSpeed > 0) {
-        rig.body.rotation.y = Math.sin(t * 4) * 0.35;
-        rig.leftArm.pivot.rotation.x = -0.6 + Math.sin(t * 8) * 0.2;
-        rig.rightArm.pivot.rotation.x = -0.6 - Math.sin(t * 8) * 0.2;
-      } else if (pose === 'talk' && activeSpeed > 0) {
-        rig.leftArm.pivot.rotation.x = -0.4 + Math.sin(t * 6) * 0.25;
-        rig.rightArm.pivot.rotation.x = -0.5 - Math.cos(t * 6) * 0.25;
-      } else {
-        rig.body.position.y = Math.sin(t * 2.5) * 0.018;
-      }
-    }
-
-    const clock = new THREE.Clock();
-
-    function animate() {
-      requestAnimationFrame(animate);
-
-      const rawDt = Math.min(clock.getDelta(), 0.1);
-      const elapsed = clock.getElapsedTime();
-      const simDt = rawDt * worldState.gameSpeed;
-
-      plumbobGroup.rotation.y += rawDt * 2.3;
-      plumbobGroup.position.y = 2.4 + Math.sin(elapsed * 3.5) * 0.05;
-
-      // Kamera Panorama di Opening Screen
-      if (simState.inMenu) {
-        setHouseViewMode('exterior');
-        playerRig.root.position.copy(simState.position);
-        animateRig(playerRig, 'idle', elapsed, 1);
-        const angle = elapsed * 0.2;
-        camera.position.set(Math.sin(angle) * 23, 11.5, Math.cos(angle) * 23);
-        camera.lookAt(0, 2.2, 1.5);
-        renderer.render(scene, camera);
-        return;
-      }
-
-      // Kamera Close-Up di Create-A-Sim
-      if (simState.inCAS) {
-        playerRig.root.position.copy(simState.position);
-        playerRig.root.rotation.y = Math.sin(elapsed * 0.8) * 0.35;
-        animateRig(playerRig, 'idle', elapsed, 1);
-        const camGoal = simState.position.clone().add(new THREE.Vector3(0.95, 1.48, 2.65));
-        camera.position.lerp(camGoal, 0.12);
-        camera.lookAt(simState.position.x - 0.36, simState.position.y + 1.25, simState.position.z);
-        renderer.render(scene, camera);
-        return;
-      }
-
-      // Update Waktu, Cahaya & Needs
-      if (worldState.gameSpeed > 0) {
-        worldState.minutes += simDt * 3.5;
-        if (worldState.minutes >= 24 * 60) {
-          worldState.minutes -= 24 * 60;
-          worldState.day += 1;
-        }
-
-        const hour = (worldState.minutes / 60) % 24;
-        const isNight = hour < 6 || hour >= 19;
-        scene.background.lerp(new THREE.Color(isNight ? '#132238' : '#78c5ff'), 0.02);
-        scene.fog.color.lerp(new THREE.Color(isNight ? '#132238' : '#88ceff'), 0.02);
-        sunLight.intensity = THREE.MathUtils.lerp(sunLight.intensity, isNight ? 0.3 : 1.15, 0.02);
-
-        if (!simState.atWork) {
-          const activeDrain = simState.pose !== 'idle' ? 1.5 : 0.85;
-          simState.needs.energy = Math.max(0, simState.needs.energy - simDt * 1.1 * activeDrain);
-          simState.needs.hunger = Math.max(0, simState.needs.hunger - simDt * 0.72);
-          simState.needs.hygiene = Math.max(0, simState.needs.hygiene - simDt * 0.55);
-          simState.needs.bladder = Math.max(0, simState.needs.bladder - simDt * 0.65);
-          simState.needs.fun = Math.max(0, simState.needs.fun - simDt * 0.62);
-          simState.needs.social = Math.max(0, simState.needs.social - simDt * 0.48);
-        }
-
-        // Update Tamu (Berkunjung & Pulang ke Rumahnya)
-        npcs.forEach(npc => {
-          if (npc.isTalking) {
-            animateRig(npc.rig, 'talk', elapsed, 1);
-            return;
-          }
-
-          if (npc.state === 'visiting') {
-            npc.visitTimer -= simDt;
-            if (npc.visitTimer <= 0) {
-              npc.state = 'leaving';
-              showToast(`👋 ${npc.name} sudah selesai bertamu dan pulang ke rumahnya.`);
-              return;
-            }
-            const spot = npc.visitSpots[npc.spotIdx];
-            const diff = spot.clone().sub(npc.rig.root.position);
-            diff.y = 0;
-            if (diff.length() > 0.16) {
-              const dir = diff.normalize();
-              npc.rig.root.position.add(dir.multiplyScalar(simDt * 1.6));
-              npc.rig.root.rotation.y = Math.atan2(dir.x, dir.z);
-              animateRig(npc.rig, 'walk', elapsed, 1);
-            } else {
-              animateRig(npc.rig, 'idle', elapsed, 1);
-              npc.waitTimer -= simDt;
-              if (npc.waitTimer <= 0) {
-                npc.waitTimer = 3 + Math.random() * 4;
-                npc.spotIdx = (npc.spotIdx + 1) % npc.visitSpots.length;
-              }
-            }
-          } else if (npc.state === 'leaving') {
-            const diff = npc.homeSpawn.clone().sub(npc.rig.root.position);
-            diff.y = 0;
-            if (diff.length() > 0.3) {
-              const dir = diff.normalize();
-              npc.rig.root.position.add(dir.multiplyScalar(simDt * 2.2));
-              npc.rig.root.rotation.y = Math.atan2(dir.x, dir.z);
-              animateRig(npc.rig, 'walk', elapsed, 1);
-            } else {
-              npc.rig.root.visible = false;
-              npc.state = 'away';
-              npc.awayTimer = 25;
-            }
-          } else if (npc.state === 'away') {
-            npc.awayTimer -= simDt;
-            if (npc.awayTimer <= 0) {
-              npc.rig.root.visible = true;
-              npc.state = 'arriving';
-              showToast(`🚶 ${npc.name} datang berkunjung kembali ke rumahmu!`);
-            }
-          } else if (npc.state === 'arriving') {
-            const target = npc.visitSpots[0];
-            const diff = target.clone().sub(npc.rig.root.position);
-            diff.y = 0;
-            if (diff.length() > 0.2) {
-              const dir = diff.normalize();
-              npc.rig.root.position.add(dir.multiplyScalar(simDt * 2.0));
-              npc.rig.root.rotation.y = Math.atan2(dir.x, dir.z);
-              animateRig(npc.rig, 'walk', elapsed, 1);
-            } else {
-              npc.state = 'visiting';
-              npc.visitTimer = 60;
-            }
-          }
-        });
-
-        // Update Copet / Pencuri
-        if (!burglarState.active) {
-          burglarState.nextSpawnCooldown -= simDt;
-          if (burglarState.nextSpawnCooldown <= 0) {
-            burglarState.nextSpawnCooldown = 65;
-            spawnBurglar();
-          }
-        } else {
-          if (burglarState.phase === 'sneak_in') {
-            const target = new THREE.Vector3(-1.2, 0.16, 1.2);
-            const diff = target.clone().sub(burglarRig.root.position);
-            diff.y = 0;
-            if (diff.length() > 0.35) {
-              const dir = diff.normalize();
-              burglarRig.root.position.add(dir.multiplyScalar(simDt * 1.85));
-              burglarRig.root.rotation.y = Math.atan2(dir.x, dir.z);
-              animateRig(burglarRig, 'walk', elapsed, 1);
-            } else {
-              burglarState.phase = 'stealing';
-              burglarState.stealTimer = 8;
-            }
-          } else if (burglarState.phase === 'stealing') {
-            animateRig(burglarRig, 'talk', elapsed, 1);
-            burglarState.stealTimer -= simDt;
-            if (burglarState.stealTimer <= 0) {
-              const stolen = Math.min(simState.money, 250);
-              simState.money -= stolen;
-              burglarState.phase = 'fleeing';
-              document.getElementById('burglar-alert').style.display = 'none';
-              showToast(`😱 Copet berhasil mencuri § ${stolen} dan kabur!`);
-            }
-          } else if (burglarState.phase === 'fleeing') {
-            const exit = new THREE.Vector3(24, 0.0, 18.0);
-            const diff = exit.clone().sub(burglarRig.root.position);
-            diff.y = 0;
-            if (diff.length() > 0.5) {
-              const dir = diff.normalize();
-              burglarRig.root.position.add(dir.multiplyScalar(simDt * 4.2));
-              burglarRig.root.rotation.y = Math.atan2(dir.x, dir.z);
-              animateRig(burglarRig, 'walk', elapsed, 1);
-            } else {
-              burglarRig.root.visible = false;
-              burglarState.active = false;
-            }
-          }
-        }
-
-        // Update Hewan Peliharaan (Mengikuti Pemilik)
-        if (petState.active) {
-          const desired = simState.position.clone().add(new THREE.Vector3(-0.95, 0, 0.75));
-          const diff = desired.clone().sub(petState.position);
-          diff.y = 0;
-          if (diff.length() > 0.55) {
-            const dir = diff.normalize();
-            petState.position.add(dir.multiplyScalar(simDt * 2.9));
-            petState.rotationY = Math.atan2(dir.x, dir.z);
-            petGroup.position.set(petState.position.x, simState.position.y + Math.abs(Math.sin(elapsed * 14)) * 0.04, petState.position.z);
-          } else {
-            petGroup.position.set(petState.position.x, simState.position.y, petState.position.z);
-          }
-          petGroup.rotation.y = petState.rotationY;
-        }
-      }
-
-      // Status Sedang Bekerja di Kantor
-      if (simState.atWork && worldState.gameSpeed > 0) {
-        simState.workTimer -= simDt;
-        if (simState.workTimer <= 0) {
-          simState.atWork = false;
-          playerRig.root.visible = true;
-          simState.position.set(0, 0.16, 4.8);
-          simState.floorLevel = 1;
-
-          const c = simState.career;
-          c.xp += 50;
-          let promoMsg = '';
-          if (c.xp >= 100 && c.level < 5) {
-            c.xp = 0;
-            c.level += 1;
-            c.salary += 140;
-            promoMsg = ` • NAIK JABATAN Lv.${c.level}!`;
-          }
-          simState.money += c.salary;
-          simState.needs.energy = Math.max(10, simState.needs.energy - 22);
-          careerShiftsDone += 1;
-          soundFX.playCoin();
-          renderCareerPanel();
-          showToast(`💼 Pulang Kerja! Gaji +§ ${c.salary}${promoMsg}`);
-          checkStoryProgress();
-        }
-        updateHUD();
-        renderer.render(scene, camera);
-        return;
-      }
-
-      // Pergerakan Sim Utama
-      if (simState.targetPos && worldState.gameSpeed > 0) {
-        const diff = simState.targetPos.clone().sub(simState.position);
-        diff.y = 0;
-        const dist = diff.length();
-
-        if (dist > 0.15) {
-          simState.pose = 'walk';
-          const dir = diff.normalize();
-          simState.position.add(dir.multiplyScalar(Math.min(dist, simDt * 3.9)));
-          simState.rotationY = Math.atan2(dir.x, dir.z);
-        } else {
-          simState.position.copy(simState.targetPos);
-          simState.targetPos = null;
-          destMarker.visible = false;
-
-          if (simState.currentAction) {
-            const { obj, act } = simState.currentAction;
-            if (act.talkToNPC) {
-              const npcRef = act.talkToNPC;
-              const isJoke = !!act.jokeMode;
-              cancelCurrentAction();
-              openNPCDialogue(npcRef, isJoke);
-            } else if (act.catchBurglar) {
-              cancelCurrentAction();
-              resolveBurglarCaught();
-            } else if (act.petInteract) {
-              cancelCurrentAction();
-              soundFX.playPetSound(petState.species);
-              if (act.petInteract === 'feed') {
-                simState.money = Math.max(0, simState.money - 10);
-                showToast(`🍖 ${petState.name} makan dengan lahap!`);
-              } else {
-                simState.needs.fun = Math.min(100, simState.needs.fun + 30);
-                simState.needs.social = Math.min(100, simState.needs.social + 25);
-                showToast(`🤗 Kamu mengelus ${petState.name}! (+Hiburan, +Sosial)`);
-              }
-            } else if (act.goWorkAction) {
-              cancelCurrentAction();
-              simState.atWork = true;
-              simState.workTimer = 5.0;
-              playerRig.root.visible = false;
-              showToast(`🚗 ${simState.name} berangkat kerja sebagai ${simState.career.title}...`);
-            } else {
-              if (act.cost) simState.money -= act.cost;
-              simState.currentAction.started = true;
-              simState.pose = act.pose || 'idle';
-              if (act.tvOn && tvScreenMat) tvScreenMat.emissive.set('#2894ff');
-              if (act.face) {
-                simState.rotationY = Math.atan2(act.face[0] - simState.position.x, act.face[1] - simState.position.z);
-              } else {
-                simState.rotationY = Math.atan2(obj.position.x - simState.position.x, obj.position.z - simState.position.z);
-              }
-              renderActionQueue();
-            }
-          } else {
-            simState.pose = 'idle';
-          }
-        }
-      }
-
-      // Eksekusi Aktivitas Berlangsung
-      if (simState.currentAction && simState.currentAction.started && worldState.gameSpeed > 0) {
-        const { act } = simState.currentAction;
-        simState.actionProgress += simDt;
-
-        if (act.effect) {
-          const rate = simDt / act.duration;
-          Object.keys(act.effect).forEach(k => {
-            simState.needs[k] = Math.max(0, Math.min(100, simState.needs[k] + act.effect[k] * rate));
-          });
-        }
-
-        if (Math.floor(simState.actionProgress * 4) !== Math.floor((simState.actionProgress - simDt) * 4)) {
-          renderActionQueue();
-        }
-
-        if (simState.actionProgress >= act.duration) {
-          if (act.hobby && act.xpGain) addHobbyXP(act.hobby, act.xpGain);
-          if (act.earn) {
-            const totalEarn = act.earn + (simState.hobbies[act.hobby] ? simState.hobbies[act.hobby].level * 25 : 0);
-            simState.money += totalEarn;
-            soundFX.playCoin();
-            showToast(`💵 Penghasilan Hobi: +§ ${totalEarn}!`);
-          }
-          cancelCurrentAction();
-        }
-      }
-
-      playerRig.root.position.copy(simState.position);
-      playerRig.root.rotation.y = simState.rotationY;
-      animateRig(playerRig, simState.pose, elapsed, worldState.gameSpeed);
-
-      if (worldState.followSim) {
-        worldState.cameraTarget.lerp(new THREE.Vector3(simState.position.x, simState.position.y + 1.2, simState.position.z), 0.08);
-      }
-
-      const camX = worldState.cameraTarget.x + worldState.cameraDistance * Math.sin(worldState.cameraYaw) * Math.cos(worldState.cameraPitch);
-      const camY = worldState.cameraTarget.y + worldState.cameraDistance * Math.sin(worldState.cameraPitch);
-      const camZ = worldState.cameraTarget.z + worldState.cameraDistance * Math.cos(worldState.cameraYaw) * Math.cos(worldState.cameraPitch);
-      camera.position.set(camX, camY, camZ);
-      camera.lookAt(worldState.cameraTarget);
-
-      updateHUD();
-      renderer.render(scene, camera);
-    }
-
-    window.addEventListener('resize', () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    });
-
-    animate();
-  </script>
-</body>
-</html>
+      if (burgl
