@@ -499,7 +499,7 @@
       <div class="menu-plumbob-wrap"><div class="menu-plumbob"></div></div>
       <div class="studio-tag">✦ PHOTOREALISTIC PBR 3D EDITION ✦</div>
       <h1 class="game-main-title">WILLIAM GAME</h1>
-      <p class="game-sub-title">Simulasi Kehidupan 3D • Karakter Manusia Rigged Asli, Mansion 2 Lantai & Kolam Renang</p>
+      <p class="game-sub-title">Simulasi Kehidupan 3D • Karakter Manusia Kasual Halus, Mansion 2 Lantai & Kolam Renang</p>
 
       <div class="mode-grid">
         <button class="mode-card story" id="btn-mode-story">
@@ -642,8 +642,8 @@
 
   <!-- CREATE-A-SIM (CAS) 3D -->
   <div id="cas-modal">
-    <h1>♦ Create-A-Sim 3D Realistis</h1>
-    <p class="subtitle">Karakter 3D manusia rigged realistis atau unggah file <b>.glb</b> milikmu sendiri.</p>
+    <h1>♦ Create-A-Sim 3D Manusia</h1>
+    <p class="subtitle">Atur tampilan manusia 3D kasual yang natural atau unggah file <b>.glb</b> sendiri.</p>
 
     <div class="cas-group">
       <label for="sim-name-input">Nama Karakter (Bebas)</label>
@@ -651,23 +651,55 @@
     </div>
 
     <div class="cas-group">
-      <label>Pilih Model Karakter 3D Realistis</label>
-      <div class="style-pills" id="model-presets">
-        <button class="style-pill active" data-model="realistic_tactical">👨 Manusia 3D Rigged (Realistis)</button>
-        <button class="style-pill" data-model="realistic_urban">🧥 Manusia 3D Urban Coat</button>
+      <label>Gaya Rambut</label>
+      <div class="style-pills" id="hair-presets">
+        <button class="style-pill active" data-hair="short">✂️ Pendek Rapi</button>
+        <button class="style-pill" data-hair="parted">💇 Belah Samping</button>
+        <button class="style-pill" data-hair="long">👩 Rambut Panjang</button>
       </div>
     </div>
 
     <div class="cas-group">
-      <label>Import File 3D Sendiri (.glb / .gltf)</label>
+      <label>Warna Kulit</label>
+      <div class="swatch-row" id="skin-swatches">
+        <div class="swatch" data-skin="#f5d0b5" style="background:#f5d0b5;" title="Cerah"></div>
+        <div class="swatch selected" data-skin="#e0ac84" style="background:#e0ac84;" title="Kuning Langsat"></div>
+        <div class="swatch" data-skin="#c6885c" style="background:#c6885c;" title="Sawo Matang"></div>
+        <div class="swatch" data-skin="#8d5531" style="background:#8d5531;" title="Cokelat Hangat"></div>
+      </div>
+    </div>
+
+    <div class="cas-group">
+      <label>Warna Rambut</label>
+      <div class="swatch-row" id="hair-swatches">
+        <div class="swatch selected" data-haircol="#1c1917" style="background:#1c1917;"></div>
+        <div class="swatch" data-haircol="#4a3222" style="background:#4a3222;"></div>
+        <div class="swatch" data-haircol="#8c5a2b" style="background:#8c5a2b;"></div>
+        <div class="swatch" data-haircol="#d4af37" style="background:#d4af37;"></div>
+      </div>
+    </div>
+
+    <div class="cas-group">
+      <label>Warna Baju & Celana</label>
+      <div class="swatch-row" id="shirt-swatches" style="margin-bottom:6px;">
+        <div class="swatch selected" data-shirt="#2563eb" style="background:#2563eb;" title="Biru Kasual"></div>
+        <div class="swatch" data-shirt="#1e293b" style="background:#1e293b;" title="Hitam Elegan"></div>
+        <div class="swatch" data-shirt="#dc2626" style="background:#dc2626;" title="Merah Marun"></div>
+        <div class="swatch" data-shirt="#16a34a" style="background:#16a34a;" title="Hijau Zaitun"></div>
+        <div class="swatch" data-shirt="#f8fafc" style="background:#f8fafc;" title="Putih Bersih"></div>
+        <input type="color" id="shirt-custom-color" value="#2563eb" style="width:24px;height:24px;border:none;background:transparent;cursor:pointer;" title="Warna Baju Bebas" />
+      </div>
+      <div class="swatch-row" id="pants-swatches">
+        <div class="swatch selected" data-pants="#1e3a5f" style="background:#1e3a5f;" title="Jeans Biru"></div>
+        <div class="swatch" data-pants="#18181b" style="background:#18181b;" title="Celana Hitam"></div>
+        <div class="swatch" data-pants="#78716c" style="background:#78716c;" title="Chino Abu-abu"></div>
+        <div class="swatch" data-pants="#85583f" style="background:#85583f;" title="Chino Cokelat"></div>
+      </div>
+    </div>
+
+    <div class="cas-group">
+      <label>Opsional: Import Avatar 3D Sendiri (.glb / .gltf)</label>
       <input type="file" id="glb-file-input" accept=".glb,.gltf" style="font-size:11px;color:#cde8ff;width:100%;" />
-    </div>
-
-    <div class="cas-group">
-      <label>Nuansa Warna Pakaian</label>
-      <div class="swatch-row" id="tint-swatches">
-        <input type="color" id="tint-custom-color" value="#ffffff" style="width:26px;height:26px;border:none;background:transparent;cursor:pointer;" title="Pilih Warna" />
-      </div>
     </div>
 
     <button class="cas-confirm-btn" id="confirm-cas-btn">✔ Mulai Kehidupan Sim</button>
@@ -844,12 +876,16 @@
     // ==========================================
     // 2. GAME STATE & CATALOGS
     // ==========================================
-    const REALISTIC_HUMAN_GLB = 'https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/models/gltf/Soldier.glb';
-
     const simState = {
       name: 'William Samadara',
-      modelType: 'realistic_tactical',
-      tintColor: '#ffffff',
+      appearance: {
+        hairStyle: 'short',
+        skinColor: '#e0ac84',
+        hairColor: '#1c1917',
+        shirtColor: '#2563eb',
+        pantsColor: '#1e3a5f',
+        isBurglar: false
+      },
       money: 3000,
       floorLevel: 1,
       needs: { energy: 88, hunger: 86, hygiene: 85, bladder: 90, fun: 80, social: 75 },
@@ -915,6 +951,13 @@
       banner._timer = setTimeout(() => { banner.style.display = 'none'; }, 3800);
     }
 
+    function smoothRotateY(current, target, alpha) {
+      let diff = target - current;
+      while (diff > Math.PI) diff -= Math.PI * 2;
+      while (diff < -Math.PI) diff += Math.PI * 2;
+      return current + diff * Math.min(1, alpha);
+    }
+
     // ==========================================
     // 3. THREE.JS PHOTOREALISTIC PBR RENDERER & IBL
     // ==========================================
@@ -933,7 +976,6 @@
 
     const camera = new THREE.PerspectiveCamera(42, window.innerWidth / window.innerHeight, 0.1, 220);
 
-    // Sky Dome + Realistic PBR Environment Reflection Map (IBL)
     function createSkyAndIBL() {
       const skyCanvas = document.createElement('canvas');
       skyCanvas.width = 1024;
@@ -948,7 +990,6 @@
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, 1024, 512);
 
-      // Soft cirrus clouds & warm sun glow
       const sunGrad = ctx.createRadialGradient(740, 155, 5, 740, 155, 130);
       sunGrad.addColorStop(0, 'rgba(255,250,235,1)');
       sunGrad.addColorStop(0.25, 'rgba(255,236,195,0.55)');
@@ -1020,7 +1061,6 @@
 
       if (type === 'wood') {
         for (let y = 0; y < 512; y += 2) {
-          const wave = Math.sin(y * 0.08) * 10;
           dCtx.fillStyle = y % 4 === 0 ? c2 : c1;
           dCtx.globalAlpha = 0.28;
           dCtx.fillRect(0, y, 512, 2);
@@ -1127,6 +1167,7 @@
     const asphaltPBR = createPBRTextureSet('asphalt', '#353940', '#23262b', 20, 2);
     const sidingPBR = createPBRTextureSet('siding', '#f4efe6', '#d8d0c3', 5, 3);
     const sofaFabricPBR = createPBRTextureSet('fabric', '#8c583a', '#73452b', 6, 6);
+    const clothingWeavePBR = createPBRTextureSet('fabric', '#ffffff', '#e6e9ef', 10, 10);
 
     const floorPBRSets = {
       oak: createPBRTextureSet('wood', '#b8824c', '#7a4d24', 6, 5),
@@ -1142,7 +1183,6 @@
     const roofGroup = new THREE.Group();
     scene.add(secondFloorGroup, roofGroup);
 
-    // Daftar Collider Fisik Solid (Dinding, Kolom, Pagar, Pohon, Tangga, dan Furnitur)
     const solidColliders = [];
 
     function registerBoxCollider(minX, maxX, minZ, maxZ, floor = 1, refMesh = null) {
@@ -1151,7 +1191,6 @@
       return col;
     }
 
-    // Halaman Rumput, Jalan Aspal, Trotoar & Jalur Batu
     const lawnMesh = new THREE.Mesh(
       new THREE.BoxGeometry(92, 0.4, 92),
       new THREE.MeshStandardMaterial({ map: grassPBR.map, bumpMap: grassPBR.bumpMap, bumpScale: 0.04, roughness: 0.88 })
@@ -1190,7 +1229,7 @@
     pathMesh.receiveShadow = true;
     scene.add(pathMesh);
 
-    // Kolam Renang Outdoor di Halaman Kanan (Sangat Realistis dengan Pantulan Langit!)
+    // Kolam Renang Outdoor
     const poolGroup = new THREE.Group();
     poolGroup.position.set(12.2, 0.02, 2.2);
     const poolDeck = new THREE.Mesh(
@@ -1220,7 +1259,6 @@
     interactiveObjects.push(poolGroup);
     scene.add(poolGroup);
 
-    // Lantai & Teras Mansion
     const houseFloorMat = new THREE.MeshStandardMaterial({
       map: floorPBRSets.oak.map,
       bumpMap: floorPBRSets.oak.bumpMap,
@@ -1294,15 +1332,13 @@
       return m;
     }
 
-    // Dinding Lantai 1 (Pintu Depan Terbuka di Tengah x = -1.6 .. 1.6, z = 4.4)
-    addSolidWall(scene, 15.8, 2.75, 0.32, 0, 1.5, -6.9, 1);      // Belakang
-    addSolidWall(scene, 0.32, 2.75, 11.6, -7.8, 1.5, -1.2, 1);  // Kiri
-    addSolidWall(scene, 0.32, 2.75, 11.6, 7.8, 1.5, -1.2, 1);   // Kanan
-    addSolidWall(scene, 6.2, 2.75, 0.32, -4.7, 1.5, 4.4, 1);    // Depan Kiri
-    addSolidWall(scene, 6.2, 2.75, 0.32, 4.7, 1.5, 4.4, 1);     // Depan Kanan
-    addSolidWall(scene, 4.3, 2.5, 0.26, 5.55, 1.38, -2.2, 1);   // Sekat Kamar Mandi (Pintu di x = 2.2 .. 3.4)
+    addSolidWall(scene, 15.8, 2.75, 0.32, 0, 1.5, -6.9, 1);
+    addSolidWall(scene, 0.32, 2.75, 11.6, -7.8, 1.5, -1.2, 1);
+    addSolidWall(scene, 0.32, 2.75, 11.6, 7.8, 1.5, -1.2, 1);
+    addSolidWall(scene, 6.2, 2.75, 0.32, -4.7, 1.5, 4.4, 1);
+    addSolidWall(scene, 6.2, 2.75, 0.32, 4.7, 1.5, 4.4, 1);
+    addSolidWall(scene, 4.3, 2.5, 0.26, 5.55, 1.38, -2.2, 1);
 
-    // Kusen & Daun Pintu Depan Terbuka Elegan
     const doorHeader = new THREE.Mesh(new THREE.BoxGeometry(3.3, 0.45, 0.38), whiteTrimMat);
     doorHeader.position.set(0, 2.65, 4.4);
     const openDoorLeaf = new THREE.Mesh(new THREE.BoxGeometry(0.08, 2.35, 1.25), new THREE.MeshStandardMaterial({ color: '#5c381e', roughness: 0.35 }));
@@ -1361,7 +1397,6 @@
               pos.x += (dx / dist) * overlap;
               pos.z += (dz / dist) * overlap;
             } else {
-              // Dorong keluar ke sisi terdekat jika berada tepat di pusat kotak
               const penLeft = Math.abs(pos.x - c.minX);
               const penRight = Math.abs(c.maxX - pos.x);
               const penTop = Math.abs(pos.z - c.minZ);
@@ -1386,13 +1421,11 @@
         const startBath = startPos.x > 3.3 && startPos.z < -2.2;
         const endBath = endPos.x > 3.3 && endPos.z < -2.2;
 
-        // 1. Keluar dari kamar mandi dulu jika posisi awal di dalam kamar mandi
         if (startBath && !endBath) {
           points.push(new THREE.Vector3(2.7, 0.16, -3.1));
           points.push(new THREE.Vector3(2.7, 0.16, -1.3));
         }
 
-        // 2. Lewati pintu depan utama (x = 0, z = 4.4)
         if (startOutside !== endOutside) {
           if (startOutside) {
             points.push(new THREE.Vector3(0, 0.08, 6.9));
@@ -1405,7 +1438,6 @@
           }
         }
 
-        // 3. Masuk ke pintu kamar mandi jika tujuan di dalam kamar mandi
         if (!startBath && endBath) {
           points.push(new THREE.Vector3(2.7, 0.16, -1.3));
           points.push(new THREE.Vector3(2.7, 0.16, -3.1));
@@ -1415,7 +1447,6 @@
       return points;
     }
 
-    // Tangga Kayu Lantai 1 <-> Lantai 2
     const stairsGroup = new THREE.Group();
     stairsGroup.position.set(-5.8, 0.16, -4.6);
     for (let s = 0; s < 10; s++) {
@@ -1439,9 +1470,6 @@
     interactiveObjects.push(stairsGroup);
     scene.add(stairsGroup);
 
-    // ==========================================
-    // LANTAI 2, JENDELA REALISTIS & ATAP
-    // ==========================================
     const floor2Slab = new THREE.Mesh(new THREE.BoxGeometry(15.6, 0.18, 13.6), houseFloorMat);
     floor2Slab.position.set(0, 2.95, -0.1);
     floor2Slab.receiveShadow = true;
@@ -1510,7 +1538,6 @@
       setHouseViewMode(order[(order.indexOf(worldState.viewMode) + 1) % order.length]);
     });
 
-    // Mailbox & Pepohonan Layered Realistis + Collider Batang
     const mailboxGroup = new THREE.Group();
     mailboxGroup.position.set(-2.1, 0, 14.3);
     const mbPost = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.07, 1.15, 14), whiteTrimMat);
@@ -1723,7 +1750,6 @@
       mesh.rotation.y = rotY;
       mesh.updateMatrixWorld(true);
 
-      // Daftarkan Bounding Box Furnitur ke Collider Fisik agar Karakter Tidak Tembus Furnitur!
       const box = new THREE.Box3().setFromObject(mesh);
       const col = registerBoxCollider(box.min.x - 0.05, box.max.x + 0.05, box.min.z - 0.05, box.max.z + 0.05, floorLevel, mesh);
 
@@ -1773,110 +1799,400 @@
     scene.add(destMarker);
 
     // ==========================================
-    // 7. MODEL KARAKTER MANUSIA 3D REALISTIS (.GLB + SKELETONUTILS)
+    // 7. KARAKTER MANUSIA 3D ANATOMIS HALUS (NATURAL & NON-ROBOTIK)
     // ==========================================
     const gltfLoader = new THREE.GLTFLoader();
-    let cachedBaseGLTF = null;
 
-    class Rigged3DCharacter {
-      constructor(targetHeight = 1.78) {
+    class Human3DCharacter {
+      constructor(appearanceCfg) {
         this.root = new THREE.Group();
-        this.modelContainer = new THREE.Group();
-        this.root.add(this.modelContainer);
+        this.humanRig = new THREE.Group();
+        this.customGLTFGroup = new THREE.Group();
+        this.root.add(this.humanRig, this.customGLTFGroup);
+
+        this.usingCustomGLTF = false;
         this.mixer = null;
         this.actions = {};
         this.currentAnim = null;
-        this.targetHeight = targetHeight;
+        this.animTime = Math.random() * 6;
+        this.parts = {};
+
+        this.buildAnatomicalHuman(appearanceCfg);
       }
 
-      applyGLTFScene(gltf, tintHex = '#ffffff', onDone = null) {
-        while (this.modelContainer.children.length > 0) {
-          this.modelContainer.remove(this.modelContainer.children[0]);
+      buildAnatomicalHuman(cfg) {
+        while (this.humanRig.children.length > 0) {
+          this.humanRig.remove(this.humanRig.children[0]);
+        }
+        this.usingCustomGLTF = false;
+        this.customGLTFGroup.visible = false;
+        this.humanRig.visible = true;
+
+        const skinMat = new THREE.MeshPhysicalMaterial({
+          color: cfg.skinColor || '#e0ac84',
+          roughness: 0.58,
+          metalness: 0.0,
+          clearcoat: 0.1,
+          clearcoatRoughness: 0.65
+        });
+
+        const shirtMat = new THREE.MeshStandardMaterial({
+          color: cfg.shirtColor || '#2563eb',
+          map: clothingWeavePBR.map,
+          bumpMap: clothingWeavePBR.bumpMap,
+          bumpScale: 0.012,
+          roughness: 0.82
+        });
+
+        const pantsMat = new THREE.MeshStandardMaterial({
+          color: cfg.pantsColor || '#1e3a5f',
+          map: clothingWeavePBR.map,
+          bumpMap: clothingWeavePBR.bumpMap,
+          bumpScale: 0.015,
+          roughness: 0.86
+        });
+
+        const hairMat = new THREE.MeshStandardMaterial({
+          color: cfg.hairColor || '#1c1917',
+          roughness: 0.72,
+          metalness: 0.05
+        });
+
+        const shoeUpperMat = new THREE.MeshStandardMaterial({ color: '#1e293b', roughness: 0.55 });
+        const shoeSoleMat = new THREE.MeshStandardMaterial({ color: '#f8fafc', roughness: 0.4 });
+
+        // 1. Pinggul / Pelvis & Sabuk
+        const pelvisGroup = new THREE.Group();
+        pelvisGroup.position.set(0, 0.92, 0);
+        const pelvisMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.148, 0.142, 0.16, 24), pantsMat);
+        const beltMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.152, 0.152, 0.036, 24), new THREE.MeshStandardMaterial({ color: '#18181b', roughness: 0.35 }));
+        beltMesh.position.y = 0.068;
+        const buckle = new THREE.Mesh(new THREE.BoxGeometry(0.045, 0.038, 0.02), new THREE.MeshStandardMaterial({ color: '#cbd5e1', metalness: 0.85, roughness: 0.2 }));
+        buckle.position.set(0, 0.068, 0.148);
+        pelvisGroup.add(pelvisMesh, beltMesh, buckle);
+        this.humanRig.add(pelvisGroup);
+
+        // 2. Kaki Kiri & Kanan dengan Sendi Lutut Halus (LatheGeometry + Sphere Joint)
+        const buildLeg = (sideX) => {
+          const hipPivot = new THREE.Group();
+          hipPivot.position.set(sideX, 0.89, 0);
+
+          const thighPts = [
+            new THREE.Vector2(0.055, -0.39),
+            new THREE.Vector2(0.066, -0.22),
+            new THREE.Vector2(0.078, -0.04),
+            new THREE.Vector2(0.072, 0.03)
+          ];
+          const thighMesh = new THREE.Mesh(new THREE.LatheGeometry(thighPts, 24), pantsMat);
+          const hipCap = new THREE.Mesh(new THREE.SphereGeometry(0.074, 18, 16), pantsMat);
+          hipPivot.add(thighMesh, hipCap);
+
+          const kneePivot = new THREE.Group();
+          kneePivot.position.set(0, -0.39, 0);
+          const kneeCap = new THREE.Mesh(new THREE.SphereGeometry(0.062, 18, 16), pantsMat);
+
+          const calfPts = [
+            new THREE.Vector2(0.046, -0.40),
+            new THREE.Vector2(0.058, -0.20),
+            new THREE.Vector2(0.061, -0.02)
+          ];
+          const calfMesh = new THREE.Mesh(new THREE.LatheGeometry(calfPts, 24), pantsMat);
+
+          // Sepatu Sneakers Natural
+          const shoeGroup = new THREE.Group();
+          shoeGroup.position.set(0, -0.44, 0.035);
+          const sole = new THREE.Mesh(new THREE.BoxGeometry(0.098, 0.028, 0.21), shoeSoleMat);
+          sole.position.y = -0.035;
+          const upper = new THREE.Mesh(new THREE.BoxGeometry(0.092, 0.065, 0.19), shoeUpperMat);
+          upper.position.set(0, 0.005, -0.005);
+          const toe = new THREE.Mesh(new THREE.SphereGeometry(0.046, 16, 12), shoeUpperMat);
+          toe.scale.set(1.0, 0.72, 1.25);
+          toe.position.set(0, -0.004, 0.075);
+          shoeGroup.add(sole, upper, toe);
+
+          kneePivot.add(kneeCap, calfMesh, shoeGroup);
+          hipPivot.add(kneePivot);
+          this.humanRig.add(hipPivot);
+          return { hipPivot, kneePivot };
+        };
+
+        const leftLeg = buildLeg(-0.085);
+        const rightLeg = buildLeg(0.085);
+
+        // 3. Torso / Dada Anatomis (LatheGeometry halus dari pinggang ke bahu)
+        const torsoPivot = new THREE.Group();
+        torsoPivot.position.set(0, 0.98, 0);
+
+        const torsoPts = [
+          new THREE.Vector2(0.142, 0.0),
+          new THREE.Vector2(0.136, 0.12),
+          new THREE.Vector2(0.158, 0.28),
+          new THREE.Vector2(0.176, 0.41),
+          new THREE.Vector2(0.115, 0.47)
+        ];
+        const torsoGeom = new THREE.LatheGeometry(torsoPts, 28);
+        torsoGeom.scale(1.12, 1.0, 0.74);
+        const torsoMesh = new THREE.Mesh(torsoGeom, shirtMat);
+
+        const collar = new THREE.Mesh(
+          new THREE.TorusGeometry(0.072, 0.016, 12, 24),
+          new THREE.MeshStandardMaterial({ color: '#f8fafc', roughness: 0.7 })
+        );
+        collar.rotation.x = Math.PI / 2;
+        collar.position.set(0, 0.465, 0.005);
+        torsoPivot.add(torsoMesh, collar);
+        this.humanRig.add(torsoPivot);
+
+        // 4. Lengan Kiri & Kanan dengan Bahu & Siku Bulat Halus
+        const buildArm = (sideSign) => {
+          const shoulderPivot = new THREE.Group();
+          shoulderPivot.position.set(sideSign * 0.215, 0.415, 0);
+
+          const shoulderJoint = new THREE.Mesh(new THREE.SphereGeometry(0.062, 18, 16), shirtMat);
+          const sleeveMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.056, 0.052, 0.15, 20), shirtMat);
+          sleeveMesh.position.y = -0.075;
+
+          const upperArm = new THREE.Mesh(new THREE.CylinderGeometry(0.046, 0.042, 0.14, 18), skinMat);
+          upperArm.position.y = -0.20;
+
+          const elbowPivot = new THREE.Group();
+          elbowPivot.position.set(0, -0.27, 0);
+          const elbowJoint = new THREE.Mesh(new THREE.SphereGeometry(0.043, 16, 14), skinMat);
+          const forearm = new THREE.Mesh(new THREE.CylinderGeometry(0.042, 0.034, 0.24, 18), skinMat);
+          forearm.position.y = -0.12;
+
+          const hand = new THREE.Mesh(new THREE.SphereGeometry(0.04, 16, 14), skinMat);
+          hand.scale.set(0.78, 1.22, 0.95);
+          hand.position.y = -0.255;
+
+          elbowPivot.add(elbowJoint, forearm, hand);
+          shoulderPivot.add(shoulderJoint, sleeveMesh, upperArm, elbowPivot);
+          torsoPivot.add(shoulderPivot);
+          return { shoulderPivot, elbowPivot };
+        };
+
+        const leftArm = buildArm(-1);
+        const rightArm = buildArm(1);
+
+        // 5. Leher, Kepala Anatomis, Wajah & Rambut Natural
+        const headPivot = new THREE.Group();
+        headPivot.position.set(0, 0.47, 0);
+
+        const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.052, 0.058, 0.11, 20), skinMat);
+        neck.position.y = 0.045;
+
+        const cranium = new THREE.Mesh(new THREE.SphereGeometry(0.116, 28, 24), skinMat);
+        cranium.scale.set(0.88, 1.08, 0.96);
+        cranium.position.set(0, 0.185, 0.005);
+
+        // Telinga
+        [-0.102, 0.102].forEach(ex => {
+          const ear = new THREE.Mesh(new THREE.SphereGeometry(0.022, 12, 10), skinMat);
+          ear.scale.set(0.55, 1.15, 0.85);
+          ear.position.set(ex, 0.18, -0.005);
+          headPivot.add(ear);
+        });
+
+        // Hidung Natural
+        const nose = new THREE.Mesh(new THREE.SphereGeometry(0.017, 14, 12), skinMat);
+        nose.scale.set(0.82, 1.25, 1.15);
+        nose.position.set(0, 0.175, 0.114);
+
+        // Mata + Iris + Kilau Mata
+        const scleraMat = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.15 });
+        const irisMat = new THREE.MeshStandardMaterial({ color: '#2b1d14', roughness: 0.1 });
+        const shineMat = new THREE.MeshBasicMaterial({ color: '#ffffff' });
+        const browMat = new THREE.MeshStandardMaterial({ color: cfg.hairColor || '#1c1917', roughness: 0.8 });
+
+        [-0.038, 0.038].forEach(eyeX => {
+          const eyeWhite = new THREE.Mesh(new THREE.SphereGeometry(0.016, 14, 12), scleraMat);
+          eyeWhite.scale.set(1.15, 0.82, 0.65);
+          eyeWhite.position.set(eyeX, 0.20, 0.101);
+
+          const iris = new THREE.Mesh(new THREE.SphereGeometry(0.0095, 12, 10), irisMat);
+          iris.position.set(eyeX, 0.20, 0.11);
+
+          const shine = new THREE.Mesh(new THREE.SphereGeometry(0.003, 8, 8), shineMat);
+          shine.position.set(eyeX + 0.003, 0.203, 0.117);
+
+          const brow = new THREE.Mesh(new THREE.BoxGeometry(0.034, 0.006, 0.01), browMat);
+          brow.position.set(eyeX, 0.222, 0.103);
+
+          headPivot.add(eyeWhite, iris, shine, brow);
+        });
+
+        // Bibir Natural
+        const mouth = new THREE.Mesh(
+          new THREE.TorusGeometry(0.018, 0.0045, 8, 16, Math.PI),
+          new THREE.MeshStandardMaterial({ color: '#b56565', roughness: 0.55 })
+        );
+        mouth.rotation.z = Math.PI;
+        mouth.position.set(0, 0.145, 0.105);
+
+        // Rambut Berlapis Sesuai Gaya
+        const hairGroup = new THREE.Group();
+        const hairCap = new THREE.Mesh(new THREE.SphereGeometry(0.121, 26, 22, 0, Math.PI * 2, 0, Math.PI * 0.58), hairMat);
+        hairCap.scale.set(0.90, 1.08, 0.99);
+        hairCap.position.set(0, 0.192, -0.002);
+        hairGroup.add(hairCap);
+
+        const hStyle = cfg.hairStyle || 'short';
+        if (hStyle === 'short') {
+          const topCrop = new THREE.Mesh(new THREE.SphereGeometry(0.095, 20, 16), hairMat);
+          topCrop.scale.set(0.95, 0.45, 1.05);
+          topCrop.position.set(0, 0.305, 0.015);
+          hairGroup.add(topCrop);
+        } else if (hStyle === 'parted') {
+          const fringeL = new THREE.Mesh(new THREE.SphereGeometry(0.068, 18, 14), hairMat);
+          fringeL.scale.set(1.1, 0.48, 0.95);
+          fringeL.position.set(-0.035, 0.285, 0.065);
+          const fringeR = new THREE.Mesh(new THREE.SphereGeometry(0.055, 16, 12), hairMat);
+          fringeR.scale.set(0.95, 0.45, 0.9);
+          fringeR.position.set(0.052, 0.28, 0.058);
+          hairGroup.add(fringeL, fringeR);
+        } else if (hStyle === 'long') {
+          const backHair = new THREE.Mesh(new THREE.CylinderGeometry(0.108, 0.125, 0.28, 22), hairMat);
+          backHair.scale.set(0.94, 1.0, 0.85);
+          backHair.position.set(0, 0.07, -0.025);
+          [-0.095, 0.095].forEach(sx => {
+            const sideLock = new THREE.Mesh(new THREE.CylinderGeometry(0.028, 0.032, 0.25, 14), hairMat);
+            sideLock.position.set(sx, 0.08, 0.035);
+            hairGroup.add(sideLock);
+          });
+          hairGroup.add(backHair);
         }
 
-        const clonedScene = THREE.SkeletonUtils.clone(gltf.scene);
-        const box = new THREE.Box3().setFromObject(clonedScene);
-        const size = new THREE.Vector3();
-        box.getSize(size);
-        const scaleFactor = size.y > 0.01 ? (this.targetHeight / size.y) : 1;
-        clonedScene.scale.setScalar(scaleFactor);
+        if (cfg.isBurglar) {
+          const mask = new THREE.Mesh(new THREE.BoxGeometry(0.19, 0.036, 0.06), new THREE.MeshStandardMaterial({ color: '#090a0c', roughness: 0.7 }));
+          mask.position.set(0, 0.20, 0.095);
+          headPivot.add(mask);
+        }
 
-        const scaledBox = new THREE.Box3().setFromObject(clonedScene);
-        const center = new THREE.Vector3();
-        scaledBox.getCenter(center);
-        clonedScene.position.set(-center.x, -scaledBox.min.y, -center.z);
+        headPivot.add(neck, cranium, nose, mouth, hairGroup);
+        torsoPivot.add(headPivot);
 
-        // Soldier.glb menghadap -Z secara default, putar PI agar menghadap +Z sesuai arah jalan
-        clonedScene.rotation.y = Math.PI;
-
-        clonedScene.traverse(child => {
-          if (child.isMesh) {
-            child.castShadow = true;
-            child.receiveShadow = true;
-            if (child.material) {
-              child.material = child.material.clone();
-              child.material.roughness = 0.65;
-              if (tintHex && tintHex !== '#ffffff') {
-                child.material.color.lerp(new THREE.Color(tintHex), 0.32);
-              }
-            }
+        this.parts = { pelvisGroup, torsoPivot, headPivot, leftLeg, rightLeg, leftArm, rightArm };
+        this.humanRig.traverse(c => {
+          if (c.isMesh) {
+            c.castShadow = true;
+            c.receiveShadow = true;
           }
         });
-
-        this.modelContainer.add(clonedScene);
-
-        if (gltf.animations && gltf.animations.length > 0) {
-          this.mixer = new THREE.AnimationMixer(clonedScene);
-          this.actions = {};
-          gltf.animations.forEach(clip => {
-            const n = clip.name.toLowerCase();
-            const act = this.mixer.clipAction(clip);
-            if (n.includes('idle')) this.actions.idle = act;
-            else if (n.includes('walk')) this.actions.walk = act;
-            else if (n.includes('run')) this.actions.run = act;
-          });
-          if (!this.actions.idle) this.actions.idle = this.mixer.clipAction(gltf.animations[0]);
-          if (!this.actions.walk) this.actions.walk = this.actions.idle;
-          this.playAnim('idle');
-        }
-        if (onDone) onDone(this);
       }
 
-      loadFromURL(url, tintHex = '#ffffff', onDone = null) {
-        if (url === REALISTIC_HUMAN_GLB && cachedBaseGLTF) {
-          this.applyGLTFScene(cachedBaseGLTF, tintHex, onDone);
-          return;
-        }
-        gltfLoader.load(url, gltf => {
-          if (url === REALISTIC_HUMAN_GLB) cachedBaseGLTF = gltf;
-          this.applyGLTFScene(gltf, tintHex, onDone);
+      loadCustomGLB(blobUrl) {
+        gltfLoader.load(blobUrl, gltf => {
+          while (this.customGLTFGroup.children.length > 0) {
+            this.customGLTFGroup.remove(this.customGLTFGroup.children[0]);
+          }
+          const model = THREE.SkeletonUtils.clone(gltf.scene);
+          const box = new THREE.Box3().setFromObject(model);
+          const size = new THREE.Vector3();
+          box.getSize(size);
+          const scaleFactor = size.y > 0.01 ? (1.76 / size.y) : 1;
+          model.scale.setScalar(scaleFactor);
+
+          const scaledBox = new THREE.Box3().setFromObject(model);
+          const center = new THREE.Vector3();
+          scaledBox.getCenter(center);
+          model.position.set(-center.x, -scaledBox.min.y, -center.z);
+          model.traverse(c => { if (c.isMesh) { c.castShadow = true; c.receiveShadow = true; } });
+
+          this.customGLTFGroup.add(model);
+          this.humanRig.visible = false;
+          this.customGLTFGroup.visible = true;
+          this.usingCustomGLTF = true;
+
+          if (gltf.animations && gltf.animations.length > 0) {
+            this.mixer = new THREE.AnimationMixer(model);
+            this.actions = {};
+            gltf.animations.forEach(clip => {
+              const n = clip.name.toLowerCase();
+              const act = this.mixer.clipAction(clip);
+              if (n.includes('idle')) this.actions.idle = act;
+              else if (n.includes('walk')) this.actions.walk = act;
+            });
+            if (!this.actions.idle) this.actions.idle = this.mixer.clipAction(gltf.animations[0]);
+            if (!this.actions.walk) this.actions.walk = this.actions.idle;
+            this.actions.idle.play();
+            this.currentAnim = 'idle';
+          }
         });
-      }
-
-      playAnim(name) {
-        if (!this.mixer || !this.actions[name]) return;
-        if (this.currentAnim === name) return;
-        const nextAct = this.actions[name];
-        const prevAct = this.currentAnim ? this.actions[this.currentAnim] : null;
-        if (prevAct && prevAct !== nextAct) prevAct.fadeOut(0.18);
-        nextAct.reset().fadeIn(0.18).play();
-        this.currentAnim = name;
       }
 
       update(dt, isMoving) {
-        if (this.mixer) {
+        if (this.usingCustomGLTF && this.mixer) {
           this.mixer.update(dt);
-          this.playAnim(isMoving ? 'walk' : 'idle');
+          const targetAnim = isMoving ? 'walk' : 'idle';
+          if (this.currentAnim !== targetAnim && this.actions[targetAnim]) {
+            if (this.actions[this.currentAnim]) this.actions[this.currentAnim].fadeOut(0.18);
+            this.actions[targetAnim].reset().fadeIn(0.18).play();
+            this.currentAnim = targetAnim;
+          }
+          return;
+        }
+
+        const p = this.parts;
+        if (!p.torsoPivot) return;
+
+        if (isMoving) {
+          this.animTime += dt * 7.8;
+          const t = this.animTime;
+          const swing = Math.sin(t);
+
+          // Ayunan pinggul & tekukan lutut natural
+          p.leftLeg.hipPivot.rotation.x = swing * 0.52;
+          p.rightLeg.hipPivot.rotation.x = -swing * 0.52;
+          p.leftLeg.kneePivot.rotation.x = Math.max(0, -swing) * 0.68;
+          p.rightLeg.kneePivot.rotation.x = Math.max(0, swing) * 0.68;
+
+          // Ayunan lengan berlawanan kaki + sedikit tekukan siku
+          p.leftArm.shoulderPivot.rotation.x = -swing * 0.44;
+          p.rightArm.shoulderPivot.rotation.x = swing * 0.44;
+          p.leftArm.shoulderPivot.rotation.z = 0.08;
+          p.rightArm.shoulderPivot.rotation.z = -0.08;
+          p.leftArm.elbowPivot.rotation.x = -0.18 - Math.max(0, swing) * 0.28;
+          p.rightArm.elbowPivot.rotation.x = -0.18 - Math.max(0, -swing) * 0.28;
+
+          // Gerakan vertikal & putaran bahu natural saat melangkah
+          const bounce = Math.abs(Math.cos(t)) * 0.028;
+          p.pelvisGroup.position.y = 0.92 + bounce;
+          p.torsoPivot.position.y = 0.98 + bounce;
+          p.torsoPivot.rotation.y = swing * 0.065;
+          p.headPivot.rotation.y = -swing * 0.04;
+        } else {
+          this.animTime += dt * 2.2;
+          const t = this.animTime;
+          const smooth = Math.min(1, dt * 8);
+
+          p.leftLeg.hipPivot.rotation.x += (0 - p.leftLeg.hipPivot.rotation.x) * smooth;
+          p.rightLeg.hipPivot.rotation.x += (0 - p.rightLeg.hipPivot.rotation.x) * smooth;
+          p.leftLeg.kneePivot.rotation.x += (0 - p.leftLeg.kneePivot.rotation.x) * smooth;
+          p.rightLeg.kneePivot.rotation.x += (0 - p.rightLeg.kneePivot.rotation.x) * smooth;
+
+          // Pose berdiri santai natural (bukan kaku lurus)
+          p.leftArm.shoulderPivot.rotation.x += (0.04 - p.leftArm.shoulderPivot.rotation.x) * smooth;
+          p.rightArm.shoulderPivot.rotation.x += (0.04 - p.rightArm.shoulderPivot.rotation.x) * smooth;
+          p.leftArm.shoulderPivot.rotation.z += (0.075 - p.leftArm.shoulderPivot.rotation.z) * smooth;
+          p.rightArm.shoulderPivot.rotation.z += (-0.075 - p.rightArm.shoulderPivot.rotation.z) * smooth;
+          p.leftArm.elbowPivot.rotation.x += (-0.12 - p.leftArm.elbowPivot.rotation.x) * smooth;
+          p.rightArm.elbowPivot.rotation.x += (-0.12 - p.rightArm.elbowPivot.rotation.x) * smooth;
+
+          const breath = Math.sin(t) * 0.008;
+          p.pelvisGroup.position.y += (0.92 - p.pelvisGroup.position.y) * smooth;
+          p.torsoPivot.position.y += (0.98 + breath - p.torsoPivot.position.y) * smooth;
+          p.torsoPivot.rotation.y += (0 - p.torsoPivot.rotation.y) * smooth;
+          p.headPivot.rotation.y = Math.sin(t * 0.55) * 0.09;
         }
       }
     }
 
-    const playerCharacter = new Rigged3DCharacter(1.78);
+    const playerCharacter = new Human3DCharacter(simState.appearance);
     playerCharacter.root.position.copy(simState.position);
     scene.add(playerCharacter.root);
 
     const plumbobGroup = new THREE.Group();
-    plumbobGroup.position.set(0, 2.12, 0);
+    plumbobGroup.position.set(0, 2.08, 0);
     playerCharacter.root.add(plumbobGroup);
 
     const plumbobMat = new THREE.MeshStandardMaterial({ color: '#4dff47', emissive: '#1fa81b', emissiveIntensity: 0.65, roughness: 0.15 });
@@ -1887,12 +2203,10 @@
     botCone.position.y = -0.11;
     plumbobGroup.add(topCone, botCone);
 
-    function reloadPlayerModel(customUrl = null) {
-      const tint = simState.modelType === 'realistic_urban' && simState.tintColor === '#ffffff' ? '#4a607a' : simState.tintColor;
-      playerCharacter.loadFromURL(customUrl || REALISTIC_HUMAN_GLB, tint);
+    function refreshPlayerAppearance() {
+      playerCharacter.buildAnatomicalHuman(simState.appearance);
       document.getElementById('hud-sim-name').textContent = simState.name || 'Sim';
     }
-    reloadPlayerModel();
 
     // ==========================================
     // 8. HEWAN PELIHARAAN 3D
@@ -2001,18 +2315,20 @@
     });
 
     // ==========================================
-    // 9. TAMU BERKUNJUNG (3D RIGGED)
+    // 9. TAMU BERKUNJUNG (MANUSIA 3D KASUAL)
     // ==========================================
     const npcConfigs = [
       {
-        id: 'nadia', name: 'Nadia (Tetangga)', tint: '#e8b4bc',
+        id: 'nadia', name: 'Nadia (Tetangga)',
+        appearance: { hairStyle: 'long', skinColor: '#f3cbb0', hairColor: '#3b2417', shirtColor: '#e06d7a', pantsColor: '#243447' },
         homeSpawn: new THREE.Vector3(18, 0.0, 17.5),
         visitSpots: [new THREE.Vector3(2.3, 0.16, 2.5), new THREE.Vector3(1.5, 0.16, 3.3)],
         relationship: 30, talkedCount: 0,
         greetings: ['Hai! Aku Nadia, tetangga sebelahmu. Rumah 2 lantai dan kolam renangmu keren sekali!', 'Senang main ke rumahmu. Kalau sudah sore aku pamit pulang lewat pintu depan ya!']
       },
       {
-        id: 'praja', name: 'Praja (Rekan Kerja)', tint: '#9ec5e6',
+        id: 'praja', name: 'Praja (Rekan Kerja)',
+        appearance: { hairStyle: 'parted', skinColor: '#d9a37c', hairColor: '#1a1817', shirtColor: '#3b6978', pantsColor: '#2b2d42' },
         homeSpawn: new THREE.Vector3(-18, 0.0, 17.5),
         visitSpots: [new THREE.Vector3(-2.3, 0.16, 2.8), new THREE.Vector3(-1.4, 0.16, 3.5)],
         relationship: 25, talkedCount: 0,
@@ -2021,23 +2337,21 @@
     ];
 
     const npcs = npcConfigs.map((cfg, idx) => {
-      const char3D = new Rigged3DCharacter(1.78);
+      const char3D = new Human3DCharacter(cfg.appearance);
       char3D.root.position.copy(cfg.visitSpots[0]);
       scene.add(char3D.root);
 
       const npcObj = { ...cfg, char3D, state: 'visiting', visitTimer: 65 + idx * 30, awayTimer: 0, spotIdx: 0, waitTimer: 3, isTalking: false };
-      char3D.loadFromURL(REALISTIC_HUMAN_GLB, cfg.tint, () => {
-        char3D.root.userData = {
-          isNPC: true, npcRef: npcObj, interactiveName: cfg.name,
-          actions: [
-            { label: '👋 Samperin & Ngobrol (+Sosial)', icon: '💬', talkToNPC: npcObj },
-            { label: '😄 Ajak Bercanda (+Sosial, +Hiburan)', icon: '😄', talkToNPC: npcObj, jokeMode: true },
-            { label: '🏠 Pamit / Suruh Pulang ke Rumahnya', icon: '🚪', sendHomeNPC: npcObj }
-          ]
-        };
-        char3D.root.traverse(c => { if (c.isMesh) c.userData.parentInteractive = char3D.root; });
-        interactiveObjects.push(char3D.root);
-      });
+      char3D.root.userData = {
+        isNPC: true, npcRef: npcObj, interactiveName: cfg.name,
+        actions: [
+          { label: '👋 Samperin & Ngobrol (+Sosial)', icon: '💬', talkToNPC: npcObj },
+          { label: '😄 Ajak Bercanda (+Sosial, +Hiburan)', icon: '😄', talkToNPC: npcObj, jokeMode: true },
+          { label: '🏠 Pamit / Suruh Pulang ke Rumahnya', icon: '🚪', sendHomeNPC: npcObj }
+        ]
+      };
+      char3D.root.traverse(c => { if (c.isMesh) c.userData.parentInteractive = char3D.root; });
+      interactiveObjects.push(char3D.root);
       return npcObj;
     });
 
@@ -2097,20 +2411,24 @@
     // ==========================================
     // 10. SISTEM COPET / PENCURI (BURGLAR)
     // ==========================================
-    const burglarChar = new Rigged3DCharacter(1.80);
+    const burglarChar = new Human3DCharacter({
+      hairStyle: 'short',
+      skinColor: '#d4a37f',
+      hairColor: '#111111',
+      shirtColor: '#26292e',
+      pantsColor: '#141619',
+      isBurglar: true
+    });
     burglarChar.root.visible = false;
+    burglarChar.root.userData = {
+      interactiveName: '🦹 Copet / Pencuri Menyelinap!',
+      actions: [{ label: '🚨 Tangkap & Usir Copet! (+§ 350 Hadiah)', icon: '🚨', catchBurglar: true }]
+    };
+    burglarChar.root.traverse(c => { if (c.isMesh) c.userData.parentInteractive = burglarChar.root; });
+    interactiveObjects.push(burglarChar.root);
     scene.add(burglarChar.root);
 
     const burglarState = { active: false, phase: 'sneak_in', stealTimer: 0, nextSpawnCooldown: 30 };
-
-    burglarChar.loadFromURL(REALISTIC_HUMAN_GLB, '#2c1515', () => {
-      burglarChar.root.userData = {
-        interactiveName: '🦹 Copet / Pencuri Menyelinap!',
-        actions: [{ label: '🚨 Tangkap & Usir Copet! (+§ 350 Hadiah)', icon: '🚨', catchBurglar: true }]
-      };
-      burglarChar.root.traverse(c => { if (c.isMesh) c.userData.parentInteractive = burglarChar.root; });
-      interactiveObjects.push(burglarChar.root);
-    });
 
     function spawnBurglar() {
       if (burglarState.active) return;
@@ -2154,7 +2472,7 @@
           dir.normalize();
           pos.addScaledVector(dir, 2.3 * dt);
           resolveWallCollisions(pos, 1, 0.4);
-          burglarChar.root.rotation.y = Math.atan2(dir.x, dir.z);
+          burglarChar.root.rotation.y = smoothRotateY(burglarChar.root.rotation.y, Math.atan2(dir.x, dir.z), dt * 10);
           burglarChar.update(dt, true);
         } else if (pos.z <= 2.0) {
           if (worldState.hasSecurityAlarm) {
@@ -2182,7 +2500,7 @@
           dir.normalize();
           pos.addScaledVector(dir, 3.2 * dt);
           resolveWallCollisions(pos, 1, 0.4);
-          burglarChar.root.rotation.y = Math.atan2(dir.x, dir.z);
+          burglarChar.root.rotation.y = smoothRotateY(burglarChar.root.rotation.y, Math.atan2(dir.x, dir.z), dt * 10);
           burglarChar.update(dt, true);
         } else if (pos.x > 15) {
           burglarState.active = false;
@@ -2306,30 +2624,63 @@
     document.getElementById('toggle-career-btn').addEventListener('click', () => { renderCareerDrawer(); toggleDrawer('career-panel'); });
     document.getElementById('toggle-pet-btn').addEventListener('click', () => toggleDrawer('pet-panel'));
 
-    // CAS Listeners
+    // CAS Listeners (Rambut, Kulit, Baju, Celana & Upload .GLB)
     document.getElementById('open-cas-btn').addEventListener('click', () => {
       soundFX.playClick();
       simState.inCAS = true;
       document.getElementById('cas-modal').style.display = 'block';
     });
-    document.querySelectorAll('#model-presets .style-pill').forEach(btn => {
+    document.querySelectorAll('#hair-presets .style-pill').forEach(btn => {
       btn.addEventListener('click', () => {
-        document.querySelectorAll('#model-presets .style-pill').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('#hair-presets .style-pill').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        simState.modelType = btn.dataset.model;
-        reloadPlayerModel();
+        simState.appearance.hairStyle = btn.dataset.hair;
+        refreshPlayerAppearance();
       });
     });
-    document.getElementById('tint-custom-color').addEventListener('input', e => {
-      simState.tintColor = e.target.value;
-      reloadPlayerModel();
+    document.querySelectorAll('#skin-swatches .swatch').forEach(sw => {
+      sw.addEventListener('click', () => {
+        document.querySelectorAll('#skin-swatches .swatch').forEach(s => s.classList.remove('selected'));
+        sw.classList.add('selected');
+        simState.appearance.skinColor = sw.dataset.skin;
+        refreshPlayerAppearance();
+      });
+    });
+    document.querySelectorAll('#hair-swatches .swatch').forEach(sw => {
+      sw.addEventListener('click', () => {
+        document.querySelectorAll('#hair-swatches .swatch').forEach(s => s.classList.remove('selected'));
+        sw.classList.add('selected');
+        simState.appearance.hairColor = sw.dataset.haircol;
+        refreshPlayerAppearance();
+      });
+    });
+    document.querySelectorAll('#shirt-swatches .swatch').forEach(sw => {
+      sw.addEventListener('click', () => {
+        document.querySelectorAll('#shirt-swatches .swatch').forEach(s => s.classList.remove('selected'));
+        sw.classList.add('selected');
+        simState.appearance.shirtColor = sw.dataset.shirt;
+        document.getElementById('shirt-custom-color').value = sw.dataset.shirt;
+        refreshPlayerAppearance();
+      });
+    });
+    document.getElementById('shirt-custom-color').addEventListener('input', e => {
+      simState.appearance.shirtColor = e.target.value;
+      refreshPlayerAppearance();
+    });
+    document.querySelectorAll('#pants-swatches .swatch').forEach(sw => {
+      sw.addEventListener('click', () => {
+        document.querySelectorAll('#pants-swatches .swatch').forEach(s => s.classList.remove('selected'));
+        sw.classList.add('selected');
+        simState.appearance.pantsColor = sw.dataset.pants;
+        refreshPlayerAppearance();
+      });
     });
     document.getElementById('glb-file-input').addEventListener('change', e => {
       const file = e.target.files[0];
       if (!file) return;
       const blobUrl = URL.createObjectURL(file);
-      reloadPlayerModel(blobUrl);
-      showToast(`✅ Berhasil memuat model 3D: ${file.name}`);
+      playerCharacter.loadCustomGLB(blobUrl);
+      showToast(`✅ Berhasil memuat avatar 3D: ${file.name}`);
     });
     document.getElementById('confirm-cas-btn').addEventListener('click', () => {
       soundFX.playClick();
@@ -2457,6 +2808,7 @@
       });
     });
 
+    const keysPressed = {};
     window.addEventListener('keydown', e => {
       keysPressed[e.key.toLowerCase()] = true;
       if (e.key.toLowerCase() === 'r' && worldState.buildMode && ghostMesh) {
@@ -2464,7 +2816,6 @@
         ghostMesh.rotation.y = worldState.ghostRotation;
       }
     });
-    const keysPressed = {};
     window.addEventListener('keyup', e => { keysPressed[e.key.toLowerCase()] = false; });
 
     // ==========================================
@@ -2594,7 +2945,6 @@
       pointer.y = -(e.clientY / window.innerHeight) * 2 + 1;
       raycaster.setFromCamera(pointer, camera);
 
-      // Mode Renovasi: Tempatkan Furnitur Baru
       if (worldState.buildMode && worldState.selectedCatalogItem) {
         const floorY = worldState.viewMode === 'floor2' ? 3.04 : 0.16;
         walkPlane.constant = -floorY;
@@ -2617,7 +2967,6 @@
         return;
       }
 
-      // Cek Klik Objek Interaktif
       const hits = raycaster.intersectObjects(interactiveObjects, true);
       if (hits.length > 0) {
         let obj = hits[0].object;
@@ -2643,7 +2992,6 @@
         }
       }
 
-      // Klik Lantai untuk Berjalan (Otomatis Hindari Tembok & Furnitur)
       document.getElementById('pie-menu').style.display = 'none';
       const activeY = simState.floorLevel === 2 ? 3.04 : 0.16;
       walkPlane.constant = -activeY;
@@ -2756,9 +3104,8 @@
       }
 
       let isMoving = false;
-      const moveSpeed = 3.6;
+      const moveSpeed = 3.5;
 
-      // Kontrol Keyboard WASD / Arrow Langsung dengan Sub-Step Collision
       let kx = 0, kz = 0;
       if (keysPressed['w'] || keysPressed['arrowup']) kz -= 1;
       if (keysPressed['s'] || keysPressed['arrowdown']) kz += 1;
@@ -2777,7 +3124,7 @@
           simState.position.addScaledVector(moveDir, (moveSpeed * dt) / steps);
           resolveWallCollisions(simState.position, simState.floorLevel, 0.42);
         }
-        simState.rotationY = Math.atan2(moveDir.x, moveDir.z);
+        simState.rotationY = smoothRotateY(simState.rotationY, Math.atan2(moveDir.x, moveDir.z), dt * 12);
         isMoving = true;
       } else if (simState.waypoints.length > 0) {
         const wp = simState.waypoints[0];
@@ -2792,7 +3139,7 @@
             simState.position.addScaledVector(diff, (moveSpeed * dt) / steps);
             resolveWallCollisions(simState.position, simState.floorLevel, 0.42);
           }
-          simState.rotationY = Math.atan2(diff.x, diff.z);
+          simState.rotationY = smoothRotateY(simState.rotationY, Math.atan2(diff.x, diff.z), dt * 12);
           isMoving = true;
         } else {
           simState.waypoints.shift();
@@ -2800,7 +3147,6 @@
         }
       }
 
-      // Eksekusi Aksi saat Sudah Sampai di Dekat Objek
       if (!isMoving && simState.currentAction) {
         const { targetObj, act } = simState.currentAction;
         if (!simState.currentAction.arrived) {
@@ -2841,7 +3187,7 @@
             dir.normalize();
             pos.addScaledVector(dir, 1.8 * dt);
             resolveWallCollisions(pos, 1, 0.4);
-            npc.char3D.root.rotation.y = Math.atan2(dir.x, dir.z);
+            npc.char3D.root.rotation.y = smoothRotateY(npc.char3D.root.rotation.y, Math.atan2(dir.x, dir.z), dt * 10);
             npc.char3D.update(dt, true);
           } else {
             npc.char3D.update(dt, false);
@@ -2859,7 +3205,7 @@
             dir.normalize();
             pos.addScaledVector(dir, 2.2 * dt);
             resolveWallCollisions(pos, 1, 0.4);
-            npc.char3D.root.rotation.y = Math.atan2(dir.x, dir.z);
+            npc.char3D.root.rotation.y = smoothRotateY(npc.char3D.root.rotation.y, Math.atan2(dir.x, dir.z), dt * 10);
             npc.char3D.update(dt, true);
           } else if (pos.distanceTo(npc.homeSpawn) < 1.0) {
             npc.state = 'away';
@@ -2881,7 +3227,7 @@
             dir.normalize();
             pos.addScaledVector(dir, 2.1 * dt);
             resolveWallCollisions(pos, 1, 0.4);
-            npc.char3D.root.rotation.y = Math.atan2(dir.x, dir.z);
+            npc.char3D.root.rotation.y = smoothRotateY(npc.char3D.root.rotation.y, Math.atan2(dir.x, dir.z), dt * 10);
             npc.char3D.update(dt, true);
           } else if (pos.z <= 3.6) {
             npc.state = 'visiting';
@@ -2900,7 +3246,7 @@
         dir.normalize();
         petState.position.addScaledVector(dir, 2.7 * dt);
         resolveWallCollisions(petState.position, simState.floorLevel, 0.28);
-        petState.rotationY = Math.atan2(dir.x, dir.z);
+        petState.rotationY = smoothRotateY(petState.rotationY, Math.atan2(dir.x, dir.z), dt * 10);
       }
       petState.position.y = simState.floorLevel === 2 ? 3.04 : (petState.position.z > 6.55 ? 0.02 : 0.16);
       petGroup.position.copy(petState.position);
@@ -2974,7 +3320,7 @@
       const simDt = rawDt * (worldState.gameSpeed || 1);
 
       plumbobGroup.rotation.y += rawDt * 1.8;
-      plumbobGroup.position.y = 2.12 + Math.sin(clock.elapsedTime * 3) * 0.05;
+      plumbobGroup.position.y = 2.08 + Math.sin(clock.elapsedTime * 3) * 0.05;
 
       updatePlayerMovement(simDt);
       updateNPCs(simDt);
@@ -2982,7 +3328,6 @@
       updateBurglar(simDt);
       updateHUDAndNeeds(rawDt);
 
-      // Update Kamera Mengikuti Karakter dengan Smooth Damping
       const desiredTarget = simState.inMenu
         ? new THREE.Vector3(0, 2.2, 1.5)
         : new THREE.Vector3(simState.position.x, simState.position.y + 1.25, simState.position.z);
