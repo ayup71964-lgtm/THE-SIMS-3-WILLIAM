@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WILLIAM GAME - Realistic 3D Life Sim</title>
+  <title>WILLIAM GAME - Realistic 3D Life & Family Sim</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/utils/SkeletonUtils.js"></script>
@@ -166,7 +166,7 @@
       flex-direction: column;
       gap: 8px;
       z-index: 20;
-      max-width: 300px;
+      max-width: 310px;
       pointer-events: none;
     }
 
@@ -227,7 +227,7 @@
       justify-content: flex-end;
       gap: 6px;
       z-index: 25;
-      max-width: 700px;
+      max-width: 760px;
     }
 
     .top-btn {
@@ -244,6 +244,7 @@
     }
     .top-btn:hover { filter: brightness(1.15); transform: translateY(-1px); }
     .top-btn.green { background: linear-gradient(180deg, #35b346, #1c7528); border-color: #9effa9; }
+    .top-btn.pink { background: linear-gradient(180deg, #e84393, #9b1d5a); border-color: #ffb8d9; }
     .top-btn.orange { background: linear-gradient(180deg, #e67e22, #a85308); border-color: #ffd09e; }
     .top-btn.purple { background: linear-gradient(180deg, #8e44ad, #5b2c6f); border-color: #e8daef; }
     .top-btn.active-mode { box-shadow: 0 0 14px #ffe066; border-color: #fff2a6; }
@@ -252,7 +253,7 @@
       position: fixed;
       top: 86px;
       right: 14px;
-      width: 305px;
+      width: 315px;
       max-height: calc(100vh - 210px);
       overflow-y: auto;
       display: none;
@@ -294,6 +295,7 @@
       cursor: pointer;
     }
     .action-mini-btn.secondary { background: linear-gradient(180deg, #2b6cb8, #143d73); border-color: #82caff; }
+    .action-mini-btn.pink { background: linear-gradient(180deg, #e84393, #9b1d5a); border-color: #ffb8d9; }
 
     #hover-tooltip {
       position: fixed;
@@ -319,7 +321,7 @@
       border: 2px solid #8ad0ff;
       border-radius: 16px;
       padding: 10px;
-      min-width: 230px;
+      min-width: 245px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.65);
     }
     #pie-menu-header {
@@ -348,20 +350,21 @@
     }
     .pie-option:last-child { margin-bottom: 0; }
     .pie-option:hover { background: linear-gradient(90deg, #2e8be6, #24b354); border-color: #fff; }
+    .pie-option.romantic:hover { background: linear-gradient(90deg, #e84393, #fd79a8); border-color: #fff; }
 
     #sims3-hud {
       position: fixed;
       bottom: 0;
       left: 50%;
       transform: translateX(-50%);
-      width: min(1020px, 98vw);
+      width: min(1040px, 98vw);
       background: linear-gradient(180deg, rgba(36, 98, 170, 0.96) 0%, rgba(14, 46, 90, 0.98) 60%, rgba(9, 28, 58, 0.99) 100%);
       border: 2px solid #7ecaff;
       border-bottom: none;
       border-radius: 28px 28px 0 0;
       padding: 10px 20px 12px;
       display: none;
-      grid-template-columns: 250px 1fr 215px;
+      grid-template-columns: 270px 1fr 215px;
       gap: 14px;
       align-items: center;
       box-shadow: 0 -6px 28px rgba(0, 0, 0, 0.55);
@@ -381,9 +384,10 @@
       clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
       filter: drop-shadow(0 0 6px #57ff47);
     }
-    .sim-identity h2 { color: #ffffff; font-size: 14.5px; font-weight: 700; max-width: 175px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .sim-identity h2 { color: #ffffff; font-size: 14.5px; font-weight: 700; max-width: 195px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .sim-mood-text { font-size: 11px; font-weight: 600; color: #88ff82; }
-    .sim-job-badge { font-size: 11px; color: #b8e3ff; }
+    .sim-job-badge { font-size: 10.5px; color: #b8e3ff; }
+    .sim-family-badge { font-size: 10.5px; color: #ffb8d9; font-weight: 700; }
     .sim-money { font-size: 12.5px; color: #ffe47a; font-weight: 800; }
 
     .hud-needs {
@@ -458,8 +462,8 @@
     /* NPC Dialogue Modal */
     #dialogue-modal {
       position: fixed;
-      bottom: 118px; left: 50%; transform: translateX(-50%);
-      width: min(550px, 94vw);
+      bottom: 122px; left: 50%; transform: translateX(-50%);
+      width: min(580px, 95vw);
       background: linear-gradient(180deg, rgba(24, 72, 132, 0.97), rgba(11, 34, 68, 0.99));
       border: 2px solid #8ad0ff; border-radius: 20px; padding: 15px 18px; color: #fff;
       box-shadow: 0 14px 40px rgba(0, 0, 0, 0.7);
@@ -472,6 +476,8 @@
     .dlg-choices { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
     .dlg-choice-btn { background: rgba(255, 255, 255, 0.1); border: 1px solid #79c4ff; color: #fff; padding: 8px 10px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; text-align: left; }
     .dlg-choice-btn:hover { background: linear-gradient(90deg, #2b86de, #24b354); border-color: #fff; }
+    .dlg-choice-btn.romance { border-color: #ff9ec7; background: rgba(232, 67, 147, 0.22); }
+    .dlg-choice-btn.romance:hover { background: linear-gradient(90deg, #e84393, #fd79a8); border-color: #fff; }
 
     #toast-banner {
       position: fixed;
@@ -497,22 +503,22 @@
   <div id="start-screen">
     <div class="menu-container">
       <div class="menu-plumbob-wrap"><div class="menu-plumbob"></div></div>
-      <div class="studio-tag">✦ PHOTOREALISTIC PBR 3D EDITION ✦</div>
+      <div class="studio-tag">✦ PHOTOREALISTIC 3D LIFE & FAMILY SIM ✦</div>
       <h1 class="game-main-title">WILLIAM GAME</h1>
-      <p class="game-sub-title">Simulasi Kehidupan 3D • Karakter Manusia Kasual Halus, Mansion 2 Lantai & Kolam Renang</p>
+      <p class="game-sub-title">Simulasi Kehidupan 3D • Wajah Realistis, Animasi Aktivitas & Sensor, Karier, Menikah & Punya Anak</p>
 
       <div class="mode-grid">
         <button class="mode-card story" id="btn-mode-story">
           <span class="mode-icon">📖</span>
           <div class="mode-title">Mode Story</div>
-          <div class="mode-desc">Jalani 5 bab cerita: sambut tamu, lamar karier kerja, adopsi hewan peliharaan, renovasi mansion, dan tangkap copet!</div>
+          <div class="mode-desc">Jalani 6 bab cerita: sambut tamu, meniti karier, adopsi hewan, renovasi mansion, tangkap copet, lalu menikah & punya anak!</div>
           <span class="mode-pill">Modal Awal: § 3,000 • Misi Aktif</span>
         </button>
 
         <button class="mode-card freeplay" id="btn-mode-freeplay">
           <span class="mode-icon">🌍</span>
           <div class="mode-title">Mode Freeplay</div>
-          <div class="mode-desc">Bermain bebas tanpa target misi! Renovasi mansion 2 lantai sesukamu, beli hewan peliharaan, dan jelajahi semua fitur.</div>
+          <div class="mode-desc">Bermain bebas tanpa target misi! Bangun romansa hingga menikah & punya anak, renovasi mansion 2 lantai, dan jelajahi semua fitur.</div>
           <span class="mode-pill">Modal Awal: § 30,000 • Bebas Misi</span>
         </button>
       </div>
@@ -548,6 +554,7 @@
   <!-- TOP RIGHT CONTROLS -->
   <div id="top-right-panel">
     <button class="top-btn green" id="open-cas-btn">👕 Model 3D & Karakter</button>
+    <button class="top-btn pink" id="toggle-family-btn">💍 Relasi & Keluarga</button>
     <button class="top-btn purple" id="toggle-pet-btn">🐾 Hewan Peliharaan</button>
     <button class="top-btn" id="toggle-career-btn">💼 Cari Kerja</button>
     <button class="top-btn orange" id="toggle-build-btn">🔨 Renovasi Rumah</button>
@@ -624,6 +631,23 @@
     </div>
   </div>
 
+  <!-- DRAWER 4: RELASI, PERNIKAHAN & ANAK -->
+  <div id="family-panel" class="glass-panel side-drawer">
+    <h3>💍 Relasi, Pernikahan & Keluarga</h3>
+    <div id="family-status-box" class="job-card" style="border-color:#ff9ec7;">
+      <div class="job-title" id="fam-spouse-label">Status: Lajang (Belum Menikah)</div>
+      <div class="job-meta" id="fam-child-label">Anak: Belum memiliki anak</div>
+      <button class="action-mini-btn pink" id="btn-have-baby" style="display:none;margin-top:5px;">👶 Punya Anak Bersama Pasangan</button>
+    </div>
+    <div id="child-editor-box" class="pet-card" style="display:none;border-color:#9eff9c;">
+      <div class="job-title" style="color:#9eff9c;margin-bottom:5px;">👶 Si Kecil di Rumah</div>
+      <label style="font-size:11px;color:#bce4ff;">Nama Anak:</label>
+      <input type="text" id="child-name-input" class="cas-input" style="margin:3px 0 7px;padding:5px 8px;font-size:12px;" value="Leo Samadara" maxlength="20" />
+      <button class="action-mini-btn secondary" id="btn-call-child">📣 Panggil Anak ke Dekatmu</button>
+    </div>
+    <div id="npc-relations-list"></div>
+  </div>
+
   <div id="hover-tooltip"></div>
 
   <div id="pie-menu">
@@ -643,7 +667,7 @@
   <!-- CREATE-A-SIM (CAS) 3D -->
   <div id="cas-modal">
     <h1>♦ Create-A-Sim 3D Manusia</h1>
-    <p class="subtitle">Atur tampilan manusia 3D kasual yang natural atau unggah file <b>.glb</b> sendiri.</p>
+    <p class="subtitle">Atur wajah, warna kulit realistis, rambut & pakaian atau unggah file <b>.glb</b> sendiri.</p>
 
     <div class="cas-group">
       <label for="sim-name-input">Nama Karakter (Bebas)</label>
@@ -660,12 +684,12 @@
     </div>
 
     <div class="cas-group">
-      <label>Warna Kulit</label>
+      <label>Warna Kulit Alami</label>
       <div class="swatch-row" id="skin-swatches">
-        <div class="swatch" data-skin="#f5d0b5" style="background:#f5d0b5;" title="Cerah"></div>
-        <div class="swatch selected" data-skin="#e0ac84" style="background:#e0ac84;" title="Kuning Langsat"></div>
-        <div class="swatch" data-skin="#c6885c" style="background:#c6885c;" title="Sawo Matang"></div>
-        <div class="swatch" data-skin="#8d5531" style="background:#8d5531;" title="Cokelat Hangat"></div>
+        <div class="swatch" data-skin="#f4c7a8" style="background:#f4c7a8;" title="Cerah Alami"></div>
+        <div class="swatch selected" data-skin="#dfa479" style="background:#dfa479;" title="Kuning Langsat"></div>
+        <div class="swatch" data-skin="#bf7f52" style="background:#bf7f52;" title="Sawo Matang"></div>
+        <div class="swatch" data-skin="#864e2b" style="background:#864e2b;" title="Cokelat Hangat"></div>
       </div>
     </div>
 
@@ -743,6 +767,7 @@
         <h2 id="hud-sim-name">William Samadara</h2>
         <div class="sim-mood-text" id="hud-mood">Suasana Hati: Sangat Bahagia</div>
         <div class="sim-job-badge" id="hud-job">Pekerjaan: Belum Bekerja</div>
+        <div class="sim-family-badge" id="hud-family">Keluarga: Lajang</div>
         <div class="sim-money" id="hud-money">§ 3,000</div>
       </div>
     </div>
@@ -836,6 +861,13 @@
         this.playTone(987.77, 'sine', 0.14, 0.1, now);
         this.playTone(1318.51, 'sine', 0.28, 0.11, now + 0.09);
       }
+      playWeddingFanfare() {
+        if (this.muted || !this.ctx) return;
+        const now = this.ctx.currentTime;
+        [523.25, 659.25, 783.99, 1046.50, 783.99, 1046.50].forEach((f, idx) => {
+          this.playTone(f, 'triangle', 0.28, 0.11, now + idx * 0.16);
+        });
+      }
       playSimlish() {
         if (this.muted || !this.ctx) return;
         const now = this.ctx.currentTime;
@@ -880,7 +912,7 @@
       name: 'William Samadara',
       appearance: {
         hairStyle: 'short',
-        skinColor: '#e0ac84',
+        skinColor: '#dfa479',
         hairColor: '#1c1917',
         shirtColor: '#2563eb',
         pantsColor: '#1e3a5f',
@@ -896,6 +928,7 @@
         fitness: { level: 1, xp: 25 }
       },
       career: null,
+      spouse: null,
       atWork: false,
       workTimer: 0,
       position: new THREE.Vector3(0, 0.16, 2.2),
@@ -936,7 +969,8 @@
       { chapter: 'Bab 2 • Meniti Karier', title: 'Lamar Pekerjaan Pertama', desc: 'Buka menu "💼 Cari Kerja", pilih profesi impianmu, lalu berangkat kerja 1 kali.', reward: 600, check: () => careerShiftsDone >= 1 },
       { chapter: 'Bab 3 • Sahabat Berbulu', title: 'Adopsi Hewan Peliharaan', desc: 'Buka menu "🐾 Hewan Peliharaan" dan adopsi Anjing atau Kucing.', reward: 650, check: () => petState.active },
       { chapter: 'Bab 4 • Mansion 2 Lantai', title: 'Renovasi Rumah Klasik', desc: 'Buka "🔨 Renovasi Rumah", pasang 1 furnitur baru atau ganti lantai/dinding.', reward: 800, check: () => renovationDone },
-      { chapter: 'Bab 5 • Keamanan Lingkungan', title: 'Tangkap & Usir Copet!', desc: 'Saat Copet menyelinap ke rumah, klik si Copet lalu pilih "🚨 Tangkap & Usir Copet!".', reward: 1200, check: () => burglarsCaught >= 1 }
+      { chapter: 'Bab 5 • Keamanan Lingkungan', title: 'Tangkap & Usir Copet!', desc: 'Saat Copet menyelinap ke rumah, klik si Copet lalu pilih "🚨 Tangkap & Usir Copet!".', reward: 1200, check: () => burglarsCaught >= 1 },
+      { chapter: 'Bab 6 • Membangun Keluarga', title: 'Menikah & Punya Anak', desc: 'Tingkatkan hubungan dengan teman hingga bisa dilamar menikah, lalu punya anak bersama pasangan!', reward: 2000, check: () => simState.spouse !== null && childState.active }
     ];
     let currentStoryIdx = 0;
     let renovationDone = false;
@@ -948,7 +982,7 @@
       banner.textContent = msg;
       banner.style.display = 'block';
       clearTimeout(banner._timer);
-      banner._timer = setTimeout(() => { banner.style.display = 'none'; }, 3800);
+      banner._timer = setTimeout(() => { banner.style.display = 'none'; }, 4000);
     }
 
     function smoothRotateY(current, target, alpha) {
@@ -1044,7 +1078,7 @@
     scene.add(indoorLight1, indoorLight2);
 
     // ==========================================
-    // 4. HIGH-RES PBR DIFFUSE + BUMP TEXTURES (512x512)
+    // 4. HIGH-RES PBR DIFFUSE + BUMP + ORGANIC SKIN TEXTURES
     // ==========================================
     function createPBRTextureSet(type, c1, c2, repeatX = 4, repeatY = 4) {
       const diffCanvas = document.createElement('canvas');
@@ -1150,6 +1184,28 @@
           bCtx.fillStyle = Math.random() > 0.5 ? '#a0a0a0' : '#505050';
           bCtx.fillRect(ax, ay, 2, 2);
         }
+      } else if (type === 'skin') {
+        // Pori-pori kulit organik dan variasi rona alami manusia
+        for (let i = 0; i < 9000; i++) {
+          const sx = Math.random() * 512;
+          const sy = Math.random() * 512;
+          dCtx.fillStyle = Math.random() > 0.5 ? 'rgba(255, 224, 200, 0.09)' : 'rgba(165, 88, 62, 0.08)';
+          dCtx.fillRect(sx, sy, 2, 2);
+          bCtx.fillStyle = Math.random() > 0.5 ? '#878787' : '#797979';
+          bCtx.fillRect(sx, sy, 1, 1);
+        }
+        // Rona pipi hangat alami di area tengah-samping UV
+        const cheekL = dCtx.createRadialGradient(180, 290, 6, 180, 290, 58);
+        cheekL.addColorStop(0, 'rgba(220, 95, 85, 0.16)');
+        cheekL.addColorStop(1, 'rgba(220, 95, 85, 0)');
+        dCtx.fillStyle = cheekL;
+        dCtx.fillRect(0, 0, 512, 512);
+
+        const cheekR = dCtx.createRadialGradient(332, 290, 6, 332, 290, 58);
+        cheekR.addColorStop(0, 'rgba(220, 95, 85, 0.16)');
+        cheekR.addColorStop(1, 'rgba(220, 95, 85, 0)');
+        dCtx.fillStyle = cheekR;
+        dCtx.fillRect(0, 0, 512, 512);
       }
 
       const map = new THREE.CanvasTexture(diffCanvas);
@@ -1168,6 +1224,7 @@
     const sidingPBR = createPBRTextureSet('siding', '#f4efe6', '#d8d0c3', 5, 3);
     const sofaFabricPBR = createPBRTextureSet('fabric', '#8c583a', '#73452b', 6, 6);
     const clothingWeavePBR = createPBRTextureSet('fabric', '#ffffff', '#e6e9ef', 10, 10);
+    const organicSkinPBR = createPBRTextureSet('skin', '#ffffff', '#f2dfd3', 1, 1);
 
     const floorPBRSets = {
       oak: createPBRTextureSet('wood', '#b8824c', '#7a4d24', 6, 5),
@@ -1725,19 +1782,19 @@
     }
 
     const furnitureActionPresets = {
-      bed: [{ label: '😴 Tidur Pulihkan Stamina (+Stamina)', icon: '😴', offset: [1.55, 0], duration: 4.0, effect: { energy: 85, fun: 10 } }],
-      sofa: [{ label: '📺 Nonton TV Santai (+Hiburan)', icon: '📺', offset: [0.95, 0], face: [-1.1, 1.2], duration: 3.8, effect: { fun: 45, energy: 15 }, tvOn: true }],
+      bed: [{ label: '😴 Tidur di Kasur (+Stamina)', icon: '😴', offset: [1.55, 0], lieOnBed: true, duration: 4.5, effect: { energy: 85, fun: 10 } }],
+      sofa: [{ label: '📺 Duduk & Nonton TV (+Hiburan)', icon: '📺', offset: [0.95, 0], sitOnSofa: true, face: [-1.1, 1.2], duration: 4.0, effect: { fun: 45, energy: 15 }, tvOn: true }],
       tv: [{ label: '🎬 Nonton Film Seru (+Hiburan)', icon: '🎬', offset: [-2.2, 0], face: [-1.1, 1.2], duration: 3.8, effect: { fun: 50 }, tvOn: true }],
-      fridge: [{ label: '🍳 Masak & Makan Enak (+Lapar)', icon: '🍳', offset: [0, 1.1], duration: 3.2, cost: 20, effect: { hunger: 75, energy: 10 } }],
-      espresso: [{ label: '☕ Minum Kopi Espresso (+38 Stamina)', icon: '☕', offset: [0, 1.05], duration: 2.0, cost: 12, effect: { energy: 38, bladder: -12 } }],
-      shower: [{ label: '🚿 Mandi Air Hangat (+Kebersihan)', icon: '🚿', offset: [-1.1, 0], duration: 3.2, effect: { hygiene: 90, energy: 12 } }],
-      toilet: [{ label: '🚽 Gunakan Toilet (+Kandung Kemih)', icon: '🚽', offset: [0, 0.85], duration: 2.2, effect: { bladder: 95 } }],
-      keyboard_music: [{ label: '🎹 Latihan Musik Keyboard (+Hobi Musik)', icon: '🎹', offset: [0, 0.85], duration: 3.8, hobby: 'music', xpGain: 45, earn: 45, effect: { fun: 45, energy: -14 } }],
+      fridge: [{ label: '🍳 Masak & Makan Enak (+Lapar)', icon: '🍳', offset: [0, 1.1], animType: 'eat', duration: 3.8, cost: 20, effect: { hunger: 75, energy: 10 } }],
+      espresso: [{ label: '☕ Minum Kopi Espresso (+38 Stamina)', icon: '☕', offset: [0, 1.05], animType: 'drink', duration: 3.0, cost: 12, effect: { energy: 38, bladder: -12 } }],
+      shower: [{ label: '🚿 Mandi Air Hangat [Sensor] (+Kebersihan)', icon: '🚿', offset: [-1.1, 0], stepInside: [0, 0], animType: 'shower', censor: true, duration: 3.8, effect: { hygiene: 90, energy: 12 } }],
+      toilet: [{ label: '🚽 Buang Air Kecil [Sensor] (+Kandung Kemih)', icon: '🚽', offset: [0, 0.85], sitToilet: true, animType: 'toilet', censor: true, duration: 3.2, effect: { bladder: 95 } }],
+      keyboard_music: [{ label: '🎹 Latihan Musik Keyboard (+Hobi Musik)', icon: '🎹', offset: [0, 0.85], animType: 'keyboard', duration: 4.0, hobby: 'music', xpGain: 45, earn: 45, effect: { fun: 45, energy: -14 } }],
       pc_desk: [
-        { label: '💻 Kerja Freelance & Coding (+Hobi Tech, +§)', icon: '💻', offset: [0, 0.85], duration: 4.0, hobby: 'coding', xpGain: 50, earn: 140, effect: { fun: 20, energy: -16 } },
+        { label: '💻 Kerja Freelance & Coding (+Hobi Tech, +§)', icon: '💻', offset: [0, 0.85], animType: 'work_pc', duration: 4.2, hobby: 'coding', xpGain: 50, earn: 140, effect: { fun: 20, energy: -16 } },
         { label: '💼 Buka Lowongan Kerja', icon: '💼', openCareer: true }
       ],
-      easel: [{ label: '🎨 Melukis & Jual Karya (+Hobi Lukis, +§)', icon: '🎨', offset: [0, 0.85], duration: 3.8, hobby: 'painting', xpGain: 48, earn: 115, effect: { fun: 40, energy: -14 } }],
+      easel: [{ label: '🎨 Melukis & Jual Karya (+Hobi Lukis, +§)', icon: '🎨', offset: [0, 0.85], animType: 'paint', duration: 4.0, hobby: 'painting', xpGain: 48, earn: 115, effect: { fun: 40, energy: -14 } }],
       alarm: [{ label: '🚨 Tes Bunyi Alarm Keamanan', icon: '🚨', testAlarm: true }],
       plant: [{ label: '🌿 Siram Tanaman Hias (+Hiburan)', icon: '🌿', offset: [0, 0.85], duration: 2.2, effect: { fun: 18 } }]
     };
@@ -1799,7 +1856,7 @@
     scene.add(destMarker);
 
     // ==========================================
-    // 7. KARAKTER MANUSIA 3D ANATOMIS HALUS (NATURAL & NON-ROBOTIK)
+    // 7. KARAKTER MANUSIA 3D WAJAH REALISTIS + ANIMASI & SENSOR PIXEL
     // ==========================================
     const gltfLoader = new THREE.GLTFLoader();
 
@@ -1808,7 +1865,8 @@
         this.root = new THREE.Group();
         this.humanRig = new THREE.Group();
         this.customGLTFGroup = new THREE.Group();
-        this.root.add(this.humanRig, this.customGLTFGroup);
+        this.censorGroup = new THREE.Group();
+        this.root.add(this.humanRig, this.customGLTFGroup, this.censorGroup);
 
         this.usingCustomGLTF = false;
         this.mixer = null;
@@ -1816,8 +1874,41 @@
         this.currentAnim = null;
         this.animTime = Math.random() * 6;
         this.parts = {};
+        this.censorTiles = [];
+        this.isCensored = false;
 
+        this.buildCensorMosaic();
         this.buildAnatomicalHuman(appearanceCfg);
+      }
+
+      buildCensorMosaic() {
+        // Efek kotak-kotak sensor pixel khas The Sims saat di toilet/shower
+        this.censorGroup.visible = false;
+        this.censorGroup.position.set(0, 0.92, 0);
+        const palette = ['#f5d0b5', '#e0ac84', '#ffffff', '#d8e2dc', '#f2cbb2'];
+        for (let i = 0; i < 28; i++) {
+          const tile = new THREE.Mesh(
+            new THREE.PlaneGeometry(0.22, 0.22),
+            new THREE.MeshBasicMaterial({
+              color: palette[i % palette.length],
+              transparent: true,
+              opacity: 0.9,
+              side: THREE.DoubleSide
+            })
+          );
+          const angle = (i / 28) * Math.PI * 2;
+          const rad = 0.25 + (i % 3) * 0.04;
+          const yOff = ((i % 5) - 2) * 0.14;
+          tile.position.set(Math.cos(angle) * rad, yOff, Math.sin(angle) * rad);
+          tile.lookAt(Math.cos(angle) * 2, yOff, Math.sin(angle) * 2);
+          this.censorGroup.add(tile);
+          this.censorTiles.push(tile);
+        }
+      }
+
+      setCensorActive(active) {
+        this.isCensored = active;
+        this.censorGroup.visible = active;
       }
 
       buildAnatomicalHuman(cfg) {
@@ -1829,11 +1920,14 @@
         this.humanRig.visible = true;
 
         const skinMat = new THREE.MeshPhysicalMaterial({
-          color: cfg.skinColor || '#e0ac84',
-          roughness: 0.58,
+          color: cfg.skinColor || '#dfa479',
+          map: organicSkinPBR.map,
+          bumpMap: organicSkinPBR.bumpMap,
+          bumpScale: 0.008,
+          roughness: 0.56,
           metalness: 0.0,
-          clearcoat: 0.1,
-          clearcoatRoughness: 0.65
+          clearcoat: 0.08,
+          clearcoatRoughness: 0.72
         });
 
         const shirtMat = new THREE.MeshStandardMaterial({
@@ -1872,7 +1966,7 @@
         pelvisGroup.add(pelvisMesh, beltMesh, buckle);
         this.humanRig.add(pelvisGroup);
 
-        // 2. Kaki Kiri & Kanan dengan Sendi Lutut Halus (LatheGeometry + Sphere Joint)
+        // 2. Kaki Kiri & Kanan dengan Sendi Lutut Halus
         const buildLeg = (sideX) => {
           const hipPivot = new THREE.Group();
           hipPivot.position.set(sideX, 0.89, 0);
@@ -1898,7 +1992,6 @@
           ];
           const calfMesh = new THREE.Mesh(new THREE.LatheGeometry(calfPts, 24), pantsMat);
 
-          // Sepatu Sneakers Natural
           const shoeGroup = new THREE.Group();
           shoeGroup.position.set(0, -0.44, 0.035);
           const sole = new THREE.Mesh(new THREE.BoxGeometry(0.098, 0.028, 0.21), shoeSoleMat);
@@ -1919,7 +2012,7 @@
         const leftLeg = buildLeg(-0.085);
         const rightLeg = buildLeg(0.085);
 
-        // 3. Torso / Dada Anatomis (LatheGeometry halus dari pinggang ke bahu)
+        // 3. Torso / Dada Anatomis
         const torsoPivot = new THREE.Group();
         torsoPivot.position.set(0, 0.98, 0);
 
@@ -1943,7 +2036,7 @@
         torsoPivot.add(torsoMesh, collar);
         this.humanRig.add(torsoPivot);
 
-        // 4. Lengan Kiri & Kanan dengan Bahu & Siku Bulat Halus
+        // 4. Lengan Kiri & Kanan + Prop Makanan/Minuman di Tangan Kanan
         const buildArm = (sideSign) => {
           const shoulderPivot = new THREE.Group();
           shoulderPivot.position.set(sideSign * 0.215, 0.415, 0);
@@ -1965,110 +2058,139 @@
           hand.scale.set(0.78, 1.22, 0.95);
           hand.position.y = -0.255;
 
+          // Prop Piring Makanan / Gelas Kopi di Tangan Kanan
+          let handProp = null;
+          if (sideSign === 1) {
+            handProp = new THREE.Group();
+            handProp.position.set(0, -0.26, 0.05);
+            handProp.visible = false;
+            const plate = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.08, 0.02, 18), new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.2 }));
+            const food = new THREE.Mesh(new THREE.SphereGeometry(0.055, 14, 10), new THREE.MeshStandardMaterial({ color: '#d97706', roughness: 0.6 }));
+            food.scale.set(1.2, 0.6, 1.2);
+            food.position.y = 0.025;
+            handProp.add(plate, food);
+            elbowPivot.add(handProp);
+          }
+
           elbowPivot.add(elbowJoint, forearm, hand);
           shoulderPivot.add(shoulderJoint, sleeveMesh, upperArm, elbowPivot);
           torsoPivot.add(shoulderPivot);
-          return { shoulderPivot, elbowPivot };
+          return { shoulderPivot, elbowPivot, handProp };
         };
 
         const leftArm = buildArm(-1);
         const rightArm = buildArm(1);
 
-        // 5. Leher, Kepala Anatomis, Wajah & Rambut Natural
+        // 5. Leher, Kepala Anatomis, Mata Jelas di Luar Permukaan, Hidung, Bibir & Rambut
         const headPivot = new THREE.Group();
         headPivot.position.set(0, 0.47, 0);
 
         const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.052, 0.058, 0.11, 20), skinMat);
         neck.position.y = 0.045;
 
-        const cranium = new THREE.Mesh(new THREE.SphereGeometry(0.116, 28, 24), skinMat);
-        cranium.scale.set(0.88, 1.08, 0.96);
-        cranium.position.set(0, 0.185, 0.005);
+        const cranium = new THREE.Mesh(new THREE.SphereGeometry(0.114, 32, 28), skinMat);
+        cranium.scale.set(0.87, 1.07, 0.94);
+        cranium.position.set(0, 0.185, 0.0);
 
         // Telinga
-        [-0.102, 0.102].forEach(ex => {
+        [-0.101, 0.101].forEach(ex => {
           const ear = new THREE.Mesh(new THREE.SphereGeometry(0.022, 12, 10), skinMat);
           ear.scale.set(0.55, 1.15, 0.85);
           ear.position.set(ex, 0.18, -0.005);
           headPivot.add(ear);
         });
 
-        // Hidung Natural
-        const nose = new THREE.Mesh(new THREE.SphereGeometry(0.017, 14, 12), skinMat);
-        nose.scale.set(0.82, 1.25, 1.15);
-        nose.position.set(0, 0.175, 0.114);
+        // Hidung Mancung Natural di Depan Permukaan Wajah
+        const noseBridge = new THREE.Mesh(new THREE.CylinderGeometry(0.009, 0.014, 0.036, 12), skinMat);
+        noseBridge.rotation.x = -0.22;
+        noseBridge.position.set(0, 0.184, 0.111);
+        const noseTip = new THREE.Mesh(new THREE.SphereGeometry(0.016, 14, 12), skinMat);
+        noseTip.scale.set(0.92, 0.85, 1.1);
+        noseTip.position.set(0, 0.168, 0.116);
 
-        // Mata + Iris + Kilau Mata
-        const scleraMat = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.15 });
-        const irisMat = new THREE.MeshStandardMaterial({ color: '#2b1d14', roughness: 0.1 });
+        // Mata Realistis (Diposisikan Z = 0.107 di luar permukaan cranium agar terlihat tajam & hidup)
+        const scleraMat = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.12 });
+        const irisMat = new THREE.MeshStandardMaterial({ color: '#2c1810', roughness: 0.08 });
+        const pupilMat = new THREE.MeshBasicMaterial({ color: '#09090b' });
         const shineMat = new THREE.MeshBasicMaterial({ color: '#ffffff' });
-        const browMat = new THREE.MeshStandardMaterial({ color: cfg.hairColor || '#1c1917', roughness: 0.8 });
+        const browMat = new THREE.MeshStandardMaterial({ color: cfg.hairColor || '#1c1917', roughness: 0.78 });
 
-        [-0.038, 0.038].forEach(eyeX => {
-          const eyeWhite = new THREE.Mesh(new THREE.SphereGeometry(0.016, 14, 12), scleraMat);
-          eyeWhite.scale.set(1.15, 0.82, 0.65);
-          eyeWhite.position.set(eyeX, 0.20, 0.101);
+        [-0.036, 0.036].forEach(eyeX => {
+          const eyeWhite = new THREE.Mesh(new THREE.SphereGeometry(0.0165, 16, 14), scleraMat);
+          eyeWhite.scale.set(1.18, 0.78, 0.55);
+          eyeWhite.position.set(eyeX, 0.198, 0.104);
 
-          const iris = new THREE.Mesh(new THREE.SphereGeometry(0.0095, 12, 10), irisMat);
-          iris.position.set(eyeX, 0.20, 0.11);
+          const eyelid = new THREE.Mesh(new THREE.SphereGeometry(0.0172, 16, 12, 0, Math.PI * 2, 0, Math.PI * 0.45), skinMat);
+          eyelid.scale.set(1.2, 0.82, 0.6);
+          eyelid.position.set(eyeX, 0.20, 0.1045);
 
-          const shine = new THREE.Mesh(new THREE.SphereGeometry(0.003, 8, 8), shineMat);
-          shine.position.set(eyeX + 0.003, 0.203, 0.117);
+          const iris = new THREE.Mesh(new THREE.SphereGeometry(0.0102, 14, 12), irisMat);
+          iris.scale.set(1.0, 1.0, 0.45);
+          iris.position.set(eyeX, 0.198, 0.111);
 
-          const brow = new THREE.Mesh(new THREE.BoxGeometry(0.034, 0.006, 0.01), browMat);
-          brow.position.set(eyeX, 0.222, 0.103);
+          const pupil = new THREE.Mesh(new THREE.SphereGeometry(0.0052, 10, 10), pupilMat);
+          pupil.scale.set(1.0, 1.0, 0.4);
+          pupil.position.set(eyeX, 0.198, 0.1145);
 
-          headPivot.add(eyeWhite, iris, shine, brow);
+          const shine = new THREE.Mesh(new THREE.SphereGeometry(0.0026, 8, 8), shineMat);
+          shine.position.set(eyeX + 0.0032, 0.201, 0.116);
+
+          const brow = new THREE.Mesh(new THREE.BoxGeometry(0.035, 0.0065, 0.012), browMat);
+          brow.rotation.z = eyeX < 0 ? 0.06 : -0.06;
+          brow.position.set(eyeX, 0.219, 0.106);
+
+          headPivot.add(eyeWhite, eyelid, iris, pupil, shine, brow);
         });
 
-        // Bibir Natural
-        const mouth = new THREE.Mesh(
-          new THREE.TorusGeometry(0.018, 0.0045, 8, 16, Math.PI),
-          new THREE.MeshStandardMaterial({ color: '#b56565', roughness: 0.55 })
-        );
-        mouth.rotation.z = Math.PI;
-        mouth.position.set(0, 0.145, 0.105);
+        // Bibir Atas & Bawah Natural
+        const lipMat = new THREE.MeshStandardMaterial({ color: '#c46d68', roughness: 0.45 });
+        const upperLip = new THREE.Mesh(new THREE.TorusGeometry(0.016, 0.0042, 8, 16, Math.PI), lipMat);
+        upperLip.position.set(0, 0.143, 0.107);
+        const lowerLip = new THREE.Mesh(new THREE.TorusGeometry(0.015, 0.0045, 8, 16, Math.PI), lipMat);
+        lowerLip.rotation.z = Math.PI;
+        lowerLip.position.set(0, 0.142, 0.107);
 
-        // Rambut Berlapis Sesuai Gaya
+        // Rambut Berlapis (Dimiringkan sedikit ke belakang agar dahi & mata tidak tertutup)
         const hairGroup = new THREE.Group();
-        const hairCap = new THREE.Mesh(new THREE.SphereGeometry(0.121, 26, 22, 0, Math.PI * 2, 0, Math.PI * 0.58), hairMat);
-        hairCap.scale.set(0.90, 1.08, 0.99);
-        hairCap.position.set(0, 0.192, -0.002);
+        const hairCap = new THREE.Mesh(new THREE.SphereGeometry(0.119, 26, 22, 0, Math.PI * 2, 0, Math.PI * 0.48), hairMat);
+        hairCap.scale.set(0.90, 1.06, 0.98);
+        hairCap.rotation.x = -0.22;
+        hairCap.position.set(0, 0.195, -0.008);
         hairGroup.add(hairCap);
 
         const hStyle = cfg.hairStyle || 'short';
         if (hStyle === 'short') {
-          const topCrop = new THREE.Mesh(new THREE.SphereGeometry(0.095, 20, 16), hairMat);
-          topCrop.scale.set(0.95, 0.45, 1.05);
-          topCrop.position.set(0, 0.305, 0.015);
+          const topCrop = new THREE.Mesh(new THREE.SphereGeometry(0.092, 20, 16), hairMat);
+          topCrop.scale.set(0.94, 0.44, 1.02);
+          topCrop.position.set(0, 0.302, 0.006);
           hairGroup.add(topCrop);
         } else if (hStyle === 'parted') {
-          const fringeL = new THREE.Mesh(new THREE.SphereGeometry(0.068, 18, 14), hairMat);
-          fringeL.scale.set(1.1, 0.48, 0.95);
-          fringeL.position.set(-0.035, 0.285, 0.065);
-          const fringeR = new THREE.Mesh(new THREE.SphereGeometry(0.055, 16, 12), hairMat);
-          fringeR.scale.set(0.95, 0.45, 0.9);
-          fringeR.position.set(0.052, 0.28, 0.058);
+          const fringeL = new THREE.Mesh(new THREE.SphereGeometry(0.064, 18, 14), hairMat);
+          fringeL.scale.set(1.05, 0.42, 0.9);
+          fringeL.position.set(-0.036, 0.285, 0.048);
+          const fringeR = new THREE.Mesh(new THREE.SphereGeometry(0.052, 16, 12), hairMat);
+          fringeR.scale.set(0.92, 0.4, 0.85);
+          fringeR.position.set(0.05, 0.28, 0.042);
           hairGroup.add(fringeL, fringeR);
         } else if (hStyle === 'long') {
-          const backHair = new THREE.Mesh(new THREE.CylinderGeometry(0.108, 0.125, 0.28, 22), hairMat);
+          const backHair = new THREE.Mesh(new THREE.CylinderGeometry(0.105, 0.122, 0.28, 22), hairMat);
           backHair.scale.set(0.94, 1.0, 0.85);
-          backHair.position.set(0, 0.07, -0.025);
-          [-0.095, 0.095].forEach(sx => {
-            const sideLock = new THREE.Mesh(new THREE.CylinderGeometry(0.028, 0.032, 0.25, 14), hairMat);
-            sideLock.position.set(sx, 0.08, 0.035);
+          backHair.position.set(0, 0.07, -0.028);
+          [-0.092, 0.092].forEach(sx => {
+            const sideLock = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.028, 0.24, 14), hairMat);
+            sideLock.position.set(sx, 0.08, 0.015);
             hairGroup.add(sideLock);
           });
           hairGroup.add(backHair);
         }
 
         if (cfg.isBurglar) {
-          const mask = new THREE.Mesh(new THREE.BoxGeometry(0.19, 0.036, 0.06), new THREE.MeshStandardMaterial({ color: '#090a0c', roughness: 0.7 }));
-          mask.position.set(0, 0.20, 0.095);
+          const mask = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.032, 0.05), new THREE.MeshStandardMaterial({ color: '#090a0c', roughness: 0.7 }));
+          mask.position.set(0, 0.198, 0.092);
           headPivot.add(mask);
         }
 
-        headPivot.add(neck, cranium, nose, mouth, hairGroup);
+        headPivot.add(neck, cranium, noseBridge, noseTip, upperLip, lowerLip, hairGroup);
         torsoPivot.add(headPivot);
 
         this.parts = { pelvisGroup, torsoPivot, headPivot, leftLeg, rightLeg, leftArm, rightArm };
@@ -2120,7 +2242,15 @@
         });
       }
 
-      update(dt, isMoving) {
+      update(dt, isMoving, poseMode = 'idle') {
+        // Animasi kotak sensor pixel bergetar saat aktif
+        if (this.isCensored && this.censorGroup.visible) {
+          this.censorGroup.rotation.y += dt * 2.5;
+          this.censorTiles.forEach((tile, idx) => {
+            tile.position.y += Math.sin(this.animTime * 12 + idx) * 0.002;
+          });
+        }
+
         if (this.usingCustomGLTF && this.mixer) {
           this.mixer.update(dt);
           const targetAnim = isMoving ? 'walk' : 'idle';
@@ -2135,18 +2265,25 @@
         const p = this.parts;
         if (!p.torsoPivot) return;
 
+        // Tampilkan prop makanan hanya saat makan/minum
+        if (p.rightArm.handProp) {
+          p.rightArm.handProp.visible = (!isMoving && (poseMode === 'eat' || poseMode === 'drink'));
+        }
+
+        const smooth = Math.min(1, dt * 10);
+
         if (isMoving) {
+          this.humanRig.rotation.x += (0 - this.humanRig.rotation.x) * smooth;
+          this.humanRig.position.y += (0 - this.humanRig.position.y) * smooth;
           this.animTime += dt * 7.8;
           const t = this.animTime;
           const swing = Math.sin(t);
 
-          // Ayunan pinggul & tekukan lutut natural
           p.leftLeg.hipPivot.rotation.x = swing * 0.52;
           p.rightLeg.hipPivot.rotation.x = -swing * 0.52;
           p.leftLeg.kneePivot.rotation.x = Math.max(0, -swing) * 0.68;
           p.rightLeg.kneePivot.rotation.x = Math.max(0, swing) * 0.68;
 
-          // Ayunan lengan berlawanan kaki + sedikit tekukan siku
           p.leftArm.shoulderPivot.rotation.x = -swing * 0.44;
           p.rightArm.shoulderPivot.rotation.x = swing * 0.44;
           p.leftArm.shoulderPivot.rotation.z = 0.08;
@@ -2154,23 +2291,86 @@
           p.leftArm.elbowPivot.rotation.x = -0.18 - Math.max(0, swing) * 0.28;
           p.rightArm.elbowPivot.rotation.x = -0.18 - Math.max(0, -swing) * 0.28;
 
-          // Gerakan vertikal & putaran bahu natural saat melangkah
           const bounce = Math.abs(Math.cos(t)) * 0.028;
           p.pelvisGroup.position.y = 0.92 + bounce;
           p.torsoPivot.position.y = 0.98 + bounce;
           p.torsoPivot.rotation.y = swing * 0.065;
           p.headPivot.rotation.y = -swing * 0.04;
-        } else {
-          this.animTime += dt * 2.2;
-          const t = this.animTime;
-          const smooth = Math.min(1, dt * 8);
+          p.headPivot.rotation.x = 0;
+          return;
+        }
 
+        // ==========================================
+        // POSE & ANIMASI KONTEKSTUAL SAAT AKTIVITAS
+        // ==========================================
+        this.animTime += dt * 4.5;
+        const t = this.animTime;
+
+        if (poseMode === 'sleep') {
+          // Berbaring tidur di atas kasur
+          this.humanRig.rotation.x += (-Math.PI / 2 - this.humanRig.rotation.x) * smooth;
+          this.humanRig.position.y += (0.64 - this.humanRig.position.y) * smooth;
           p.leftLeg.hipPivot.rotation.x += (0 - p.leftLeg.hipPivot.rotation.x) * smooth;
           p.rightLeg.hipPivot.rotation.x += (0 - p.rightLeg.hipPivot.rotation.x) * smooth;
           p.leftLeg.kneePivot.rotation.x += (0 - p.leftLeg.kneePivot.rotation.x) * smooth;
           p.rightLeg.kneePivot.rotation.x += (0 - p.rightLeg.kneePivot.rotation.x) * smooth;
+          p.leftArm.shoulderPivot.rotation.x += (0.1 - p.leftArm.shoulderPivot.rotation.x) * smooth;
+          p.rightArm.shoulderPivot.rotation.x += (0.1 - p.rightArm.shoulderPivot.rotation.x) * smooth;
+          p.headPivot.rotation.y = Math.sin(t * 0.4) * 0.12;
+          return;
+        }
 
-          // Pose berdiri santai natural (bukan kaku lurus)
+        this.humanRig.rotation.x += (0 - this.humanRig.rotation.x) * smooth;
+
+        if (poseMode === 'sit' || poseMode === 'toilet') {
+          // Duduk di sofa atau duduk di toilet
+          this.humanRig.position.y += (-0.36 - this.humanRig.position.y) * smooth;
+          p.leftLeg.hipPivot.rotation.x += (-1.45 - p.leftLeg.hipPivot.rotation.x) * smooth;
+          p.rightLeg.hipPivot.rotation.x += (-1.45 - p.rightLeg.hipPivot.rotation.x) * smooth;
+          p.leftLeg.kneePivot.rotation.x += (1.45 - p.leftLeg.kneePivot.rotation.x) * smooth;
+          p.rightLeg.kneePivot.rotation.x += (1.45 - p.rightLeg.kneePivot.rotation.x) * smooth;
+          p.leftArm.shoulderPivot.rotation.x += (-0.45 - p.leftArm.shoulderPivot.rotation.x) * smooth;
+          p.rightArm.shoulderPivot.rotation.x += (-0.45 - p.rightArm.shoulderPivot.rotation.x) * smooth;
+          p.leftArm.elbowPivot.rotation.x += (-0.5 - p.leftArm.elbowPivot.rotation.x) * smooth;
+          p.rightArm.elbowPivot.rotation.x += (-0.5 - p.rightArm.elbowPivot.rotation.x) * smooth;
+          p.headPivot.rotation.y = Math.sin(t * 0.6) * 0.1;
+          return;
+        }
+
+        this.humanRig.position.y += (0 - this.humanRig.position.y) * smooth;
+        p.leftLeg.hipPivot.rotation.x += (0 - p.leftLeg.hipPivot.rotation.x) * smooth;
+        p.rightLeg.hipPivot.rotation.x += (0 - p.rightLeg.hipPivot.rotation.x) * smooth;
+        p.leftLeg.kneePivot.rotation.x += (0 - p.leftLeg.kneePivot.rotation.x) * smooth;
+        p.rightLeg.kneePivot.rotation.x += (0 - p.rightLeg.kneePivot.rotation.x) * smooth;
+
+        if (poseMode === 'eat' || poseMode === 'drink') {
+          // Gerakan tangan menyuap makanan / mengangkat cangkir ke mulut + mengunyah
+          const bite = Math.sin(t * 1.4);
+          p.leftArm.shoulderPivot.rotation.x = -0.35;
+          p.leftArm.elbowPivot.rotation.x = -0.85;
+          p.rightArm.shoulderPivot.rotation.x = -0.65 - Math.max(0, bite) * 0.35;
+          p.rightArm.elbowPivot.rotation.x = -1.15 - Math.max(0, bite) * 0.65;
+          p.headPivot.rotation.x = Math.sin(t * 3.5) * 0.06;
+        } else if (poseMode === 'shower') {
+          // Gerakan mandi menggosok badan/rambut di balik sensor
+          p.leftArm.shoulderPivot.rotation.x = -1.1 + Math.sin(t * 2.2) * 0.35;
+          p.rightArm.shoulderPivot.rotation.x = -1.1 - Math.sin(t * 2.2) * 0.35;
+          p.leftArm.elbowPivot.rotation.x = -1.2;
+          p.rightArm.elbowPivot.rotation.x = -1.2;
+        } else if (poseMode === 'work_pc' || poseMode === 'keyboard') {
+          // Gerakan mengetik / bermain tuts keyboard cepat
+          p.leftArm.shoulderPivot.rotation.x = -0.65;
+          p.rightArm.shoulderPivot.rotation.x = -0.65;
+          p.leftArm.elbowPivot.rotation.x = -0.95 + Math.sin(t * 5.0) * 0.14;
+          p.rightArm.elbowPivot.rotation.x = -0.95 - Math.sin(t * 5.0) * 0.14;
+        } else if (poseMode === 'paint') {
+          // Gerakan kuas melukis di kanvas
+          p.rightArm.shoulderPivot.rotation.x = -1.05 + Math.sin(t * 1.8) * 0.28;
+          p.rightArm.elbowPivot.rotation.x = -0.55 + Math.cos(t * 2.4) * 0.25;
+          p.leftArm.shoulderPivot.rotation.x = -0.2;
+          p.leftArm.elbowPivot.rotation.x = -0.4;
+        } else {
+          // Pose berdiri santai natural
           p.leftArm.shoulderPivot.rotation.x += (0.04 - p.leftArm.shoulderPivot.rotation.x) * smooth;
           p.rightArm.shoulderPivot.rotation.x += (0.04 - p.rightArm.shoulderPivot.rotation.x) * smooth;
           p.leftArm.shoulderPivot.rotation.z += (0.075 - p.leftArm.shoulderPivot.rotation.z) * smooth;
@@ -2178,11 +2378,12 @@
           p.leftArm.elbowPivot.rotation.x += (-0.12 - p.leftArm.elbowPivot.rotation.x) * smooth;
           p.rightArm.elbowPivot.rotation.x += (-0.12 - p.rightArm.elbowPivot.rotation.x) * smooth;
 
-          const breath = Math.sin(t) * 0.008;
+          const breath = Math.sin(t * 0.5) * 0.008;
           p.pelvisGroup.position.y += (0.92 - p.pelvisGroup.position.y) * smooth;
           p.torsoPivot.position.y += (0.98 + breath - p.torsoPivot.position.y) * smooth;
           p.torsoPivot.rotation.y += (0 - p.torsoPivot.rotation.y) * smooth;
-          p.headPivot.rotation.y = Math.sin(t * 0.55) * 0.09;
+          p.headPivot.rotation.y = Math.sin(t * 0.28) * 0.09;
+          p.headPivot.rotation.x = 0;
         }
       }
     }
@@ -2209,7 +2410,7 @@
     }
 
     // ==========================================
-    // 8. HEWAN PELIHARAAN 3D
+    // 8. HEWAN PELIHARAAN 3D & ANAK 3D (FAMILY CHILD)
     // ==========================================
     const petState = {
       active: false, species: 'dog', name: 'Mochi', furColor: '#e8cfa8', collarColor: '#e74c3c', size: 0.85,
@@ -2314,25 +2515,117 @@
       showToast(`📣 ${petState.name} berlari menghampirimu!`);
     });
 
+    // Karakter Anak 3D (Child Character)
+    const childState = {
+      active: false,
+      name: 'Leo Samadara',
+      position: new THREE.Vector3(-0.8, 0.16, 2.2),
+      rotationY: 0
+    };
+    const childChar3D = new Human3DCharacter({
+      hairStyle: 'short',
+      skinColor: simState.appearance.skinColor,
+      hairColor: '#1c1917',
+      shirtColor: '#f59e0b',
+      pantsColor: '#1e3a5f'
+    });
+    childChar3D.root.scale.setScalar(0.62);
+    childChar3D.root.visible = false;
+    scene.add(childChar3D.root);
+
+    function refreshChildInteractions() {
+      childChar3D.root.userData = {
+        interactiveName: `👶 ${childState.name} (Anakmu)`,
+        actions: [
+          { label: `🤗 Gendong & Ajak Main ${childState.name} (+Hiburan, +Sosial)`, icon: '🧸', childInteract: 'play' },
+          { label: `🍼 Beri Susu & Makanan ${childState.name} (-§ 15)`, icon: '🍼', childInteract: 'feed' }
+        ]
+      };
+      childChar3D.root.traverse(c => { if (c.isMesh) c.userData.parentInteractive = childChar3D.root; });
+    }
+
+    function haveBabyWithSpouse() {
+      if (!simState.spouse) {
+        showToast('💍 Kamu harus menikah terlebih dahulu sebelum punya anak!');
+        return;
+      }
+      if (childState.active) {
+        showToast(`👶 Si kecil ${childState.name} sudah hadir di rumahmu!`);
+        return;
+      }
+      childState.active = true;
+      childChar3D.buildAnatomicalHuman({
+        hairStyle: 'short',
+        skinColor: simState.appearance.skinColor,
+        hairColor: simState.appearance.hairColor,
+        shirtColor: '#38bdf8',
+        pantsColor: '#1e3a5f'
+      });
+      childState.position.copy(simState.position).add(new THREE.Vector3(-0.9, 0, 0.7));
+      resolveWallCollisions(childState.position, simState.floorLevel, 0.3);
+      childChar3D.root.position.copy(childState.position);
+      childChar3D.root.visible = true;
+      refreshChildInteractions();
+      if (!interactiveObjects.includes(childChar3D.root)) interactiveObjects.push(childChar3D.root);
+
+      document.getElementById('child-editor-box').style.display = 'block';
+      document.getElementById('fam-child-label').textContent = `Anak: ${childState.name} (Balita)`;
+      document.getElementById('hud-family').textContent = `Keluarga: Menikah (${simState.spouse.name.split(' ')[0]}) & 1 Anak`;
+      soundFX.playWeddingFanfare();
+      showToast(`👶 Selamat! Buah hati kalian "${childState.name}" telah lahir ke dunia!`);
+      renderFamilyDrawer();
+      checkStoryProgress();
+    }
+
+    document.getElementById('btn-have-baby').addEventListener('click', haveBabyWithSpouse);
+    document.getElementById('child-name-input').addEventListener('input', e => {
+      childState.name = e.target.value.trim() || 'Leo Samadara';
+      document.getElementById('fam-child-label').textContent = `Anak: ${childState.name} (Balita)`;
+      refreshChildInteractions();
+    });
+    document.getElementById('btn-call-child').addEventListener('click', () => {
+      if (!childState.active) return;
+      childState.position.copy(simState.position).add(new THREE.Vector3(-0.85, 0, 0.75));
+      resolveWallCollisions(childState.position, simState.floorLevel, 0.3);
+      soundFX.playSimlish();
+      showToast(`👶 ${childState.name} berlari kecil menghampirimu!`);
+    });
+
     // ==========================================
-    // 9. TAMU BERKUNJUNG (MANUSIA 3D KASUAL)
+    // 9. TAMU, ROMANSA & PERNIKAHAN (MANUSIA 3D)
     // ==========================================
+    function getRelationStageLabel(rel, isMarried) {
+      if (isMarried) return '💍 Pasangan Sah (Menikah)';
+      if (rel >= 90) return '💖 Tunangan (Siap Menikah)';
+      if (rel >= 75) return '❤️ Pacar Resmi';
+      if (rel >= 55) return '💕 Gebetan / Romantis';
+      if (rel >= 30) return '😊 Teman Baik';
+      return '👋 Kenalan';
+    }
+
     const npcConfigs = [
       {
         id: 'nadia', name: 'Nadia (Tetangga)',
         appearance: { hairStyle: 'long', skinColor: '#f3cbb0', hairColor: '#3b2417', shirtColor: '#e06d7a', pantsColor: '#243447' },
         homeSpawn: new THREE.Vector3(18, 0.0, 17.5),
         visitSpots: [new THREE.Vector3(2.3, 0.16, 2.5), new THREE.Vector3(1.5, 0.16, 3.3)],
-        relationship: 30, talkedCount: 0,
-        greetings: ['Hai! Aku Nadia, tetangga sebelahmu. Rumah 2 lantai dan kolam renangmu keren sekali!', 'Senang main ke rumahmu. Kalau sudah sore aku pamit pulang lewat pintu depan ya!']
+        relationship: 30, talkedCount: 0, isMarriedToPlayer: false,
+        greetings: [
+          'Hai! Aku Nadia, tetangga sebelahmu. Rumah 2 lantai dan kolam renangmu keren sekali!',
+          'Senang sekali ngobrol denganmu. Kamu orangnya perhatian dan nyambung diajak cerita!',
+          'Aku sudah merasa nyaman banget dekat denganmu... rasanya seperti rumah sendiri.'
+        ]
       },
       {
         id: 'praja', name: 'Praja (Rekan Kerja)',
         appearance: { hairStyle: 'parted', skinColor: '#d9a37c', hairColor: '#1a1817', shirtColor: '#3b6978', pantsColor: '#2b2d42' },
         homeSpawn: new THREE.Vector3(-18, 0.0, 17.5),
         visitSpots: [new THREE.Vector3(-2.3, 0.16, 2.8), new THREE.Vector3(-1.4, 0.16, 3.5)],
-        relationship: 25, talkedCount: 0,
-        greetings: ['Halo! Aku Praja. Tadi aku masuk lewat pintu depanmu, ruang tamunya nyaman banget!', 'Hati-hati kalau malam hari, kadang ada copet menyelinap dari jalan raya!']
+        relationship: 25, talkedCount: 0, isMarriedToPlayer: false,
+        greetings: [
+          'Halo! Aku Praja. Tadi aku masuk lewat pintu depanmu, ruang tamunya nyaman banget!',
+          'Hati-hati kalau malam hari, kadang ada copet menyelinap dari jalan raya!'
+        ]
       }
     ];
 
@@ -2341,21 +2634,72 @@
       char3D.root.position.copy(cfg.visitSpots[0]);
       scene.add(char3D.root);
 
-      const npcObj = { ...cfg, char3D, state: 'visiting', visitTimer: 65 + idx * 30, awayTimer: 0, spotIdx: 0, waitTimer: 3, isTalking: false };
-      char3D.root.userData = {
-        isNPC: true, npcRef: npcObj, interactiveName: cfg.name,
-        actions: [
-          { label: '👋 Samperin & Ngobrol (+Sosial)', icon: '💬', talkToNPC: npcObj },
-          { label: '😄 Ajak Bercanda (+Sosial, +Hiburan)', icon: '😄', talkToNPC: npcObj, jokeMode: true },
-          { label: '🏠 Pamit / Suruh Pulang ke Rumahnya', icon: '🚪', sendHomeNPC: npcObj }
-        ]
-      };
+      const npcObj = { ...cfg, char3D, state: 'visiting', visitTimer: 85 + idx * 35, awayTimer: 0, spotIdx: 0, waitTimer: 3, isTalking: false };
+      refreshNPCInteractions(npcObj);
       char3D.root.traverse(c => { if (c.isMesh) c.userData.parentInteractive = char3D.root; });
       interactiveObjects.push(char3D.root);
       return npcObj;
     });
 
+    function refreshNPCInteractions(npc) {
+      const acts = [
+        { label: '👋 Samperin & Ngobrol (+Sosial, +Relasi)', icon: '💬', talkToNPC: npc },
+        { label: '😄 Ajak Bercanda (+Sosial, +Hiburan)', icon: '😄', talkToNPC: npc, jokeMode: true }
+      ];
+      if (npc.relationship >= 40 && !npc.isMarriedToPlayer) {
+        acts.push({ label: '💕 Rayu & Kencan Romantis (+Romansa)', icon: '💕', talkToNPC: npc, romanceMode: true, romanticClass: true });
+      }
+      if (npc.relationship >= 80 && !npc.isMarriedToPlayer && !simState.spouse) {
+        acts.push({ label: '💍 Lamar & Menikah Sekarang!', icon: '💍', marryNPC: npc, romanticClass: true });
+      }
+      if (npc.isMarriedToPlayer) {
+        acts.push({ label: '💋 Cium Mesra Pasangan (+Sosial, +Hiburan)', icon: '💋', talkToNPC: npc, romanceMode: true, romanticClass: true });
+        if (!childState.active) {
+          acts.push({ label: '👶 Punya Anak Bersama Pasangan', icon: '👶', haveBabyNow: true, romanticClass: true });
+        }
+      } else {
+        acts.push({ label: '🏠 Pamit / Suruh Pulang ke Rumahnya', icon: '🚪', sendHomeNPC: npc });
+      }
+
+      npc.char3D.root.userData = {
+        isNPC: true,
+        npcRef: npc,
+        interactiveName: `${npc.name} [${getRelationStageLabel(npc.relationship, npc.isMarriedToPlayer)}]`,
+        actions: acts
+      };
+    }
+
+    function marryNPC(npc) {
+      if (simState.spouse) {
+        showToast(`💍 Kamu sudah menikah dengan ${simState.spouse.name}!`);
+        return;
+      }
+      npc.isMarriedToPlayer = true;
+      npc.relationship = 100;
+      npc.state = 'visiting';
+      npc.visitTimer = 999999;
+      simState.spouse = npc;
+      simState.needs.social = 100;
+      simState.needs.fun = 100;
+
+      document.getElementById('hud-family').textContent = `Keluarga: Menikah (${npc.name.split(' ')[0]})`;
+      document.getElementById('fam-spouse-label').textContent = `💍 Pasangan Sah: ${npc.name}`;
+      document.getElementById('btn-have-baby').style.display = 'block';
+      document.getElementById('dialogue-modal').style.display = 'none';
+      npc.isTalking = false;
+
+      refreshNPCInteractions(npc);
+      renderFamilyDrawer();
+      soundFX.playWeddingFanfare();
+      showToast(`🎊 SELAMAT MENIKAH! Kamu & ${npc.name} resmi menjadi pasangan hidup dan tinggal serumah!`);
+      checkStoryProgress();
+    }
+
     function sendNPCHome(npc) {
+      if (npc.isMarriedToPlayer) {
+        showToast(`💍 ${npc.name} adalah pasanganmu dan tinggal di rumah ini!`);
+        return;
+      }
       if (npc.state === 'leaving' || npc.state === 'away') return;
       npc.isTalking = false;
       npc.state = 'leaving';
@@ -2364,13 +2708,16 @@
       showToast(`👋 ${npc.name} pamit keluar lewat pintu depan pulang ke rumahnya...`);
     }
 
-    function openNPCDialogue(npc, jokeMode = false) {
+    function openNPCDialogue(npc, jokeMode = false, romanceMode = false) {
       soundFX.playSimlish();
       npc.isTalking = true;
       npc.talkedCount += 1;
-      npc.relationship = Math.min(100, npc.relationship + (jokeMode ? 14 : 10));
+      const gain = romanceMode ? 16 : (jokeMode ? 13 : 11);
+      npc.relationship = Math.min(100, npc.relationship + gain);
       simState.needs.social = Math.min(100, simState.needs.social + 28);
-      if (jokeMode) simState.needs.fun = Math.min(100, simState.needs.fun + 20);
+      if (jokeMode || romanceMode) simState.needs.fun = Math.min(100, simState.needs.fun + 22);
+      refreshNPCInteractions(npc);
+      renderFamilyDrawer();
 
       const dirToNPC = npc.char3D.root.position.clone().sub(simState.position);
       simState.rotationY = Math.atan2(dirToNPC.x, dirToNPC.z);
@@ -2378,34 +2725,113 @@
 
       const modal = document.getElementById('dialogue-modal');
       document.getElementById('dlg-npc-name').textContent = npc.name;
-      const relLabel = npc.relationship >= 60 ? 'Sahabat Dekat' : npc.relationship >= 40 ? 'Teman Baik' : 'Kenalan';
+      const relLabel = getRelationStageLabel(npc.relationship, npc.isMarriedToPlayer);
       document.getElementById('dlg-rel-badge').textContent = `${relLabel} (${npc.relationship}/100)`;
-      document.getElementById('dlg-speech').textContent = `"${npc.greetings[npc.talkedCount % npc.greetings.length]}"`;
 
-      const choicesBox = document.getElementById('dlg-choices');
-      choicesBox.innerHTML = '';
-      [
-        { text: '😊 Puji Penampilan & Gaya Bajunya (+12)', reply: `"Makasih ${simState.name}! Karaktermu juga keren banget."`, rel: 12, social: 18 },
-        { text: '💼 Ceritakan Tentang Karier & Hobi (+10)', reply: '"Mantap! Semangat terus kerja dan kembangkan hobimu ya!"', rel: 10, social: 15 },
-        { text: '🏠 Pamit (Tamu Pulang ke Rumahnya)', sendHome: true },
-        { text: '👋 Tutup Obrolan', close: true }
-      ].forEach(opt => {
-        const btn = document.createElement('button');
-        btn.className = 'dlg-choice-btn';
-        btn.textContent = opt.text;
-        btn.addEventListener('click', () => {
-          if (opt.sendHome) { sendNPCHome(npc); return; }
-          if (opt.close) { modal.style.display = 'none'; npc.isTalking = false; return; }
-          soundFX.playSimlish();
-          npc.relationship = Math.min(100, npc.relationship + opt.rel);
-          simState.needs.social = Math.min(100, simState.needs.social + opt.social);
-          document.getElementById('dlg-speech').textContent = opt.reply;
-          checkStoryProgress();
+      let initialSpeech = `"${npc.greetings[npc.talkedCount % npc.greetings.length]}"`;
+      if (romanceMode) {
+        initialSpeech = npc.isMarriedToPlayer
+          ? `"Aku bahagia sekali membangun rumah tangga bersamamu, ${simState.name} ❤️"`
+          : `"Pipiku sampai memerah! Aku juga punya perasaan spesial padamu, ${simState.name} 💕"`;
+      }
+      document.getElementById('dlg-speech').textContent = initialSpeech;
+
+      function rebuildDialogueChoices() {
+        const choicesBox = document.getElementById('dlg-choices');
+        choicesBox.innerHTML = '';
+
+        const opts = [
+          { text: '😊 Puji & Ngobrol Hangat (+12 Relasi)', reply: `"Makasih ${simState.name}! Ngobrol sama kamu selalu bikin hari jadi cerah."`, rel: 12, social: 18 },
+          { text: '💼 Cerita Tentang Karier & Masa Depan (+10)', reply: '"Aku kagum sama semangat kerja kerasmu. Masa depanmu pasti cerah!"', rel: 10, social: 15 }
+        ];
+
+        if (npc.relationship >= 35 && !npc.isMarriedToPlayer) {
+          opts.push({
+            text: '💕 Rayu Romantis & Pegang Tangan (+16)',
+            reply: '"Jantungku berdebar... aku suka banget setiap momen bareng kamu ❤️"',
+            rel: 16, social: 22, isRomance: true
+          });
+        }
+
+        if (npc.relationship >= 80 && !npc.isMarriedToPlayer && !simState.spouse) {
+          opts.push({
+            text: '💍 Lamar Menikah Sekarang!',
+            doMarry: true, isRomance: true
+          });
+        }
+
+        if (npc.isMarriedToPlayer && !childState.active) {
+          opts.push({
+            text: '👶 Ajak Punya Anak Bersama',
+            doBaby: true, isRomance: true
+          });
+        }
+
+        if (!npc.isMarriedToPlayer) {
+          opts.push({ text: '🏠 Pamit (Tamu Pulang ke Rumahnya)', sendHome: true });
+        }
+        opts.push({ text: '👋 Tutup Obrolan', close: true });
+
+        opts.forEach(opt => {
+          const btn = document.createElement('button');
+          btn.className = 'dlg-choice-btn' + (opt.isRomance ? ' romance' : '');
+          btn.textContent = opt.text;
+          btn.addEventListener('click', () => {
+            if (opt.doMarry) { marryNPC(npc); return; }
+            if (opt.doBaby) { modal.style.display = 'none'; npc.isTalking = false; haveBabyWithSpouse(); return; }
+            if (opt.sendHome) { sendNPCHome(npc); return; }
+            if (opt.close) { modal.style.display = 'none'; npc.isTalking = false; return; }
+            soundFX.playSimlish();
+            npc.relationship = Math.min(100, npc.relationship + opt.rel);
+            simState.needs.social = Math.min(100, simState.needs.social + opt.social);
+            document.getElementById('dlg-rel-badge').textContent = `${getRelationStageLabel(npc.relationship, npc.isMarriedToPlayer)} (${npc.relationship}/100)`;
+            document.getElementById('dlg-speech').textContent = opt.reply;
+            refreshNPCInteractions(npc);
+            renderFamilyDrawer();
+            rebuildDialogueChoices();
+            checkStoryProgress();
+          });
+          choicesBox.appendChild(btn);
         });
-        choicesBox.appendChild(btn);
-      });
+      }
+
+      rebuildDialogueChoices();
       modal.style.display = 'block';
       checkStoryProgress();
+    }
+
+    function renderFamilyDrawer() {
+      const list = document.getElementById('npc-relations-list');
+      list.innerHTML = '';
+      npcs.forEach(npc => {
+        const card = document.createElement('div');
+        card.className = 'job-card' + (npc.isMarriedToPlayer ? ' current' : '');
+        const stage = getRelationStageLabel(npc.relationship, npc.isMarriedToPlayer);
+        card.innerHTML = `
+          <div class="job-title">${npc.name}</div>
+          <div class="job-meta">${stage} • Kedekatan: ${npc.relationship}/100</div>
+        `;
+        const btn = document.createElement('button');
+        btn.className = 'action-mini-btn ' + (npc.relationship >= 55 ? 'pink' : 'secondary');
+        btn.textContent = npc.isMarriedToPlayer
+          ? '💋 Ngobrol Mesra dengan Pasangan'
+          : (npc.relationship >= 80 && !simState.spouse ? '💍 Lamar & Menikah!' : '💬 Samperin & Bangun Relasi');
+        btn.addEventListener('click', () => {
+          closeAllDrawers();
+          if (npc.state === 'away') {
+            npc.state = 'visiting';
+            npc.char3D.root.visible = true;
+            npc.char3D.root.position.copy(npc.visitSpots[0]);
+          }
+          if (npc.relationship >= 80 && !npc.isMarriedToPlayer && !simState.spouse) {
+            startActionOnObject(npc.char3D.root, { label: `💍 Melamar ${npc.name}`, icon: '💍', marryNPC: npc });
+          } else {
+            startActionOnObject(npc.char3D.root, { label: `💬 Ngobrol dengan ${npc.name}`, icon: '💬', talkToNPC: npc });
+          }
+        });
+        card.appendChild(btn);
+        list.appendChild(card);
+      });
     }
 
     // ==========================================
@@ -2428,7 +2854,7 @@
     interactiveObjects.push(burglarChar.root);
     scene.add(burglarChar.root);
 
-    const burglarState = { active: false, phase: 'sneak_in', stealTimer: 0, nextSpawnCooldown: 30 };
+    const burglarState = { active: false, phase: 'sneak_in', stealTimer: 0, nextSpawnCooldown: 38 };
 
     function spawnBurglar() {
       if (burglarState.active) return;
@@ -2446,7 +2872,7 @@
       if (!burglarState.active) return;
       burglarState.active = false;
       burglarChar.root.visible = false;
-      burglarState.nextSpawnCooldown = 48;
+      burglarState.nextSpawnCooldown = 55;
       document.getElementById('burglar-alert').style.display = 'none';
       simState.money += 350;
       burglarsCaught += 1;
@@ -2473,7 +2899,7 @@
           pos.addScaledVector(dir, 2.3 * dt);
           resolveWallCollisions(pos, 1, 0.4);
           burglarChar.root.rotation.y = smoothRotateY(burglarChar.root.rotation.y, Math.atan2(dir.x, dir.z), dt * 10);
-          burglarChar.update(dt, true);
+          burglarChar.update(dt, true, 'idle');
         } else if (pos.z <= 2.0) {
           if (worldState.hasSecurityAlarm) {
             soundFX.playBurglarAlarm();
@@ -2484,7 +2910,7 @@
           }
         }
       } else if (burglarState.phase === 'stealing') {
-        burglarChar.update(dt, false);
+        burglarChar.update(dt, false, 'idle');
         burglarState.stealTimer += dt;
         if (burglarState.stealTimer >= 7.0) {
           const stolen = Math.min(simState.money, 250);
@@ -2501,11 +2927,11 @@
           pos.addScaledVector(dir, 3.2 * dt);
           resolveWallCollisions(pos, 1, 0.4);
           burglarChar.root.rotation.y = smoothRotateY(burglarChar.root.rotation.y, Math.atan2(dir.x, dir.z), dt * 10);
-          burglarChar.update(dt, true);
+          burglarChar.update(dt, true, 'idle');
         } else if (pos.x > 15) {
           burglarState.active = false;
           burglarChar.root.visible = false;
-          burglarState.nextSpawnCooldown = 48;
+          burglarState.nextSpawnCooldown = 55;
           document.getElementById('burglar-alert').style.display = 'none';
         }
       }
@@ -2537,7 +2963,7 @@
         badge.textContent = 'Mode Freeplay • Sandbox Bebas';
         badge.style.background = 'linear-gradient(90deg, #27ae60, #16a085)';
         title.textContent = 'Kehidupan Bebas Mansion 2 Lantai';
-        desc.textContent = 'Main bebas tanpa target misi. Karakter & kamera siap menjelajah seluruh mansion.';
+        desc.textContent = 'Main bebas tanpa target misi. Bangun relasi hingga menikah & punya anak!';
         reward.textContent = 'Status: Mode Bebas Aktif';
       } else {
         badge.style.background = 'linear-gradient(90deg, #f39c12, #e67e22)';
@@ -2549,8 +2975,8 @@
           reward.textContent = `Hadiah: § ${q.reward}`;
         } else {
           badge.textContent = 'Story Tamat • Mode Bebas';
-          title.textContent = 'Legenda Sunset Valley!';
-          desc.textContent = 'Semua bab cerita selesai! Terus kembangkan karier, hewan peliharaan, dan mansion 2 lantaimu.';
+          title.textContent = 'Legenda Keluarga Bahagia!';
+          desc.textContent = 'Semua bab cerita selesai! Terus kembangkan karier, keluarga, dan mansion 2 lantaimu.';
           reward.textContent = 'Status: Master Sim';
         }
       }
@@ -2594,6 +3020,7 @@
       document.getElementById('hobby-panel').style.display = 'none';
       document.getElementById('career-panel').style.display = 'none';
       document.getElementById('pet-panel').style.display = 'none';
+      document.getElementById('family-panel').style.display = 'none';
       document.getElementById('dialogue-modal').style.display = 'none';
     }
 
@@ -2623,6 +3050,7 @@
     document.getElementById('toggle-hobby-btn').addEventListener('click', () => toggleDrawer('hobby-panel'));
     document.getElementById('toggle-career-btn').addEventListener('click', () => { renderCareerDrawer(); toggleDrawer('career-panel'); });
     document.getElementById('toggle-pet-btn').addEventListener('click', () => toggleDrawer('pet-panel'));
+    document.getElementById('toggle-family-btn').addEventListener('click', () => { renderFamilyDrawer(); toggleDrawer('family-panel'); });
 
     // CAS Listeners (Rambut, Kulit, Baju, Celana & Upload .GLB)
     document.getElementById('open-cas-btn').addEventListener('click', () => {
@@ -2819,11 +3247,12 @@
     window.addEventListener('keyup', e => { keysPressed[e.key.toLowerCase()] = false; });
 
     // ==========================================
-    // 13. ACTION QUEUE & INTERAKSI OBJEK
+    // 13. ACTION QUEUE, ANIMASI POSE & SENSOR PIXEL
     // ==========================================
     function cancelCurrentAction() {
       simState.currentAction = null;
       simState.actionProgress = 0;
+      playerCharacter.setCensorActive(false);
       if (tvScreenMat) tvScreenMat.emissive.set('#081826');
       document.getElementById('action-queue-box').style.display = 'none';
     }
@@ -2835,8 +3264,11 @@
       if (act.openCareer) { renderCareerDrawer(); toggleDrawer('career-panel'); return; }
       if (act.catchBurglar) { catchBurglar(); return; }
       if (act.sendHomeNPC) { sendNPCHome(act.sendHomeNPC); return; }
+      if (act.marryNPC) { marryNPC(act.marryNPC); return; }
+      if (act.haveBabyNow) { haveBabyWithSpouse(); return; }
       if (act.testAlarm) { soundFX.playBurglarAlarm(); showToast('🚨 Alarm keamanan berfungsi normal!'); return; }
       if (act.changeFloor) {
+        cancelCurrentAction();
         if (act.changeFloor === 2) {
           simState.floorLevel = 2;
           simState.position.set(-5.8, 3.04, -0.6);
@@ -2866,8 +3298,9 @@
       }
 
       simState.waypoints = computePathWaypoints(simState.position, dest, simState.floorLevel);
-      simState.currentAction = { targetObj, act, arrived: false };
+      simState.currentAction = { targetObj, act, arrived: false, pose: 'idle' };
       simState.actionProgress = 0;
+      playerCharacter.setCensorActive(false);
 
       const qBox = document.getElementById('action-queue-box');
       qBox.style.display = 'block';
@@ -2887,7 +3320,14 @@
     function completeScheduledAction() {
       const entry = simState.currentAction;
       if (!entry) return;
-      const { act } = entry;
+      const { act, targetObj } = entry;
+
+      // Kembalikan posisi Sim jika tadi berbaring di atas kasur atau duduk di sofa/toilet
+      if (act.lieOnBed || act.sitOnSofa || act.sitToilet || act.stepInside) {
+        const exitOff = new THREE.Vector3(act.offset[0], 0, act.offset[1]).applyAxisAngle(new THREE.Vector3(0, 1, 0), targetObj.rotation.y || 0);
+        simState.position.copy(targetObj.position).add(exitOff);
+        resolveWallCollisions(simState.position, simState.floorLevel, 0.42);
+      }
 
       if (act.cost) simState.money -= act.cost;
       if (act.earn) {
@@ -2915,9 +3355,16 @@
         simState.needs.fun = Math.min(100, simState.needs.fun + 25);
         simState.needs.social = Math.min(100, simState.needs.social + 22);
       }
+      if (act.childInteract) {
+        soundFX.playSimlish();
+        if (act.childInteract === 'feed') simState.money = Math.max(0, simState.money - 15);
+        simState.needs.fun = Math.min(100, simState.needs.fun + 30);
+        simState.needs.social = Math.min(100, simState.needs.social + 30);
+        showToast(`👶 ${childState.name} tertawa gembira bersamamu!`);
+      }
 
       cancelCurrentAction();
-      if (act.talkToNPC) openNPCDialogue(act.talkToNPC, act.jokeMode);
+      if (act.talkToNPC) openNPCDialogue(act.talkToNPC, act.jokeMode, act.romanceMode);
       checkStoryProgress();
     }
 
@@ -2980,13 +3427,13 @@
           optBox.innerHTML = '';
           target.userData.actions.forEach(act => {
             const b = document.createElement('button');
-            b.className = 'pie-option';
+            b.className = 'pie-option' + (act.romanticClass ? ' romantic' : '');
             b.textContent = act.label;
             b.addEventListener('click', () => startActionOnObject(target, act));
             optBox.appendChild(b);
           });
-          pie.style.left = Math.min(window.innerWidth - 250, e.clientX) + 'px';
-          pie.style.top = Math.min(window.innerHeight - 180, e.clientY) + 'px';
+          pie.style.left = Math.min(window.innerWidth - 260, e.clientX) + 'px';
+          pie.style.top = Math.min(window.innerHeight - 210, e.clientY) + 'px';
           pie.style.display = 'block';
           return;
         }
@@ -3072,11 +3519,11 @@
     });
 
     // ==========================================
-    // 15. MAIN GAME LOOP (MOVEMENT + COLLISIONS + HUD)
+    // 15. MAIN GAME LOOP (MOVEMENT + POSES + FAMILY + HUD)
     // ==========================================
     function updatePlayerMovement(dt) {
       if (simState.inMenu || simState.inCAS || worldState.gameSpeed === 0) {
-        playerCharacter.update(dt, false);
+        playerCharacter.update(dt, false, 'idle');
         return;
       }
 
@@ -3113,6 +3560,7 @@
       if (keysPressed['d'] || keysPressed['arrowright']) kx += 1;
 
       if (kx !== 0 || kz !== 0) {
+        cancelCurrentAction();
         simState.waypoints = [];
         destMarker.visible = false;
         const forward = new THREE.Vector3(-Math.sin(worldState.cameraYaw), 0, -Math.cos(worldState.cameraYaw));
@@ -3147,16 +3595,43 @@
         }
       }
 
+      let activePose = 'idle';
+
       if (!isMoving && simState.currentAction) {
         const { targetObj, act } = simState.currentAction;
         if (!simState.currentAction.arrived) {
           simState.currentAction.arrived = true;
-          const facePt = act.face ? new THREE.Vector3(act.face[0], simState.position.y, act.face[1]) : targetObj.position;
-          const fDir = facePt.clone().sub(simState.position);
-          if (fDir.lengthSq() > 0.001) simState.rotationY = Math.atan2(fDir.x, fDir.z);
+
+          // Transisi posisi fisik saat tidur di kasur, duduk di sofa/toilet, atau masuk shower
+          if (act.lieOnBed) {
+            simState.position.copy(targetObj.position);
+            simState.rotationY = targetObj.rotation.y || 0;
+            simState.currentAction.pose = 'sleep';
+          } else if (act.sitOnSofa) {
+            const seatPos = new THREE.Vector3(0.18, 0, 0).applyAxisAngle(new THREE.Vector3(0, 1, 0), targetObj.rotation.y || 0);
+            simState.position.copy(targetObj.position).add(seatPos);
+            simState.currentAction.pose = 'sit';
+          } else if (act.sitToilet) {
+            const bowlPos = new THREE.Vector3(0, 0, 0.16).applyAxisAngle(new THREE.Vector3(0, 1, 0), targetObj.rotation.y || 0);
+            simState.position.copy(targetObj.position).add(bowlPos);
+            simState.rotationY = targetObj.rotation.y || 0;
+            simState.currentAction.pose = 'toilet';
+          } else if (act.stepInside) {
+            simState.position.copy(targetObj.position);
+            simState.currentAction.pose = act.animType || 'shower';
+          } else {
+            const facePt = act.face ? new THREE.Vector3(act.face[0], simState.position.y, act.face[1]) : targetObj.position;
+            const fDir = facePt.clone().sub(simState.position);
+            if (fDir.lengthSq() > 0.001) simState.rotationY = Math.atan2(fDir.x, fDir.z);
+            simState.currentAction.pose = act.animType || 'idle';
+          }
+
+          if (act.censor) playerCharacter.setCensorActive(true);
           if (act.tvOn && tvScreenMat) tvScreenMat.emissive.set('#2b86de');
         }
-        const dur = act.duration || 2.5;
+
+        activePose = simState.currentAction.pose || 'idle';
+        const dur = act.duration || 2.8;
         simState.actionProgress += dt;
         const pct = Math.min(100, Math.round((simState.actionProgress / dur) * 100));
         const subEl = document.getElementById('action-sub-text');
@@ -3168,18 +3643,20 @@
       simState.position.y = groundY;
       playerCharacter.root.position.copy(simState.position);
       playerCharacter.root.rotation.y = simState.rotationY;
-      playerCharacter.update(dt, isMoving);
+      playerCharacter.update(dt, isMoving, activePose);
     }
 
     function updateNPCs(dt) {
       if (simState.inMenu || simState.inCAS || worldState.gameSpeed === 0) return;
       npcs.forEach(npc => {
         const pos = npc.char3D.root.position;
-        if (npc.isTalking) { npc.char3D.update(dt, false); return; }
+        if (npc.isTalking) { npc.char3D.update(dt, false, 'idle'); return; }
 
         if (npc.state === 'visiting') {
-          npc.visitTimer -= dt;
-          if (npc.visitTimer <= 0) { sendNPCHome(npc); return; }
+          if (!npc.isMarriedToPlayer) {
+            npc.visitTimer -= dt;
+            if (npc.visitTimer <= 0) { sendNPCHome(npc); return; }
+          }
           const spot = npc.visitSpots[npc.spotIdx];
           const dir = spot.clone().sub(pos);
           dir.y = 0;
@@ -3188,9 +3665,9 @@
             pos.addScaledVector(dir, 1.8 * dt);
             resolveWallCollisions(pos, 1, 0.4);
             npc.char3D.root.rotation.y = smoothRotateY(npc.char3D.root.rotation.y, Math.atan2(dir.x, dir.z), dt * 10);
-            npc.char3D.update(dt, true);
+            npc.char3D.update(dt, true, 'idle');
           } else {
-            npc.char3D.update(dt, false);
+            npc.char3D.update(dt, false, 'idle');
             npc.waitTimer -= dt;
             if (npc.waitTimer <= 0) {
               npc.spotIdx = (npc.spotIdx + 1) % npc.visitSpots.length;
@@ -3206,10 +3683,10 @@
             pos.addScaledVector(dir, 2.2 * dt);
             resolveWallCollisions(pos, 1, 0.4);
             npc.char3D.root.rotation.y = smoothRotateY(npc.char3D.root.rotation.y, Math.atan2(dir.x, dir.z), dt * 10);
-            npc.char3D.update(dt, true);
+            npc.char3D.update(dt, true, 'idle');
           } else if (pos.distanceTo(npc.homeSpawn) < 1.0) {
             npc.state = 'away';
-            npc.awayTimer = 28;
+            npc.awayTimer = 25;
             npc.char3D.root.visible = false;
           }
         } else if (npc.state === 'away') {
@@ -3228,29 +3705,50 @@
             pos.addScaledVector(dir, 2.1 * dt);
             resolveWallCollisions(pos, 1, 0.4);
             npc.char3D.root.rotation.y = smoothRotateY(npc.char3D.root.rotation.y, Math.atan2(dir.x, dir.z), dt * 10);
-            npc.char3D.update(dt, true);
+            npc.char3D.update(dt, true, 'idle');
           } else if (pos.z <= 3.6) {
             npc.state = 'visiting';
-            npc.visitTimer = 75;
+            npc.visitTimer = 85;
           }
         }
       });
     }
 
-    function updatePet(dt) {
-      if (!petState.active || simState.inMenu || simState.inCAS || worldState.gameSpeed === 0) return;
-      const followTarget = simState.position.clone().add(new THREE.Vector3(1.15, 0, 0.85));
-      const dir = followTarget.sub(petState.position);
-      dir.y = 0;
-      if (dir.length() > 0.65) {
-        dir.normalize();
-        petState.position.addScaledVector(dir, 2.7 * dt);
-        resolveWallCollisions(petState.position, simState.floorLevel, 0.28);
-        petState.rotationY = smoothRotateY(petState.rotationY, Math.atan2(dir.x, dir.z), dt * 10);
+    function updatePetAndChild(dt) {
+      if (simState.inMenu || simState.inCAS || worldState.gameSpeed === 0) return;
+
+      if (petState.active) {
+        const followTarget = simState.position.clone().add(new THREE.Vector3(1.15, 0, 0.85));
+        const dir = followTarget.sub(petState.position);
+        dir.y = 0;
+        if (dir.length() > 0.65) {
+          dir.normalize();
+          petState.position.addScaledVector(dir, 2.7 * dt);
+          resolveWallCollisions(petState.position, simState.floorLevel, 0.28);
+          petState.rotationY = smoothRotateY(petState.rotationY, Math.atan2(dir.x, dir.z), dt * 10);
+        }
+        petState.position.y = simState.floorLevel === 2 ? 3.04 : (petState.position.z > 6.55 ? 0.02 : 0.16);
+        petGroup.position.copy(petState.position);
+        petGroup.rotation.y = petState.rotationY;
       }
-      petState.position.y = simState.floorLevel === 2 ? 3.04 : (petState.position.z > 6.55 ? 0.02 : 0.16);
-      petGroup.position.copy(petState.position);
-      petGroup.rotation.y = petState.rotationY;
+
+      if (childState.active) {
+        const followTarget = simState.position.clone().add(new THREE.Vector3(-1.05, 0, 0.75));
+        const dir = followTarget.sub(childState.position);
+        dir.y = 0;
+        let childMoving = false;
+        if (dir.length() > 0.75) {
+          dir.normalize();
+          childState.position.addScaledVector(dir, 2.1 * dt);
+          resolveWallCollisions(childState.position, simState.floorLevel, 0.28);
+          childState.rotationY = smoothRotateY(childState.rotationY, Math.atan2(dir.x, dir.z), dt * 10);
+          childMoving = true;
+        }
+        childState.position.y = simState.floorLevel === 2 ? 3.04 : (childState.position.z > 6.55 ? 0.02 : 0.16);
+        childChar3D.root.position.copy(childState.position);
+        childChar3D.root.rotation.y = childState.rotationY;
+        childChar3D.update(dt, childMoving, 'idle');
+      }
     }
 
     function updateHUDAndNeeds(dt) {
@@ -3324,7 +3822,7 @@
 
       updatePlayerMovement(simDt);
       updateNPCs(simDt);
-      updatePet(simDt);
+      updatePetAndChild(simDt);
       updateBurglar(simDt);
       updateHUDAndNeeds(rawDt);
 
